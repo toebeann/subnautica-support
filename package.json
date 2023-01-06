@@ -13,10 +13,13 @@
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
+    "@types/i18next": "^8",
     "@types/node": "^18.11.18",
     "@types/relaxed-json": "^1.0.1",
     "cpx": "^1.5.0",
+    "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",
+    "store2": "^2.14.2",
     "ts-loader": "^8.4.0",
     "typescript": "^4.9.4",
     "vortex-api": "github:Nexus-Mods/vortex-api",
