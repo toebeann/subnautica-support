@@ -4,8 +4,7 @@ import { TRANSLATION_OPTIONS } from './constants';
 import { getDiscovery } from './utils';
 import { SteamBetaBranch } from './platforms/steam';
 import { fs, util } from 'vortex-api';
-import { IExtensionApi } from 'vortex-api/lib/types/IExtensionContext';
-import { IDiscoveryResult } from 'vortex-api/lib/types/IState';
+import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
  * URL to the BepInEx page on Nexus Mods

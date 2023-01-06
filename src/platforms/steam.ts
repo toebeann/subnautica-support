@@ -1,7 +1,6 @@
 import { getDiscovery } from '../utils';
 import { util } from 'vortex-api';
-import { IDiscoveryResult } from 'vortex-api/lib/types/IState';
-import { IExtensionApi } from 'vortex-api/lib/types/IExtensionContext';
+import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
  * Steam game id for Subnautica

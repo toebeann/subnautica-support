@@ -9,10 +9,7 @@ import { STEAM_GAME_ID, getBranch } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
-import { IDiscoveryResult } from 'vortex-api/lib/types/IState';
-import { IExtensionApi, IExtensionContext } from 'vortex-api/lib/types/IExtensionContext';
-import { IGame } from 'vortex-api/lib/types/IGame';
-import { IGameStoreEntry } from 'vortex-api/lib/types/IGameStoreEntry';
+import { IDiscoveryResult, IExtensionApi, IExtensionContext, IGame, IGameStoreEntry } from 'vortex-api/lib/types/api';
 
 export const store = store2.namespace(EXTENSION_ID);
 store.isFake(true); // TODO: remove this when finished testing
