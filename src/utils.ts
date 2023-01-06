@@ -3,8 +3,7 @@ import { GAME_EXE } from './constants';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { getFileVersion } from 'exe-version';
 import { fs } from 'vortex-api';
-import { IExtensionApi } from 'vortex-api/lib/types/IExtensionContext';
-import { IDiscoveryResult } from 'vortex-api/lib/types/IState';
+import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
  * Utility function to determine the Subnautica game version.

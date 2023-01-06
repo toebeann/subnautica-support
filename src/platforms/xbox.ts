@@ -1,4 +1,4 @@
-import { IGameStoreEntry } from 'vortex-api/lib/types/IGameStoreEntry';
+import { IGameStoreEntry } from 'vortex-api/lib/types/api';
 
 /**
  * Xbox game id for Subnautica

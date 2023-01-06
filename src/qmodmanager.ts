@@ -4,8 +4,7 @@ import { BEPINEX_PLUGINS_DIR, BEPINEX_DIR } from './bepinex';
 import { getDiscovery } from './utils';
 import { SteamBetaBranch } from './platforms/steam';
 import { fs, util } from 'vortex-api';
-import { IDiscoveryResult } from 'vortex-api/lib/types/IState';
-import { IExtensionApi } from 'vortex-api/lib/types/IExtensionContext';
+import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
  * URL to the QModManager page on Nexus Mods
