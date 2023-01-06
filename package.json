@@ -16,6 +16,7 @@
     "@types/i18next": "^8",
     "@types/node": "^18.11.18",
     "@types/relaxed-json": "^1.0.1",
+    "@types/semver": "^7.3.13",
     "cpx": "^1.5.0",
     "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",

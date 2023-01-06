@@ -1,3 +1,4 @@
+import packageJson, { version } from '../package.json';
 import { EXTENSION_ID, GAME_EXE } from './constants';
 import { getDiscovery, getGameVersion, getModPath, getMods } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
@@ -13,13 +14,17 @@ import registerModTypeBepInExPlugin from './mod-types/bepinex-plugin';
 import registerModTypeQModManager4 from './mod-types/qmodmanager-4';
 import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { STEAM_GAME_ID, getBranch } from './platforms/steam';
+import { STEAM_GAME_ID, SteamBetaBranch, getBranch } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
+import { major } from 'semver';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
 import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
+import { BEPINEX_MOD_PATH } from './bepinex';
+import { QMM_MOD_PATH } from './qmodmanager';
+import { join } from 'path';
 
-export const store = store2.namespace(EXTENSION_ID);
+export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
 store.isFake(true); // TODO: remove this when finished testing
 
 export default function main(context: IExtensionContext): boolean {
@@ -91,9 +96,8 @@ export default function main(context: IExtensionContext): boolean {
  */
 const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     if (discovery?.path) {
+        await Promise.all([QMM_MOD_PATH, BEPINEX_MOD_PATH].map(path => fs.ensureDirWritableAsync(join(discovery.path!, path))));
         await validateBranch(api, discovery);
-        const modPath = getModPath(discovery.path);
-        await fs.ensureDirWritableAsync(modPath);
     }
 }
 
@@ -142,20 +146,21 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             // TODO: add action to open dialog for more information
         });
 
+        // TODO: remove this dialog when finished testing
         await api.showDialog?.('info', 'Subnautica Mods', {
-            text: JSON.stringify(getMods(api).map(mod => {
-                return { type: mod.type, name: mod.attributes?.['modName'] ?? mod.attributes?.['name'] };
-            }), null, 2)
+            text: JSON.stringify(packageJson, null, 2)
         }, [{ label: 'OK' }]);
 
         await setup(api, discovery);
     }
+
+    return currentBranch;
 }
 
 const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
     if (!store('suppress-subnautica-2.0-info-dialog')) {
-        await validateBranch(api);
-        const branch = store('branch');
+        const branch = store('branch') as SteamBetaBranch ?? await getBranch(api);
+        if (!store('branch')) store('branch', branch);
 
         // this is the first time the extension has loaded since updating to v3, so we should
         // show a dialog letting the user know about the changes to Subnautica and etc.
