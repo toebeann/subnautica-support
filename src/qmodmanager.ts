@@ -1,5 +1,6 @@
 import { store } from '.';
 import { getMods } from './utils';
+import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
 import { SteamBetaBranch } from './platforms/steam';
 import { util } from 'vortex-api';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
@@ -17,29 +18,21 @@ export const QMM_DIR = 'QModManager';
  */
 export const QMM_MOD_PATH = 'QMods';
 /**
- * QModManager core filename.
- */
-export const QMM_DLL = 'QModInstaller.dll';
-/**
- * QModManager injector mod type.
- */
-export const QMM_INJECTOR_MODTYPE = 'qmodmanager-injector';
-/**
  * QModManager mod type.
  */
-export const QMM_MOD_MODTYPE = 'qmodmanager-mod';
+export const QMM_MOD_TYPE = 'qmodmanager-mod';
 /**
  * CustomHullPlates pack mod type.
  */
-export const QMM_CUSTOM_HULL_PLATES_PACK_MODTYPE = 'qmodmanager-custom-hull-plates-pack';
+export const QMM_CUSTOM_HULL_PLATES_PACK_MOD_TYPE = 'qmodmanager-custom-hull-plates-pack';
 /**
  * CustomPosters pack mod type.
  */
-export const QMM_CUSTOM_POSTERS_PACK_MODTYPE = 'qmodmanager-custom-posters-pack';
+export const QMM_CUSTOM_POSTERS_PACK_MOD_TYPE = 'qmodmanager-custom-posters-pack';
 /**
  * CustomCraft2 plugin mod type.
  */
-export const QMM_CC2_PLUGIN_MODTYPE = 'qmodmanager-cc2-plugin';
+export const QMM_CC2_PLUGIN_MOD_TYPE = 'qmodmanager-cc2-plugin';
 /**
  * QModManager mod manifest filename.
  */
@@ -59,7 +52,7 @@ export const CC2_FOLDER = 'CustomCraft2SML';
  * @returns True if QModManager is installed, false otherwise. Always returns false if QModManager was not installed via Vortex.
  */
 export const isQModManagerInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => mod.type === QMM_INJECTOR_MODTYPE);
+    getMods(api, true).some(mod => mod.type === QMM_4_MOD_TYPE);
 
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues.
@@ -69,8 +62,8 @@ export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
             if (!isQModManagerInstalled(api)) {
-                api.sendNotification!({
-                    id: 'qmm-missing',
+                api.sendNotification?.({
+                    id: 'qmodmanager-missing',
                     type: 'warning',
                     title: api.translate('QModManager not installed'),
                     message: api.translate('QMM is required to mod Subnautica on the legacy branch.'),

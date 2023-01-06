@@ -1,19 +1,28 @@
 import { EXTENSION_ID, GAME_EXE } from './constants';
-import { getDiscovery, getGameVersion, getModPath } from './utils';
+import { getDiscovery, getGameVersion, getModPath, getMods } from './utils';
+import registerInstallerBepInEx from './installers/bepinex';
+import registerInstallerBepInExMixed from './installers/bepinex-mixed';
+import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
+import registerInstallerBepInExPlugin from './installers/bepinex-plugin';
+import registerInstallerQModManager from './installers/qmodmanager';
+import registerModTypeBepInEx5 from './mod-types/bepinex-5';
+import registerModTypeBepInEx6 from './mod-types/bepinex-6';
+import registerModTypeBepInExMixed from './mod-types/bepinex-mixed';
+import registerModTypeBepInExPatcher from './mod-types/bepinex-patcher';
+import registerModTypeBepInExPlugin from './mod-types/bepinex-plugin';
+import registerModTypeQModManager4 from './mod-types/qmodmanager-4';
 import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, getBranch } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
-import { IDiscoveryResult, IExtensionApi, IExtensionContext, IGame, IGameStoreEntry } from 'vortex-api/lib/types/api';
+import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
 
 export const store = store2.namespace(EXTENSION_ID);
 store.isFake(true); // TODO: remove this when finished testing
 
 export default function main(context: IExtensionContext): boolean {
-    context.requireExtension('modtype-bepinex');
-
     // register Subnautica with Vortex
     context.registerGame({
         id: NEXUS_GAME_ID,
@@ -24,7 +33,11 @@ export default function main(context: IExtensionContext): boolean {
         executable: () => GAME_EXE,
         requiredFiles: [GAME_EXE],
         environment: { SteamAPPId: STEAM_GAME_ID },
-        requiresLauncher: () => requiresLauncher(context.api),
+        details: {
+            steamAppId: +STEAM_GAME_ID,
+            epicAppId: EPIC_GAME_ID,
+        },
+        requiresLauncher,
         queryArgs: {
             steam: [{ id: STEAM_GAME_ID }],
             epic: [{ id: EPIC_GAME_ID }],
@@ -43,8 +56,6 @@ export default function main(context: IExtensionContext): boolean {
             await gamemodeActivated(context.api);
         });
 
-        // const foo: { [modType: string]: IDeployedFile };
-
         context.api.onAsync('did-deploy', async (profileId: string) => {
             if (selectors.profileById(context.api.getState(), profileId)?.gameId !== NEXUS_GAME_ID) {
                 return;
@@ -54,7 +65,19 @@ export default function main(context: IExtensionContext): boolean {
         });
     });
 
-    // TODO: register installers
+    // TODO: register installers and modtypes
+    registerModTypeBepInEx5(context);
+    registerModTypeBepInEx6(context);
+    registerModTypeQModManager4(context);
+    registerModTypeBepInExPlugin(context);
+    registerModTypeBepInExPatcher(context);
+    registerModTypeBepInExMixed(context);
+
+    registerInstallerBepInEx(context);
+    registerInstallerQModManager(context);
+    registerInstallerBepInExPlugin(context);
+    registerInstallerBepInExPatcher(context);
+    registerInstallerBepInExMixed(context);
 
     // context.registerInstaller('subnautica-qmm-installer', 25, testQMM, files => installQMM(files, context.api));
     // context.registerInstaller('subnautica-qmm-mod-installer', 25, testQMMMod, installQMMMod);
@@ -97,35 +120,23 @@ const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined
     }
 }
 
-const requiresLauncher = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): ReturnType<Required<IGame>['requiresLauncher']> => {
-    const getResult = async (storeId?: string, gameStoreEntry?: IGameStoreEntry) => {
-        switch (storeId) {
-            case 'steam':
-                return { launcher: 'steam', addInfo: STEAM_GAME_ID };
-            case 'epic':
-                return { launcher: 'epic', addInfo: EPIC_GAME_ID };
-            case 'xbox':
-                return {
-                    launcher: 'xbox', addInfo: {
-                        appId: XBOX_GAME_ID,
-                        parameters: [{
-                            appExecName: getAppExecName(gameStoreEntry ?? await util.GameStoreHelper.findByAppId([XBOX_GAME_ID]))
-                        }],
-                    }
-                };
-        }
-    };
-
-    // use the vortex discovery result to determine which launcher to use
-    if (discovery) {
-        const result = await getResult(discovery.store);
-        if (result) return result;
+const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) => {
+    switch (store) {
+        case 'steam':
+            return { launcher: 'steam', addInfo: STEAM_GAME_ID };
+        case 'epic':
+            return { launcher: 'epic', addInfo: EPIC_GAME_ID };
+        case 'xbox':
+            return {
+                launcher: 'xbox',
+                addInfo: {
+                    appId: XBOX_GAME_ID,
+                    parameters: [{
+                        appExecName: getAppExecName(await util.GameStoreHelper.findByAppId([XBOX_GAME_ID]))
+                    }],
+                }
+            };
     }
-
-    // either the discovery result is not available or the store is not supported,
-    // so we should fallback to querying the game store to determine which launcher to use
-    const gameStoreEntry = await util.GameStoreHelper.findByAppId([STEAM_GAME_ID, EPIC_GAME_ID, XBOX_GAME_ID]);
-    return await getResult(gameStoreEntry.gameStoreId, gameStoreEntry);
 }
 
 const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
@@ -146,13 +157,19 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
     if (currentBranch !== storedBranch) {
         store('branch', currentBranch);
 
-        api.sendNotification!({
+        api.sendNotification?.({
             id: 'subnautica-branch',
             type: 'info',
             message: api.translate(`Detected Subnautica branch: ${currentBranch}`),
             allowSuppress: true,
             // TODO: add action to open dialog for more information
         });
+
+        await api.showDialog?.('info', 'Subnautica Mods', {
+            text: JSON.stringify(getMods(api).map(mod => {
+                return { type: mod.type, name: mod.attributes?.['modName'] ?? mod.attributes?.['name'] };
+            }), null, 2)
+        }, [{ label: 'OK' }]);
 
         await setup(api, discovery);
     }
@@ -167,7 +184,7 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
         // show a dialog letting the user know about the changes to Subnautica and etc.
         // and inform them of branch specifics i.e. QMM is only supported on legacy, BepInEx is required for 2.0 & experimental modding, etc.
         // TODO: show dialog as above ^
-        const result = await api.showDialog!('info', 'Subnautica 2.0 Living Large Update', {
+        const result: IDialogResult | undefined = await api.showDialog?.('info', 'Subnautica 2.0 Living Large Update', {
             bbcode: `Subnautica has been updated to version 2.0, which includes a new game engine and a new modding system.
                     This update is not backwards compatible with mods for the previous version of Subnautica, so you will need to update your mods to work with the new version of Subnautica.
                     You can find more information about the update and the new modding system [url=https://subnautica.fandom.com/wiki/Modding]here[/url].`,
@@ -179,7 +196,10 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
                 }
             ]
         }, [{ label: 'Close' }], 'subnautica-2.0-info-dialog');
-        store('suppress-subnautica-2.0-info-dialog', result.input['suppress-subnautica-2.0-info-dialog']);
+
+        if (result) {
+            store('suppress-subnautica-2.0-info-dialog', result.input['suppress-subnautica-2.0-info-dialog']);
+        }
     }
 }
 

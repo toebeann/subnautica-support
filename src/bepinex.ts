@@ -2,6 +2,8 @@ import { join } from 'path';
 import { store } from '.';
 import { TRANSLATION_OPTIONS } from './constants';
 import { getMods } from './utils';
+import { BEPINEX_5_MOD_TYPE } from './mod-types/bepinex-5';
+import { BEPINEX_6_MOD_TYPE } from './mod-types/bepinex-6';
 import { SteamBetaBranch } from './platforms/steam';
 import { util } from 'vortex-api';
 import { IExtensionApi } from 'vortex-api/lib/types/api';
@@ -19,6 +21,10 @@ export const BEPINEX_DIR = 'BepInEx';
  */
 export const BEPINEX_CORE_DIR = 'core';
 /**
+ * BepInEx config directory name.
+ */
+export const BEPINEX_CONFIG_DIR = 'config';
+/**
  * BepInEx plugins directory name.
  */
 export const BEPINEX_PLUGINS_DIR = 'plugins';
@@ -31,25 +37,17 @@ export const BEPINEX_PATCHERS_DIR = 'patchers';
  */
 export const BEPINEX_MOD_PATH = join(BEPINEX_DIR, BEPINEX_PLUGINS_DIR);
 /**
- * Core BepInEx filename.
+ * BepInEx root mod type.
  */
-export const BEPINEX_DLL = 'BepInEx.dll';
-/**
- * BepInEx injector mod type.
- */
-export const BEPINEX_INJECTOR_MODTYPE = 'bepinex-injector';
-/**
- * BepInEx Root mod type.
- */
-export const BEPINEX_ROOT_MODTYPE = 'bepinex-root';
+export const BEPINEX_ROOT_MOD_TYPE = 'bepinex-root';
 /**
  * BepInEx plugin mod type.
  */
-export const BEPINEX_PLUGIN_MODTYPE = 'bepinex-plugin';
+export const BEPINEX_PLUGIN_MOD_TYPE = 'bepinex-plugin';
 /**
  * BepInEx patcher mod type.
  */
-export const BEPINEX_PATCHER_MODTYPE = 'bepinex-patcher';
+export const BEPINEX_PATCHER_MOD_TYPE = 'bepinex-patcher';
 
 /**
  * Utility function to determine whether BepInEx is installed via the Vortex API.
@@ -57,7 +55,7 @@ export const BEPINEX_PATCHER_MODTYPE = 'bepinex-patcher';
  * @returns True if BepInEx is installed, false otherwise. Always returns false if BepInEx was not installed via Vortex.
  */
 export const isBepInExInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => mod.type === BEPINEX_INJECTOR_MODTYPE);
+    getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
 
 /**
  * Utility function to validate the BepInEx installation and notify the user of any issues.
@@ -69,7 +67,7 @@ export const validateBepInEx = async (api: IExtensionApi) => {
         case 'experimental':
         case 'stable':
             if (!isBepInExInstalled(api)) {
-                api.sendNotification!({
+                api.sendNotification?.({
                     id: 'bepinex-missing',
                     type: 'warning',
                     title: api.translate('{{bepinex}} not installed', TRANSLATION_OPTIONS),
