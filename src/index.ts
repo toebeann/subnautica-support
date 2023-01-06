@@ -1,6 +1,7 @@
-import packageJson, { version } from '../package.json';
-import { EXTENSION_ID, GAME_EXE } from './constants';
-import { getDiscovery, getGameVersion, getModPath, getMods } from './utils';
+import { join } from 'path';
+import { version } from '../package.json';
+import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS } from './constants';
+import { getDiscovery, getGameVersion, getModPath } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
@@ -16,16 +17,15 @@ import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, SteamBetaBranch, getBranch } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
-import { major } from 'semver';
+import { major, prerelease } from 'semver';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
 import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
-import { BEPINEX_MOD_PATH } from './bepinex';
-import { QMM_MOD_PATH } from './qmodmanager';
-import { join } from 'path';
+import { BEPINEX_MOD_PATH, validateBepInEx } from './bepinex';
+import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
-store.isFake(true); // TODO: remove this when finished testing
+store.isFake(['alpha', 'beta', 'dev'].includes(prerelease(version)?.[0].toString() ?? ''));
 
 export default function main(context: IExtensionContext): boolean {
     // register Subnautica with Vortex
@@ -70,7 +70,6 @@ export default function main(context: IExtensionContext): boolean {
         });
     });
 
-    // TODO: register installers and modtypes
     registerModTypeBepInEx5(context);
     registerModTypeBepInEx6(context);
     registerModTypeQModManager4(context);
@@ -123,12 +122,12 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
 const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     await showSubnautica2InfoDialog(api);
     await validateBranch(api, discovery);
-    // TODO: validate QMM & BepInEx and warn user if appropriate
+    await Promise.all([validateQModManager(api), validateBepInEx(api)]);
 }
 
 const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     await validateBranch(api, discovery);
-    // TODO: validate QMM & BepInEx and warn user if appropriate
+    await Promise.all([validateQModManager(api), validateBepInEx(api)]);
 }
 
 const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
@@ -141,15 +140,15 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
         api.sendNotification?.({
             id: 'subnautica-branch',
             type: 'info',
-            message: api.translate(`Detected Subnautica branch: ${currentBranch}`),
+            message: api.translate(`Detected {{subnautica}} branch: {{${currentBranch}}}`, TRANSLATION_OPTIONS),
             allowSuppress: true,
             // TODO: add action to open dialog for more information
         });
 
         // TODO: remove this dialog when finished testing
-        await api.showDialog?.('info', 'Subnautica Mods', {
-            text: JSON.stringify(packageJson, null, 2)
-        }, [{ label: 'OK' }]);
+        // await api.showDialog?.('info', 'Subnautica Mods', {
+        //     text: JSON.stringify(packageJson, null, 2)
+        // }, [{ label: 'OK' }]);
 
         await setup(api, discovery);
     }

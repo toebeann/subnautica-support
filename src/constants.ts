@@ -28,7 +28,7 @@ export const TRANSLATION_OPTIONS = {
         qmodmanager: 'QModManager',
         qmm: 'QMM',
         qmods: 'QMods',
-        legacy: 'Legacy',
+        legacy: 'legacy',
         stable: 'stable',
         experimental: 'experimental',
         'living-large': 'Living Large',
