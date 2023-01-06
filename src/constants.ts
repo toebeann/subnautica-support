@@ -1,7 +1,7 @@
 /**
  * Internal extension id used for namespacing of session/localStorage keys.
  */
-export const EXTENSION_ID = 'me.tobey.game-subnautica';
+export const EXTENSION_ID = 'me.tobey.vortex.subnautica-support';
 
 /**
  * Name of the game.
