@@ -1,80 +1,75 @@
 import { join } from 'path';
 import { store } from '.';
 import { TRANSLATION_OPTIONS } from './constants';
-import { getDiscovery } from './utils';
+import { getMods } from './utils';
 import { SteamBetaBranch } from './platforms/steam';
-import { fs, util } from 'vortex-api';
-import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
+import { util } from 'vortex-api';
+import { IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
- * URL to the BepInEx page on Nexus Mods
+ * URL to the BepInEx page on Nexus Mods.
  */
 export const BEPINEX_URL = 'https://www.nexusmods.com/subnautica/mods/1108';
 /**
- * BepInEx directory name
+ * BepInEx directory name.
  */
 export const BEPINEX_DIR = 'BepInEx';
 /**
- * BepInEx core directory name
+ * BepInEx core directory name.
  */
 export const BEPINEX_CORE_DIR = 'core';
 /**
- * BepInEx plugins directory name
+ * BepInEx plugins directory name.
  */
 export const BEPINEX_PLUGINS_DIR = 'plugins';
 /**
- * BepInEx patchers directory name
+ * BepInEx patchers directory name.
  */
 export const BEPINEX_PATCHERS_DIR = 'patchers';
 /**
- * Path to the BepInEx plugins directory relative to the game directory
+ * Path to the BepInEx plugins directory relative to the game directory.
  */
 export const BEPINEX_MOD_PATH = join(BEPINEX_DIR, BEPINEX_PLUGINS_DIR);
 /**
- * Core BepInEx filename
+ * Core BepInEx filename.
  */
 export const BEPINEX_DLL = 'BepInEx.dll';
+/**
+ * BepInEx injector mod type.
+ */
+export const BEPINEX_INJECTOR_MODTYPE = 'bepinex-injector';
+/**
+ * BepInEx Root mod type.
+ */
+export const BEPINEX_ROOT_MODTYPE = 'bepinex-root';
+/**
+ * BepInEx plugin mod type.
+ */
+export const BEPINEX_PLUGIN_MODTYPE = 'bepinex-plugin';
+/**
+ * BepInEx patcher mod type.
+ */
+export const BEPINEX_PATCHER_MODTYPE = 'bepinex-patcher';
 
 /**
- * Asynchronously determines whether BepInEx is installed
+ * Utility function to determine whether BepInEx is installed via the Vortex API.
  * @param api 
- * @param discovery 
- * @returns True if BepInEx is installed, false otherwise
- * @throws Error if the Subnatica game path has not been discovered
+ * @returns True if BepInEx is installed, false otherwise. Always returns false if BepInEx was not installed via Vortex.
  */
-export const isBepInExInstalled = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
-    // TODO: Refactor to check if BepInEx is installed via the Vortex API based on mod type. Make sure to update doc comments to reflect this change.
-    if (discovery?.path) {
-        try {
-            await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_DLL));
-            return true;
-        } catch {
-            return false;
-        }
-    } else {
-        throw new Error('Game not discovered');
-    }
-}
+export const isBepInExInstalled = (api: IExtensionApi) =>
+    getMods(api, true).some(mod => mod.type === BEPINEX_INJECTOR_MODTYPE);
 
 /**
- * Utility function to validate the BepInEx installation and notify the user of any issues
+ * Utility function to validate the BepInEx installation and notify the user of any issues.
  * @param api 
  * @param discovery 
  */
-export const validateBepInEx = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
-    let bepinexInstalled;
-    try {
-        bepinexInstalled = await isBepInExInstalled(api, discovery);
-    } catch {
-        // TODO: Display warning about game not discovered
-        return;
-    }
-
+export const validateBepInEx = async (api: IExtensionApi) => {
     const branch = store('branch') as SteamBetaBranch;
     switch (branch) {
         case 'experimental':
         case 'stable':
-            if (!bepinexInstalled) {
+            if (!isBepInExInstalled(api)) {
                 api.sendNotification!({
                     id: 'bepinex-missing',
                     type: 'warning',
@@ -95,7 +90,7 @@ export const validateBepInEx = async (api: IExtensionApi, discovery: IDiscoveryR
             }
             break;
         default:
-            if (bepinexInstalled) {
+            if (isBepInExInstalled(api)) {
                 // TODO: Display warning about BepInEx being installed on legacy branch
             }
             break;
