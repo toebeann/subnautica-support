@@ -68,6 +68,8 @@ export default function main(context: IExtensionContext): boolean {
 
             await didDeploy(context.api);
         });
+
+        // TODO: implement a way to react to when the currently used store changes so that we can then enable/disable chokidar steam manifest watching
     });
 
     registerModTypeBepInEx5(context);
@@ -140,7 +142,8 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
         api.sendNotification?.({
             id: 'subnautica-branch',
             type: 'info',
-            message: api.translate(`Detected {{subnautica}} branch: {{${currentBranch}}}`, TRANSLATION_OPTIONS),
+            title: api.translate('{{game}} beta branch changed', TRANSLATION_OPTIONS),
+            message: api.translate(`Detected branch: {{${currentBranch}}}`, TRANSLATION_OPTIONS),
             allowSuppress: true,
             // TODO: add action to open dialog for more information
         });
