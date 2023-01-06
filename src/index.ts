@@ -1,8 +1,5 @@
-import { join } from 'path';
 import { EXTENSION_ID, GAME_EXE } from './constants';
-import { BEPINEX_MOD_PATH } from './bepinex';
-import { QMM_MOD_PATH } from './qmodmanager';
-import { getDiscovery, getGameVersion } from './utils';
+import { getDiscovery, getGameVersion, getModPath } from './utils';
 import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, getBranch } from './platforms/steam';
@@ -23,9 +20,7 @@ export default function main(context: IExtensionContext): boolean {
         name: 'Subnautica',
         logo: 'gameart.jpg',
         mergeMods: true,
-        queryModPath: (gamePath) => join(gamePath, store('branch') === 'legacy'
-            ? QMM_MOD_PATH
-            : BEPINEX_MOD_PATH),
+        queryModPath: getModPath,
         executable: () => GAME_EXE,
         requiredFiles: [GAME_EXE],
         environment: { SteamAPPId: STEAM_GAME_ID },
@@ -96,8 +91,8 @@ export default function main(context: IExtensionContext): boolean {
  */
 const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     if (discovery?.path) {
-        const branch = await getBranch(api, discovery);
-        const modPath = join(discovery.path, branch === 'legacy' ? QMM_MOD_PATH : BEPINEX_MOD_PATH);
+        await validateBranch(api, discovery);
+        const modPath = getModPath(discovery.path);
         await fs.ensureDirWritableAsync(modPath);
     }
 };
