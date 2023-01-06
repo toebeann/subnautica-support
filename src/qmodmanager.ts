@@ -54,7 +54,7 @@ export const isQMMInstalled = async (api: IExtensionApi, discovery: IDiscoveryRe
     } else {
         throw new Error('Game not discovered');
     }
-};
+}
 
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues
@@ -98,4 +98,4 @@ export const validateQMM = async (api: IExtensionApi, discovery: IDiscoveryResul
             }
             break;
     }
-};
+}

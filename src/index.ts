@@ -95,7 +95,7 @@ const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined
         const modPath = getModPath(discovery.path);
         await fs.ensureDirWritableAsync(modPath);
     }
-};
+}
 
 const requiresLauncher = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): ReturnType<Required<IGame>['requiresLauncher']> => {
     const getResult = async (storeId?: string, gameStoreEntry?: IGameStoreEntry) => {
