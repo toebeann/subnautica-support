@@ -71,7 +71,7 @@ export const validateBepInEx = async (api: IExtensionApi) => {
                     id: 'bepinex-missing',
                     type: 'warning',
                     title: api.translate('{{bepinex}} not installed', TRANSLATION_OPTIONS),
-                    message: api.translate('{{bepinex}} is required to mod Subnautica since the 2.0 update.', TRANSLATION_OPTIONS),
+                    message: api.translate('Since the {{game}} 2.0 update, {{bepinex}} is required.', TRANSLATION_OPTIONS),
                     actions: [
                         {
                             title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS),

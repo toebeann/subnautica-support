@@ -1,4 +1,5 @@
 import { store } from '.';
+import { TRANSLATION_OPTIONS } from './constants';
 import { getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
 import { SteamBetaBranch } from './platforms/steam';
@@ -65,8 +66,8 @@ export const validateQModManager = async (api: IExtensionApi) => {
                 api.sendNotification?.({
                     id: 'qmodmanager-missing',
                     type: 'warning',
-                    title: api.translate('QModManager not installed'),
-                    message: api.translate('QMM is required to mod Subnautica on the legacy branch.'),
+                    title: api.translate('{{qmodmanager}} not installed', TRANSLATION_OPTIONS),
+                    message: api.translate('On the legacy branch of {{game}}, {{qmodmanager}} is required.', TRANSLATION_OPTIONS),
                     actions: [
                         {
                             title: api.translate('Get QMM'),
