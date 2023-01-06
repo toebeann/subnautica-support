@@ -3,12 +3,12 @@ import { util } from 'vortex-api';
 import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
- * Steam game id for Subnautica
+ * Steam game id for Subnautica.
  */
 export const STEAM_GAME_ID = '264710';
 
 /**
- * Steam beta branches for Subnautica
+ * Steam beta branches for Subnautica.
  */
 export const STEAM_BETA_BRANCHES = [
     /**
@@ -23,16 +23,16 @@ export const STEAM_BETA_BRANCHES = [
      * Experimental branch. Listed as 'experimental' in the manifest. Only available on Steam.
      */
     'experimental'
-] as const; // steam beta branches
+] as const;
 
 /**
- * Steam beta branches for Subnautica
+ * Steam beta branches for Subnautica.
  */
 export type SteamBetaBranch = typeof STEAM_BETA_BRANCHES[number];
 
 /**
- * Steam app manifest
- * Note: This does not contain all the properties of the manifest, only the ones we need
+ * Steam app manifest.
+ * Note: This does not contain all the properties of the manifest, only the ones we need.
  */
 export interface SteamAppManifest {
     "AppState": {
@@ -46,7 +46,7 @@ export interface SteamAppManifest {
 }
 
 /**
- * Asynchronously retrieves the current beta branch for Subnautica
+ * Asynchronously retrieves the current beta branch for Subnautica.
  * @param api 
  * @param discovery 
  * @returns The current beta branch for Subnautica. Returns 'stable' if the game is not discovered on Steam.
