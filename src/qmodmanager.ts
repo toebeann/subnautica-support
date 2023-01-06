@@ -1,8 +1,8 @@
 import { store } from '.';
-import { getDiscovery, getMods } from './utils';
+import { getMods } from './utils';
 import { SteamBetaBranch } from './platforms/steam';
 import { util } from 'vortex-api';
-import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
+import { IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
  * URL to the QModManager page on Nexus Mods.
@@ -64,9 +64,8 @@ export const isQModManagerInstalled = (api: IExtensionApi) =>
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues.
  * @param api 
- * @param discovery 
  */
-export const validateQModManager = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
             if (!isQModManagerInstalled(api)) {
