@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { store } from './';
+import { store } from '.';
 import { BEPINEX_PLUGINS_DIR, BEPINEX_DIR } from './bepinex';
 import { getDiscovery } from './utils';
 import { SteamBetaBranch } from './platforms/steam';

@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { store } from './';
+import { store } from '.';
 import { TRANSLATION_OPTIONS } from './constants';
 import { getDiscovery } from './utils';
 import { SteamBetaBranch } from './platforms/steam';
