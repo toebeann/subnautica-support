@@ -72,37 +72,14 @@ export default function main(context: IExtensionContext): boolean {
     registerModTypeBepInExPlugin(context);
     registerModTypeBepInExPatcher(context);
     registerModTypeBepInExMixed(context);
+    // TODO: register mod types for QMM mods, QMM addons and CC2 mods
 
     registerInstallerBepInEx(context);
     registerInstallerQModManager(context);
     registerInstallerBepInExPlugin(context);
     registerInstallerBepInExPatcher(context);
     registerInstallerBepInExMixed(context);
-
-    // context.registerInstaller('subnautica-qmm-installer', 25, testQMM, files => installQMM(files, context.api));
-    // context.registerInstaller('subnautica-qmm-mod-installer', 25, testQMMMod, installQMMMod);
-    // context.registerInstaller('subnautica-addon-installer', 25, testAddon, installAddon);
-    // context.registerInstaller('subnautica-cc2-mod-installer', 25, testCC2Mod, installCC2Mod);
-    // context.registerInstaller('bepinex-root-installer', 25, testBIXRoot, installBIXRoot);
-
-    // context.once(() => {
-    //     if (context.api.ext.bepinexAddGame !== undefined) {
-    //         context.api.ext.bepinexAddGame({
-    //             gameId: SUBNAUTICA_ID,
-    //             autoDownloadBepInEx: true,
-    //             customPackDownloader: () => {
-    //                 return {
-    //                     gameId: SUBNAUTICA_ID,
-    //                     domainId: SUBNAUTICA_ID,
-    //                     modId: '1108',
-    //                     fileId: '4269',
-    //                     archiveName: 'BepInEx_x64_5.4.21.0.zip',
-    //                     allowAutoInstall: false
-    //                 };
-    //             }
-    //         });
-    //     }
-    // });
+    // TODO: register installers for QMM mods, QMM addons and CC2 mods
 
     return true;
 }
@@ -202,62 +179,6 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
         }
     }
 }
-
-// async function testBIXRoot(files: string[], gameId: string): Promise<types.ISupportedResult> {
-//     return {
-//         supported: gameId === SUBNAUTICA_ID && files.some(file => file.split(sep)[0] === 'BepInEx'),
-//         requiredFiles: []
-//     }
-// }
-
-// async function installBIXRoot(files: string[]): Promise<types.IInstallResult> {
-//     return {
-//         instructions: [
-//             ...files
-//                 .filter(file => !file.endsWith(sep)) // filter out directories
-//                 .map((file): types.IInstruction => {
-//                     return {
-//                         type: 'copy',
-//                         source: file,
-//                         destination: file
-//                     };
-//                 }),
-//             {
-//                 type: 'setmodtype',
-//                 value: 'dinput'
-//             }
-//         ]
-//     }
-// }
-
-// async function testQMM(files: string[], gameId: string): Promise<types.ISupportedResult> {
-//     return {
-//         supported: gameId === SUBNAUTICA_ID && files.some(file => basename(file).toLowerCase() === QMM_DLL.toLowerCase()),
-//         requiredFiles: []
-//     };
-// }
-
-// async function installQMM(files: string[], api: types.IExtensionApi): Promise<types.IInstallResult> {
-//     api.dismissNotification?.('qmm-missing');
-
-//     return {
-//         instructions: [
-//             ...files
-//                 .filter(file => !file.endsWith(sep)) // filter out directories
-//                 .map((file): types.IInstruction => {
-//                     return {
-//                         type: 'copy',
-//                         source: file,
-//                         destination: file
-//                     };
-//                 }),
-//             {
-//                 type: 'setmodtype',
-//                 value: 'dinput' // set mod type as dinput so the files are installed to the game root folder
-//             }
-//         ]
-//     };
-// }
 
 // async function testQMMMod(files: string[], gameId: string): Promise<types.ISupportedResult> {
 //     const modFiles = files.filter(file => basename(file).toLowerCase() === QMM_MOD_FILE);
