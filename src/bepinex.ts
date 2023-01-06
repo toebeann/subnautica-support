@@ -62,7 +62,6 @@ export const isBepInExInstalled = (api: IExtensionApi) =>
 /**
  * Utility function to validate the BepInEx installation and notify the user of any issues.
  * @param api 
- * @param discovery 
  */
 export const validateBepInEx = async (api: IExtensionApi) => {
     const branch = store('branch') as SteamBetaBranch;
