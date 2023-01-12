@@ -28,11 +28,11 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
 
     return {
         instructions: [
-            ...files.filter(file => !file.endsWith(sep)).map((file): IInstruction => {
+            ...files.filter(file => !file.endsWith(sep)).map((source): IInstruction => {
                 return {
                     type: 'copy',
-                    source: file,
-                    destination: file
+                    source,
+                    destination: source
                 }
             })
         ]

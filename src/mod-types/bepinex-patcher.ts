@@ -32,12 +32,9 @@ export const test = async (installInstructions: IInstruction[]): Promise<boolean
     const copy = installInstructions.filter(instruction => instruction.type === 'copy');
     const copyDestinationsLowerCase = copy.filter(instruction => instruction.destination)
         .map(instruction => instruction.destination!.toLowerCase());
-    const sourceDirs = copy.filter(instruction => instruction.source)
-        .map(instruction => dirname(instruction.source!).toLowerCase().split(sep));
-    const index = sourceDirs[0]?.indexOf(BEPINEX_PATCHERS_DIR.toLowerCase());
+    const destinationDirs = copyDestinationsLowerCase.map(dest => dirname(dest).split(sep));
     return copyDestinationsLowerCase.some(dest => extname(dest) === '.dll')
-        && sourceDirs[0]?.includes(BEPINEX_PATCHERS_DIR.toLowerCase())
-        && sourceDirs.every(segments => segments.indexOf(BEPINEX_PATCHERS_DIR.toLowerCase()) === index);
+        && destinationDirs.every(segments => segments.indexOf(BEPINEX_PATCHERS_DIR.toLowerCase()) === 0);
 }
 
 /**

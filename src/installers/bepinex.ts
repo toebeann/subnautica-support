@@ -1,4 +1,4 @@
-import { extname, join, sep } from 'path';
+import { join, sep } from 'path';
 import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH } from '../bepinex';
 import { QMM_DIR } from '../qmodmanager';
 import { BEPINEX_5_CORE_DLL } from '../mod-types/bepinex-5';
@@ -19,7 +19,7 @@ export const BEPINEX_INJECTOR_CORE_FILES = ['0Harmony.dll', 'Mono.Cecil.dll', 'M
  * @returns 
  */
 export const testSupported: TestSupported = async (files, gameId) => {
-    const filesLowerCase = files.filter(file => extname(file).length > 0).map(file => file.toLowerCase());
+    const filesLowerCase = files.filter(file => !file.endsWith(sep)).map(file => file.toLowerCase());
     return {
         requiredFiles: [],
         supported: gameId === NEXUS_GAME_ID
@@ -42,11 +42,11 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
 
     return {
         instructions: [
-            ...files.filter(file => extname(file).length > 0).map((file): IInstruction => {
+            ...files.filter(file => !file.endsWith(sep)).map((source): IInstruction => {
                 return {
                     type: 'copy',
-                    source: file,
-                    destination: file
+                    source,
+                    destination: source
                 }
             })
         ]
