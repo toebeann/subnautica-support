@@ -32,7 +32,7 @@ devDependencies:
   store2: 2.14.2
   ts-loader: 8.4.0_ad6xlx6c2kce7qmj5vxus5gywi
   typescript: 4.9.4
-  vortex-api: github.com/Nexus-Mods/vortex-api/003b1df22becf3de6a95dd7ea24212ff872ed470
+  vortex-api: github.com/Nexus-Mods/vortex-api/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a
   webpack: 4.46.0_webpack-cli@3.3.12
   webpack-cli: 3.3.12_webpack@4.46.0
 
@@ -3979,10 +3979,10 @@ packages:
       - supports-color
     dev: true
 
-  github.com/Nexus-Mods/vortex-api/003b1df22becf3de6a95dd7ea24212ff872ed470:
-    resolution: {tarball: https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/003b1df22becf3de6a95dd7ea24212ff872ed470}
+  github.com/Nexus-Mods/vortex-api/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a:
+    resolution: {tarball: https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a}
     name: vortex-api
-    version: 1.8.0-r1
+    version: 1.8.0-r2
     hasBin: true
     dev: true
 
