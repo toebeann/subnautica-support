@@ -1,5 +1,7 @@
+import { dirname, join } from 'path';
 import { getDiscovery } from '../utils';
-import { util } from 'vortex-api';
+import parseAcf from 'steam-acf-parser';
+import { fs } from 'vortex-api';
 import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
 /**
@@ -31,17 +33,27 @@ export const STEAM_BETA_BRANCHES = [
 export type SteamBetaBranch = typeof STEAM_BETA_BRANCHES[number];
 
 /**
- * Steam app manifest.
- * Note: This does not contain all the properties of the manifest, only the ones we need.
+ * Retrieves the steam app manifest path
+ * @param api 
+ * @param discovery 
+ * @returns 
  */
-export interface SteamAppManifest {
-    "AppState": {
-        "UserConfig": {
-            "BetaKey": string;
-        }
-        "MountedConfig": {
-            "BetaKey": string;
-        }
+export const getManifestPath = (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): string | void =>
+    discovery?.path && discovery?.store === 'steam'
+        ? join(dirname(dirname(discovery.path)), `appmanifest_${STEAM_GAME_ID}.acf`)
+        : undefined;
+
+/**
+ * Asynchronously retrieves the steam app manifest for Subnautica.
+ * @param api 
+ * @param discovery 
+ * @returns 
+ */
+export const getManifest = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+    const path = getManifestPath(api, discovery);
+    if (path) {
+        const data = await fs.readFileAsync(getManifestPath(api, discovery), { encoding: 'utf-8' });
+        return parseAcf(data);
     }
 }
 
@@ -54,9 +66,15 @@ export interface SteamAppManifest {
 export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): Promise<SteamBetaBranch> => {
     switch (discovery?.store) {
         case 'steam':
-            const entry = await util.GameStoreHelper.findByAppId([STEAM_GAME_ID], discovery.store);
-            if ('manifestData' in entry) {
-                return getBranchFromManifest(entry.manifestData);
+            if (!discovery.path) {
+                return 'stable';
+            }
+
+            const manifest = await getManifest(api, discovery);
+            if (manifest) {
+                return getBranchFromManifest(manifest);
+            } else {
+                return 'stable';
             }
         default: // at present, steam is the only platform that supports beta branches
             return 'stable';
@@ -68,9 +86,9 @@ export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult 
  * @param manifest 
  * @returns The current beta branch for Subnautica. Returns 'stable' if the manifest does not contain a valid beta branch.
  */
-export const getBranchFromManifest = (manifest: SteamAppManifest): SteamBetaBranch => {
+export const getBranchFromManifest = (manifest: parseAcf.AcfData): SteamBetaBranch => {
     const { UserConfig, MountedConfig } = manifest.AppState;
-    const branch = (UserConfig.BetaKey || MountedConfig.BetaKey) as SteamBetaBranch;
+    const branch = (MountedConfig.BetaKey || UserConfig.BetaKey) as SteamBetaBranch;
     return STEAM_BETA_BRANCHES.includes(branch)
         ? branch
         : 'stable';
