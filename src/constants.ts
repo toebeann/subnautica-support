@@ -30,7 +30,9 @@ export const TRANSLATION_OPTIONS = {
         qmods: 'QMods',
         legacy: 'legacy',
         stable: 'stable',
+        steam: 'Steam',
         experimental: 'experimental',
         'living-large': 'Living Large',
+        'br': '<br/>',
     },
 } as const;

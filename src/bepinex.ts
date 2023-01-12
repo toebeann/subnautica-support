@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { store } from '.';
 import { TRANSLATION_OPTIONS } from './constants';
+import { QMM_URL } from './qmodmanager';
 import { getMods } from './utils';
 import { BEPINEX_5_MOD_TYPE } from './mod-types/bepinex-5';
 import { BEPINEX_6_MOD_TYPE } from './mod-types/bepinex-6';
@@ -79,7 +80,29 @@ export const validateBepInEx = async (api: IExtensionApi) => {
             break;
         default:
             if (isBepInExInstalled(api)) {
-                // TODO: Display warning about BepInEx being installed on legacy branch
+                if (!store('suppress-bepinex-legacy-dialog')) {
+                    const bbcode = api.translate('{{bepinex}} appears to be installed on the {{legacy}} branch of {{game}}.{{br}}{{br}}' +
+                        'Please be aware that {{bepinex}} is not intended for use on the {{legacy}} branch, and mods made for {{bepinex}} are unlikely to work on this branch.{{br}}{{br}}' +
+                        'It is advised to uninstall {{bepinex}} and instead install {{qmodmanager}}.', TRANSLATION_OPTIONS);
+                    const result = await api.showDialog?.('error', api.translate('{{bepinex}} installed on {{legacy}} branch', TRANSLATION_OPTIONS), {
+                        bbcode,
+                        checkboxes: [
+                            {
+                                id: 'suppress-bepinex-legacy-dialog',
+                                text: api.translate('I understand, don\'t show this message again.', TRANSLATION_OPTIONS),
+                                value: false
+                            }
+                        ]
+                    }, [
+                        { label: api.translate('Get {{qmodmanager}}', TRANSLATION_OPTIONS), action: () => util.opn(QMM_URL) },
+                        { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+                        { label: api.translate('Close', TRANSLATION_OPTIONS) }
+                    ], 'bepinex-legacy-dialog');
+
+                    if (result) {
+                        store('suppress-bepinex-legacy-dialog', result.input['suppress-bepinex-legacy-dialog']);
+                    }
+                }
             }
             break;
     }
