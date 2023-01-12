@@ -50,7 +50,7 @@ export const test = async (installInstructions: IInstruction[]): Promise<boolean
 export const register = (context: IExtensionContext) =>
     context.registerModType(
         QMM_MOD_MOD_TYPE,
-        90,
+        80,
         isSupported,
         (game: IGame) => getPath(context.api, game),
         test,
