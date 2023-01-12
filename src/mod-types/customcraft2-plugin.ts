@@ -1,4 +1,4 @@
-import { basename, dirname, extname, join, sep } from 'path';
+import { basename, dirname, sep } from 'path';
 import { getDiscovery, getModPath } from '../utils';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
