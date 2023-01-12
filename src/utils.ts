@@ -50,7 +50,7 @@ export const getDiscovery = (api: IExtensionApi, gameId: string = NEXUS_GAME_ID)
  * @param gamePath The path to the Subnautica game directory.
  * @returns The path to the mods directory. If the current beta branch is unknown, the path to the BepInEx plugins directory is returned.
  */
-export const getModPath = (gamePath: string): string => join(gamePath, store('branch') === 'legacy' ? QMM_MOD_PATH : BEPINEX_MOD_PATH);
+export const getModPath = (gamePath: string = ''): string => join(gamePath, store('branch') === 'legacy' ? QMM_MOD_PATH : BEPINEX_MOD_PATH);
 
 /**
  * Utility function to retrieve a list of mods for the specified game from the Vortex API.
