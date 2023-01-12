@@ -1,28 +1,36 @@
 import { join } from 'path';
 import { version } from '../package.json';
+import { BEPINEX_MOD_PATH, validateBepInEx } from './bepinex';
 import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS } from './constants';
+import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 import { getDiscovery, getGameVersion, getModPath } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
 import registerInstallerBepInExPlugin from './installers/bepinex-plugin';
+import registerInstallerCustomCraft2Plugin from './installers/customcraft2-plugin';
+import registerInstallerMrPurple6411AddonPack from './installers/mrpurple6411-addon-pack';
 import registerInstallerQModManager from './installers/qmodmanager';
+import registerInstallerQModManagerMod from './installers/qmodmanager-mod';
 import registerModTypeBepInEx5 from './mod-types/bepinex-5';
 import registerModTypeBepInEx6 from './mod-types/bepinex-6';
 import registerModTypeBepInExMixed from './mod-types/bepinex-mixed';
 import registerModTypeBepInExPatcher from './mod-types/bepinex-patcher';
 import registerModTypeBepInExPlugin from './mod-types/bepinex-plugin';
+import registerModTypeCustomCraft2Plugin from './mod-types/customcraft2-plugin';
+import registerModTypeCustomHullPlatesPack from './mod-types/customhullplates-pack';
+import registerModTypeCustomPostersPack from './mod-types/customposters-pack';
 import registerModTypeQModManager4 from './mod-types/qmodmanager-4';
+import registerModTypeQModManagerMod from './mod-types/qmodmanager-mod';
 import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { STEAM_GAME_ID, SteamBetaBranch, getBranch } from './platforms/steam';
+import { STEAM_GAME_ID, SteamBetaBranch, getBranch, getManifestPath } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
+import { watch } from 'chokidar';
 import { major, prerelease } from 'semver';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
 import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
-import { BEPINEX_MOD_PATH, validateBepInEx } from './bepinex';
-import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
 store.isFake(['alpha', 'beta', 'dev'].includes(prerelease(version)?.[0].toString() ?? ''));
@@ -78,14 +86,19 @@ export default function main(context: IExtensionContext): boolean {
     registerModTypeBepInExPlugin(context);
     registerModTypeBepInExPatcher(context);
     registerModTypeBepInExMixed(context);
-    // TODO: register mod types for QMM mods, QMM addons and CC2 mods
+    registerModTypeQModManagerMod(context);
+    registerModTypeCustomHullPlatesPack(context);
+    registerModTypeCustomPostersPack(context);
+    registerModTypeCustomCraft2Plugin(context);
 
     registerInstallerBepInEx(context);
     registerInstallerQModManager(context);
     registerInstallerBepInExPlugin(context);
     registerInstallerBepInExPatcher(context);
     registerInstallerBepInExMixed(context);
-    // TODO: register installers for QMM mods, QMM addons and CC2 mods
+    registerInstallerQModManagerMod(context);
+    registerInstallerMrPurple6411AddonPack(context);
+    registerInstallerCustomCraft2Plugin(context);
 
     return true;
 }
@@ -122,6 +135,18 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
 }
 
 const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+    const manifest = getManifestPath(api, discovery);
+    const watcher = manifest ? watch(manifest) : undefined;
+
+    if (watcher) {
+        watcher.on('change', async () => {
+            await validateBranch(api);
+            await Promise.all([validateQModManager(api), validateBepInEx(api)]);
+        });
+
+        api.events.once('gamemode-activated', () => watcher.close());
+    }
+
     await showSubnautica2InfoDialog(api);
     await validateBranch(api, discovery);
     await Promise.all([validateQModManager(api), validateBepInEx(api)]);
@@ -150,7 +175,7 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
 
         // TODO: remove this dialog when finished testing
         // await api.showDialog?.('info', 'Subnautica Mods', {
-        //     text: JSON.stringify(packageJson, null, 2)
+        //     text: JSON.stringify(null, null, 2)
         // }, [{ label: 'OK' }]);
 
         await setup(api, discovery);
@@ -186,124 +211,3 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
         }
     }
 }
-
-// async function testQMMMod(files: string[], gameId: string): Promise<types.ISupportedResult> {
-//     const modFiles = files.filter(file => basename(file).toLowerCase() === QMM_MOD_FILE);
-//     if (modFiles.length > 1) {
-//         log('error', 'Archive contains multiple mods and is not supported', modFiles);
-//     }
-
-//     return {
-//         supported: gameId === SUBNAUTICA_ID && modFiles.length === 1,
-//         requiredFiles: []
-//     };
-// }
-
-// async function installQMMMod(files: string[], destinationPath: string): Promise<types.IInstallResult> {
-//     const modFile = files.find(file => basename(file).toLowerCase() === QMM_MOD_FILE);
-
-//     if (!modFile) {
-//         throw new util.DataInvalid('Not a QModManager mod.');
-//     }
-
-//     const rootPath = dirname(modFile);
-//     const name = await getQMMModName(modFile, destinationPath);
-//     const index = modFile.indexOf(QMM_MOD_FILE);
-
-//     return {
-//         instructions: files.filter(file => !file.endsWith(sep) && file.indexOf(rootPath) !== 1).map((file): types.IInstruction => {
-//             return {
-//                 type: 'copy',
-//                 source: file,
-//                 destination: join(name, file.substring(index))
-//             };
-//         })
-//     };
-// }
-
-// async function getQMMModName(modFile: string, destinationPath: string): Promise<string> {
-//     const folder = basename(dirname(modFile));
-
-//     if (folder !== '.') {
-//         return folder;
-//     }
-
-//     try {
-//         const path = join(destinationPath, modFile);
-//         const data = rjson.parse(util.deBOM(await fs.readFileAsync(path, { encoding: 'utf-8' }))) as { Id: string };
-//         return data.Id;
-//     } catch {
-//         throw new util.DataInvalid(`Failed to parse ${QMM_MOD_FILE}.`);
-//     }
-// }
-
-// async function testAddon(files: string[], gameId: string): Promise<types.ISupportedResult> {
-//     return {
-//         supported: gameId === SUBNAUTICA_ID && files.some(file => basename(file).toLowerCase() === ADDON_FILE),
-//         requiredFiles: []
-//     };
-// }
-
-// async function installAddon(files: string[], destinationPath: string): Promise<types.IInstallResult> {
-//     const addonFiles = files.filter(file => basename(file).toLowerCase() === ADDON_FILE);
-
-//     if (addonFiles.length < 1) {
-//         throw new util.DataInvalid('No addons found in archive.');
-//     }
-
-//     return {
-//         instructions: (await Promise.all(addonFiles.map(async (addonFile) => {
-//             const parentFolder = dirname(addonFile);
-//             const addonFolder = await getAddonFolder(addonFile, destinationPath);
-//             const index = addonFile.indexOf(ADDON_FILE);
-
-//             return files.filter(file => !file.endsWith(sep) && file.startsWith(parentFolder)).map((file): types.IInstruction => {
-//                 return {
-//                     type: 'copy',
-//                     source: file,
-//                     destination: join(addonFolder, basename(parentFolder), file.substring(index))
-//                 }
-//             });
-//         }))).flat()
-//     };
-// }
-
-// async function getAddonFolder(addonFile: string, destinationPath: string): Promise<string> {
-//     try {
-//         const path = join(destinationPath, addonFile);
-//         const data = rjson.parse(util.deBOM(await fs.readFileAsync(path, { encoding: 'utf-8' }))) as { Orientation: string }
-
-//         return !!data.Orientation
-//             ? join('CustomPosters', 'Posters')
-//             : join('CustomHullPlates', 'HullPlates');
-//     } catch {
-//         throw new util.DataInvalid(`Failed to parse ${ADDON_FILE}.`);
-//     }
-// }
-
-// async function testCC2Mod(files: string[], gameId: string): Promise<types.ISupportedResult> {
-//     return {
-//         supported: gameId === SUBNAUTICA_ID && files.some(file => file.endsWith(`${CC2_FOLDER}${sep}`)),
-//         requiredFiles: []
-//     };
-// }
-
-// async function installCC2Mod(files: string[]): Promise<types.IInstallResult> {
-//     const cc2Folder = files.find(file => file.endsWith(`${CC2_FOLDER}${sep}`));
-
-//     if (!cc2Folder) {
-//         throw new util.DataInvalid('Unrecognised or invalid Subnautica mod.');
-//     }
-
-//     const index = cc2Folder.indexOf(CC2_FOLDER);
-
-//     return {
-//         instructions: files.filter(file => !file.endsWith(sep) && file.includes(CC2_FOLDER)).map((file): types.IInstruction => {
-//             return {
-//                 type: 'copy',
-//                 source: file,
-//                 destination: file.substring(index)
-//             }
-//         })
-//     }
-// }
