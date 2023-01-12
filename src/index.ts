@@ -76,8 +76,6 @@ export default function main(context: IExtensionContext): boolean {
 
             await didDeploy(context.api);
         });
-
-        // TODO: implement a way to react to when the currently used store changes so that we can then enable/disable chokidar steam manifest watching
     });
 
     registerModTypeBepInEx5(context);
