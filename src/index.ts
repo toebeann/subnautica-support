@@ -168,13 +168,7 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             title: api.translate('{{game}} beta branch changed', TRANSLATION_OPTIONS),
             message: api.translate(`Detected branch: {{${currentBranch}}}`, TRANSLATION_OPTIONS),
             allowSuppress: true,
-            // TODO: add action to open dialog for more information
         });
-
-        // TODO: remove this dialog when finished testing
-        // await api.showDialog?.('info', 'Subnautica Mods', {
-        //     text: JSON.stringify(null, null, 2)
-        // }, [{ label: 'OK' }]);
 
         await setup(api, discovery);
     }
@@ -190,19 +184,23 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
         // this is the first time the extension has loaded since updating to v3, so we should
         // show a dialog letting the user know about the changes to Subnautica and etc.
         // and inform them of branch specifics i.e. QMM is only supported on legacy, BepInEx is required for 2.0 & experimental modding, etc.
-        // TODO: show dialog as above ^
-        const result: IDialogResult | undefined = await api.showDialog?.('info', 'Subnautica 2.0 Living Large Update', {
-            bbcode: `Subnautica has been updated to version 2.0, which includes a new game engine and a new modding system.
-                    This update is not backwards compatible with mods for the previous version of Subnautica, so you will need to update your mods to work with the new version of Subnautica.
-                    You can find more information about the update and the new modding system [url=https://subnautica.fandom.com/wiki/Modding]here[/url].`,
+        const title = api.translate('{{game}} 2.0 {{living-large}} Update', TRANSLATION_OPTIONS);
+        const bbcode = api.translate('An update to {{game}} known as the {{living-large}} update or the {{game}} 2.0 update has been released.{{br}}{{br}}' +
+            'This update is incompatible with mods which were made for {{qmodmanager}}. {{bepinex}} is now required for modding moving forward.', TRANSLATION_OPTIONS);
+
+        const result: IDialogResult | undefined = await api.showDialog?.('info', title, {
+            bbcode,
             checkboxes: [
                 {
                     id: 'suppress-subnautica-2.0-info-dialog',
-                    text: 'I understand, don\'t show this message again.',
+                    text: api.translate('I understand, don\'t show this message again.', TRANSLATION_OPTIONS),
                     value: false
                 }
             ]
-        }, [{ label: 'Close' }], 'subnautica-2.0-info-dialog');
+        }, [
+            { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+            { label: api.translate('Close', TRANSLATION_OPTIONS) }
+        ], 'subnautica-2.0-info-dialog');
 
         if (result) {
             store('suppress-subnautica-2.0-info-dialog', result.input['suppress-subnautica-2.0-info-dialog']);

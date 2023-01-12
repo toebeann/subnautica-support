@@ -1,4 +1,5 @@
 import { store } from '.';
+import { BEPINEX_URL } from './bepinex';
 import { TRANSLATION_OPTIONS } from './constants';
 import { getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
@@ -25,7 +26,7 @@ export const QMM_MOD_PATH = 'QMods';
  * @returns True if QModManager is installed, false otherwise. Always returns false if QModManager was not installed via Vortex.
  */
 export const isQModManagerInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => mod.type === QMM_4_MOD_TYPE);
+    getMods(api, true).some(mod => mod.type === QMM_4_MOD_TYPE || mod.type === 'dinput');
 
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues.
@@ -59,7 +60,29 @@ export const validateQModManager = async (api: IExtensionApi) => {
             break;
         default:
             if (isQModManagerInstalled(api)) {
-                // TODO: Display warning about QMM being installed on experimental/stable branch
+                if (!store('suppress-qmodmanager-stable-dialog')) {
+                    const bbcode = api.translate(`{{qmodmanager}} appears to be installed on the {{${store('branch')}}} branch of {{game}}.{{br}}{{br}}` +
+                        'Please be aware that {{qmodmanager}} is only intended for use on the {{legacy}} branch and will not be receiving any updates.{{br}}{{br}}' +
+                        'It is strongly advised to uninstall {{qmodmanager}} and instead install {{bepinex}}.', TRANSLATION_OPTIONS);
+                    const result = await api.showDialog?.('error', api.translate(`{{qmodmanager}} installed on {{${store('branch')}}} branch`, TRANSLATION_OPTIONS), {
+                        bbcode,
+                        checkboxes: [
+                            {
+                                id: 'suppress-qmodmanager-stable-dialog',
+                                text: api.translate('I understand, don\'t show this message again.', TRANSLATION_OPTIONS),
+                                value: false
+                            }
+                        ]
+                    }, [
+                        { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL)},
+                        { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+                        { label: api.translate('Close', TRANSLATION_OPTIONS) }
+                    ], 'bepinex-legacy-dialog');
+
+                    if (result) {
+                        store('suppress-qmodmanager-stable-dialog', result.input['suppress-qmodmanager-stable-dialog']);
+                    }
+                }
             }
             break;
     }
