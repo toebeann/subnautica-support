@@ -36,18 +36,6 @@ export const BEPINEX_PATCHERS_DIR = 'patchers';
  * Path to the BepInEx plugins directory relative to the game directory.
  */
 export const BEPINEX_MOD_PATH = join(BEPINEX_DIR, BEPINEX_PLUGINS_DIR);
-/**
- * BepInEx root mod type.
- */
-export const BEPINEX_ROOT_MOD_TYPE = 'bepinex-root';
-/**
- * BepInEx plugin mod type.
- */
-export const BEPINEX_PLUGIN_MOD_TYPE = 'bepinex-plugin';
-/**
- * BepInEx patcher mod type.
- */
-export const BEPINEX_PATCHER_MOD_TYPE = 'bepinex-patcher';
 
 /**
  * Utility function to determine whether BepInEx is installed via the Vortex API.
@@ -66,6 +54,7 @@ export const validateBepInEx = async (api: IExtensionApi) => {
     switch (branch) {
         case 'experimental':
         case 'stable':
+            api.dismissNotification?.('qmodmanager-missing');
             if (!isBepInExInstalled(api)) {
                 api.sendNotification?.({
                     id: 'bepinex-missing',
@@ -84,6 +73,8 @@ export const validateBepInEx = async (api: IExtensionApi) => {
                         }
                     ]
                 });
+            } else {
+                api.dismissNotification?.('bepinex-missing');
             }
             break;
         default:

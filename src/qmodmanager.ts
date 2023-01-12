@@ -18,34 +18,6 @@ export const QMM_DIR = 'QModManager';
  * Path to the QModManager mods directory relative to the game directory.
  */
 export const QMM_MOD_PATH = 'QMods';
-/**
- * QModManager mod type.
- */
-export const QMM_MOD_TYPE = 'qmodmanager-mod';
-/**
- * CustomHullPlates pack mod type.
- */
-export const QMM_CUSTOM_HULL_PLATES_PACK_MOD_TYPE = 'qmodmanager-custom-hull-plates-pack';
-/**
- * CustomPosters pack mod type.
- */
-export const QMM_CUSTOM_POSTERS_PACK_MOD_TYPE = 'qmodmanager-custom-posters-pack';
-/**
- * CustomCraft2 plugin mod type.
- */
-export const QMM_CC2_PLUGIN_MOD_TYPE = 'qmodmanager-cc2-plugin';
-/**
- * QModManager mod manifest filename.
- */
-export const QMM_MOD_MANIFEST = 'mod.json';
-/**
- * QModManager mod addon manifest filename for CustomHullPlates and CustomPosters.
- */
-export const ADDON_MANIFEST = 'info.json';
-/**
- * CustomCraft2 plugin packaging folder.
- */
-export const CC2_FOLDER = 'CustomCraft2SML';
 
 /**
  * Utility function to determine whether QModManager is installed via the Vortex API.
@@ -62,6 +34,7 @@ export const isQModManagerInstalled = (api: IExtensionApi) =>
 export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
+            api.dismissNotification?.('bepinex-missing');
             if (!isQModManagerInstalled(api)) {
                 api.sendNotification?.({
                     id: 'qmodmanager-missing',
@@ -80,6 +53,8 @@ export const validateQModManager = async (api: IExtensionApi) => {
                         }
                     ]
                 });
+            } else {
+                api.dismissNotification?.('qmodmanager-missing');
             }
             break;
         default:
