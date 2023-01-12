@@ -29,12 +29,12 @@ export const getPath = (api: IExtensionApi, game: IGame): string => join(getDisc
  * @returns 
  */
 export const test = async (installInstructions: IInstruction[]): Promise<boolean> => {
-    const sourceDirs = installInstructions.filter(instruction => instruction.type === 'copy' && instruction.source)
-        .map(instruction => dirname(instruction.source!).toLowerCase().split(sep));
+    const copy = installInstructions.filter(instruction => instruction.type === 'copy');
+    const copyDestinationsLowerCase = copy.filter(instruction => instruction.destination)
+        .map(instruction => instruction.destination!.toLowerCase());
+    const destinationDirs = copyDestinationsLowerCase.map(dest => dirname(dest).split(sep));
     const targets = [BEPINEX_CONFIG_DIR, BEPINEX_PLUGINS_DIR, BEPINEX_PATCHERS_DIR];
-    return targets.some(target => sourceDirs.some(segments => segments.includes(target.toLowerCase())))
-        && ((!sourceDirs.some(segments => segments[0] === BEPINEX_DIR) || sourceDirs.every(segments => targets.includes(segments[1])))
-            || sourceDirs.every(segments => targets.includes(segments[0])));
+    return targets.some(target => destinationDirs.some(segments => segments.includes(target.toLowerCase())))
 }
 
 /**
