@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { version } from '../package.json';
-import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExInstalled, validateBepInEx } from './bepinex';
+import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExModTypeInstalled, validateBepInEx } from './bepinex';
 import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 import { getDiscovery, getGameVersion, getModPath } from './utils';
@@ -172,11 +172,11 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             allowSuppress: true,
         });
 
-        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && await isBepInExInstalled(api)) {
+        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && await isBepInExModTypeInstalled(api)) {
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
                 type: 'error',
-                title: api.translate('Detected previous {{bepinex}} installation.', TRANSLATION_OPTIONS),
+                title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
                 message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
             });
         }
@@ -211,7 +211,7 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
             ]
         }, [
             { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL) },
-            { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+            { label: api.translate('More', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
             { label: api.translate('Close', TRANSLATION_OPTIONS) }
         ], 'subnautica-2.0-info-dialog');
 

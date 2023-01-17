@@ -40,20 +40,27 @@ export const BEPINEX_MOD_PATH = join(BEPINEX_DIR, BEPINEX_PLUGINS_DIR);
  * @param api 
  * @returns True if BepInEx is installed, false otherwise. Always returns false if BepInEx was not installed via Vortex.
  */
-export const isBepInExInstalled = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
-    if (getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type))) return true;
-    else if (!discovery?.path) return false;
-    else {
+export const isBepInExModTypeInstalled = (api: IExtensionApi) =>
+    getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
+
+/**
+ * Utility function to determine whether BepInEx core files are installed to disk.
+ * @param api 
+ * @param discovery 
+ * @returns 
+ */
+export const isBepInExCoreFileInstalled = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+    if (!discovery?.path) return false;
+
+    try {
+        await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_5_CORE_DLL));
+        return true;
+    } catch {
         try {
-            await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_5_CORE_DLL));
+            await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_6_CORE_DLL));
             return true;
         } catch {
-            try {
-                await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_6_CORE_DLL));
-                return true;
-            } catch {
-                return false;
-            }
+            return false;
         }
     }
 }
@@ -63,7 +70,7 @@ export const isBepInExInstalled = async (api: IExtensionApi, discovery: IDiscove
  * @param api 
  */
 export const validateBepInEx = async (api: IExtensionApi) => {
-    if (!await isBepInExInstalled(api)) {
+    if (!isBepInExModTypeInstalled(api) && !(await isBepInExCoreFileInstalled(api))) {
         api.sendNotification?.({
             id: 'bepinex-missing',
             type: 'warning',
@@ -72,12 +79,7 @@ export const validateBepInEx = async (api: IExtensionApi) => {
             actions: [
                 {
                     title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS),
-                    action: async () => {
-                        try {
-                            await util.opn(BEPINEX_URL);
-                        }
-                        catch { }
-                    }
+                    action: () => util.opn(BEPINEX_URL)
                 }
             ]
         });

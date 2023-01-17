@@ -1,10 +1,9 @@
 import { basename, dirname, join, sep } from 'path';
-import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExInstalled } from '../bepinex';
+import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExCoreFileInstalled, isBepInExModTypeInstalled } from '../bepinex';
 import { TRANSLATION_OPTIONS } from '../constants';
 import { QMM_DIR, isQModManagerInstalled } from '../qmodmanager';
-import { getMods } from '../utils';
-import { BEPINEX_5_CORE_DLL, BEPINEX_5_MOD_TYPE } from '../mod-types/bepinex-5';
-import { BEPINEX_6_CORE_DLL, BEPINEX_6_MOD_TYPE } from '../mod-types/bepinex-6';
+import { BEPINEX_5_CORE_DLL } from '../mod-types/bepinex-5';
+import { BEPINEX_6_CORE_DLL } from '../mod-types/bepinex-6';
 import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
@@ -52,13 +51,13 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
 
     if (branch === 'legacy') {
         if (isQModManagerInstalled(api)
-            && await isBepInExInstalled(api)
-            && !getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type))) {
+            && !isBepInExModTypeInstalled(api)
+            && (await isBepInExCoreFileInstalled(api))) {
 
             api.sendNotification?.({
                 id: 'reinstall-qmm',
                 type: 'error',
-                title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
+                title: api.translate('Incompatible {{qmodmanager}} installation detected.', TRANSLATION_OPTIONS),
                 message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
             });
 
