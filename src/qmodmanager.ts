@@ -1,5 +1,4 @@
 import { store } from '.';
-import { BEPINEX_URL } from './bepinex';
 import { TRANSLATION_OPTIONS } from './constants';
 import { getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
@@ -38,6 +37,8 @@ export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
             if (!isQModManagerInstalled(api)) {
+                api.dismissNotification?.('qmodmanager-stable');
+
                 api.sendNotification?.({
                     id: 'qmodmanager-missing',
                     type: 'warning',
@@ -46,17 +47,13 @@ export const validateQModManager = async (api: IExtensionApi) => {
                     actions: [
                         {
                             title: api.translate('Get QMM'),
-                            action: async () => {
-                                try {
-                                    await util.opn(QMM_URL);
-                                }
-                                catch { }
-                            }
+                            action: () => util.opn(QMM_URL)
                         }
                     ]
                 });
             } else {
                 api.dismissNotification?.('qmodmanager-missing');
+                api.dismissNotification?.('qmodmanager-stable');
             }
             break;
         default:
@@ -64,14 +61,12 @@ export const validateQModManager = async (api: IExtensionApi) => {
                 api.sendNotification?.({
                     id: 'qmodmanager-stable',
                     type: 'error',
-                    title: api.translate(`{{qmodmanager}} installed on {{${store('branch')}}} branch`, TRANSLATION_OPTIONS),
-                    message: api.translate('{{qmodmanager}} is only intended for use on the {{legacy}} branch. Please uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS),
-                    actions: [
-                        { title: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
-                        { title: 'Get BepInEx', action: () => util.opn(BEPINEX_URL) }
-                    ],
+                    title: api.translate('Please uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS),
+                    message: api.translate('{{qmodmanager}} is only intended for use on the {{legacy}} branch.', TRANSLATION_OPTIONS),
                     allowSuppress: true
                 });
+            } else {
+                api.dismissNotification?.('qmodmanager-stable');
             }
             break;
     }
