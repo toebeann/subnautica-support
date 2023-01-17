@@ -172,13 +172,15 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             allowSuppress: true,
         });
 
-        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && await isBepInExModTypeInstalled(api)) {
+        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && isBepInExModTypeInstalled(api)) {
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
                 type: 'error',
                 title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
                 message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
             });
+        } else if (currentBranch !== 'legacy') {
+            api.dismissNotification?.('reinstall-qmm');
         }
 
         await setup(api, discovery);

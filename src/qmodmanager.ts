@@ -57,6 +57,8 @@ export const validateQModManager = async (api: IExtensionApi) => {
             }
             break;
         default:
+            api.dismissNotification?.('qmodmanager-missing');
+
             if (isQModManagerInstalled(api)) {
                 api.sendNotification?.({
                     id: 'qmodmanager-stable',

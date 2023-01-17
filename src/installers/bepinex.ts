@@ -41,6 +41,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  */
 export const install = async (api: IExtensionApi, files: string[]): Promise<IInstallResult> => {
     api.dismissNotification?.('bepinex-missing');
+    api.dismissNotification?.('reinstall-bepinex');
 
     const legacyConfig = files.find(file => basename(file).toLowerCase() === 'bepinex.legacy.cfg'
         && basename(dirname(file)).toLowerCase() === BEPINEX_CONFIG_DIR.toLowerCase());
@@ -65,9 +66,8 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
                 instructions: []
             }
         }
-    } else {
-        api.dismissNotification?.('reinstall-bepinex');
     }
+    
 
     return {
         instructions: [
