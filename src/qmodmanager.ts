@@ -61,29 +61,17 @@ export const validateQModManager = async (api: IExtensionApi) => {
             break;
         default:
             if (isQModManagerInstalled(api)) {
-                if (!store('suppress-qmodmanager-stable-dialog')) {
-                    const bbcode = api.translate(`{{qmodmanager}} appears to be installed on the {{${store('branch')}}} branch of {{game}}.{{br}}{{br}}` +
-                        'Please be aware that {{qmodmanager}} is only intended for use on the {{legacy}} branch and will not be receiving any updates.{{br}}{{br}}' +
-                        'It is strongly advised to uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS);
-                    const result = await api.showDialog?.('error', api.translate(`{{qmodmanager}} installed on {{${store('branch')}}} branch`, TRANSLATION_OPTIONS), {
-                        bbcode,
-                        checkboxes: [
-                            {
-                                id: 'suppress-qmodmanager-stable-dialog',
-                                text: api.translate('I understand, don\'t show this message again.', TRANSLATION_OPTIONS),
-                                value: false
-                            }
-                        ]
-                    }, [
-                        { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL) },
-                        { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
-                        { label: api.translate('Close', TRANSLATION_OPTIONS) }
-                    ], 'bepinex-legacy-dialog');
-
-                    if (result) {
-                        store('suppress-qmodmanager-stable-dialog', result.input['suppress-qmodmanager-stable-dialog']);
-                    }
-                }
+                api.sendNotification?.({
+                    id: 'qmodmanager-stable',
+                    type: 'error',
+                    title: api.translate(`{{qmodmanager}} installed on {{${store('branch')}}} branch`, TRANSLATION_OPTIONS),
+                    message: api.translate('{{qmodmanager}} is only intended for use on the {{legacy}} branch. Please uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS),
+                    actions: [
+                        { title: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+                        { title: 'Get BepInEx', action: () => util.opn(BEPINEX_URL) }
+                    ],
+                    allowSuppress: true
+                });
             }
             break;
     }
