@@ -1,7 +1,8 @@
 import { basename, dirname, extname, join, sep } from 'path';
+import { BEPINEX_INJECTOR_CORE_FILES } from './bepinex';
+import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
-import { BEPINEX_PLUGINS_DIR } from '../bepinex';
 
 /**
  * Determines whether the installer is supported for the given mod files and game.
@@ -12,11 +13,14 @@ import { BEPINEX_PLUGINS_DIR } from '../bepinex';
 export const testSupported: TestSupported = async (files, gameId) => {
     const filesLowerCase = files.filter(file => !file.endsWith(sep)).map(file => file.toLowerCase());
     const assemblies = filesLowerCase.filter(file => extname(file) === '.dll');
+    const assemblyDirs = assemblies.map(file => dirname(file).split(sep));
+    const index = assemblyDirs[0]?.indexOf(BEPINEX_PLUGINS_DIR.toLowerCase());
     return {
         requiredFiles: [],
         supported: gameId === NEXUS_GAME_ID
             && assemblies.length > 0
-            && assemblies.every(file => file.split(sep).indexOf(basename(dirname(assemblies[0]))) === assemblies[0].split(sep).indexOf(basename(dirname(assemblies[0]))))
+            && assemblyDirs.every(segments => segments.indexOf(BEPINEX_PLUGINS_DIR.toLowerCase()) === index)
+            && !BEPINEX_INJECTOR_CORE_FILES.every(file => filesLowerCase.includes(join(BEPINEX_DIR, BEPINEX_CORE_DIR, file).toLowerCase()))
     };
 }
 
