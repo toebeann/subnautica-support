@@ -1,7 +1,9 @@
 import { basename, dirname, join, sep } from 'path';
-import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_PATCHERS_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
+import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_PATCHERS_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
+import { QMM_DIR } from '../qmodmanager';
+import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { IExtensionApi, IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
 
 /**
  * Determines whether the installer is supported for the given mod files and game.
@@ -25,13 +27,23 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (files: string[]): Promise<IInstallResult> => {
+export const install = async (api: IExtensionApi, files: string[]): Promise<IInstallResult> => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
+    const isQMM = sansDirectories.map(file => file.toLowerCase()).includes(join(BEPINEX_MOD_PATH, QMM_DIR, QMM_CORE_DLL).toLowerCase());
     const dirs = sansDirectories.map(file => dirname(file).toLowerCase().split(sep));
-    const index = dirs.some(segments => segments[0] === BEPINEX_DIR) ? 1 : 0;
+    const index = dirs.some(segments => segments[0] === BEPINEX_DIR.toLowerCase()) ? 1 : 0;
+    const filtered = sansDirectories.filter(file =>
+        file.split(sep).length > index
+        && file.split(sep)[index].toLowerCase() !== BEPINEX_CORE_DIR.toLowerCase()
+        && (!isQMM || basename(file).toLowerCase() !== 'bepinex.cfg'));
+
+    if (isQMM) {
+        api.dismissNotification?.('reinstall-qmm');
+    }
+
     return {
         instructions: [
-            ...sansDirectories.map((source): IInstruction => {
+            ...filtered.map((source): IInstruction => {
                 return {
                     type: 'copy',
                     source,
@@ -47,6 +59,6 @@ export const install = async (files: string[]): Promise<IInstallResult> => {
  * @param context 
  * @returns 
  */
-export const register = (context: IExtensionContext) => context.registerInstaller('bepinex-mixed', 60, testSupported, install);
+export const register = (context: IExtensionContext) => context.registerInstaller('bepinex-mixed', 60, testSupported, (files) => install(context.api, files));
 export default register;
 

@@ -10,7 +10,7 @@ import { IExtensionApi } from 'vortex-api/lib/types/api';
 /**
  * URL to the QModManager page on Nexus Mods.
  */
-export const QMM_URL = 'https://www.nexusmods.com/subnautica/mods/201';
+export const QMM_URL = 'https://www.nexusmods.com/subnautica/mods/201/';
 /**
  * QModManager directory name.
  */
@@ -26,7 +26,9 @@ export const QMM_MOD_PATH = 'QMods';
  * @returns True if QModManager is installed, false otherwise. Always returns false if QModManager was not installed via Vortex.
  */
 export const isQModManagerInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => mod.type === QMM_4_MOD_TYPE || mod.type === 'dinput');
+    getMods(api, true).some(mod => mod.attributes?.homepage === QMM_URL
+        || (mod.attributes?.modId === 201 && mod.attributes?.downloadGame === 'subnautica')
+        || mod.type === QMM_4_MOD_TYPE);
 
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues.
@@ -35,13 +37,12 @@ export const isQModManagerInstalled = (api: IExtensionApi) =>
 export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
-            api.dismissNotification?.('bepinex-missing');
             if (!isQModManagerInstalled(api)) {
                 api.sendNotification?.({
                     id: 'qmodmanager-missing',
                     type: 'warning',
                     title: api.translate('{{qmodmanager}} not installed', TRANSLATION_OPTIONS),
-                    message: api.translate('On the legacy branch of {{game}}, {{qmodmanager}} is required.', TRANSLATION_OPTIONS),
+                    message: api.translate('On the {{legacy}} branch of {{game}}, {{qmodmanager}} is required.', TRANSLATION_OPTIONS),
                     actions: [
                         {
                             title: api.translate('Get QMM'),
@@ -63,7 +64,7 @@ export const validateQModManager = async (api: IExtensionApi) => {
                 if (!store('suppress-qmodmanager-stable-dialog')) {
                     const bbcode = api.translate(`{{qmodmanager}} appears to be installed on the {{${store('branch')}}} branch of {{game}}.{{br}}{{br}}` +
                         'Please be aware that {{qmodmanager}} is only intended for use on the {{legacy}} branch and will not be receiving any updates.{{br}}{{br}}' +
-                        'It is strongly advised to uninstall {{qmodmanager}} and instead install {{bepinex}}.', TRANSLATION_OPTIONS);
+                        'It is strongly advised to uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS);
                     const result = await api.showDialog?.('error', api.translate(`{{qmodmanager}} installed on {{${store('branch')}}} branch`, TRANSLATION_OPTIONS), {
                         bbcode,
                         checkboxes: [
@@ -74,7 +75,7 @@ export const validateQModManager = async (api: IExtensionApi) => {
                             }
                         ]
                     }, [
-                        { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL)},
+                        { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL) },
                         { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
                         { label: api.translate('Close', TRANSLATION_OPTIONS) }
                     ], 'bepinex-legacy-dialog');

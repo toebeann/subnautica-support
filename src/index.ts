@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { version } from '../package.json';
-import { BEPINEX_MOD_PATH, validateBepInEx } from './bepinex';
+import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExInstalled, validateBepInEx } from './bepinex';
 import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 import { getDiscovery, getGameVersion, getModPath } from './utils';
@@ -10,7 +10,6 @@ import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
 import registerInstallerBepInExPlugin from './installers/bepinex-plugin';
 import registerInstallerCustomCraft2Plugin from './installers/customcraft2-plugin';
 import registerInstallerMrPurple6411AddonPack from './installers/mrpurple6411-addon-pack';
-import registerInstallerQModManager from './installers/qmodmanager';
 import registerInstallerQModManagerMod from './installers/qmodmanager-mod';
 import registerModTypeBepInEx5 from './mod-types/bepinex-5';
 import registerModTypeBepInEx6 from './mod-types/bepinex-6';
@@ -26,7 +25,6 @@ import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, SteamBetaBranch, getBranch, getManifestPath } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
-import { watch } from 'chokidar';
 import { major, prerelease } from 'semver';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
@@ -90,7 +88,6 @@ export default function main(context: IExtensionContext): boolean {
     registerModTypeCustomCraft2Plugin(context);
 
     registerInstallerBepInEx(context);
-    registerInstallerQModManager(context);
     registerInstallerBepInExPlugin(context);
     registerInstallerBepInExPatcher(context);
     registerInstallerBepInExMixed(context);
@@ -134,25 +131,30 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
 
 const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     const manifest = getManifestPath(api, discovery);
-    const watcher = manifest ? watch(manifest) : undefined;
 
-    if (watcher) {
-        watcher.on('change', async () => {
+    if (manifest) {
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        fs.watch(manifest, {
+            persistent: false,
+            signal
+        }, async () => {
             await validateBranch(api);
-            await Promise.all([validateQModManager(api), validateBepInEx(api)]);
+            await Promise.all([validateBepInEx(api), validateQModManager(api)]);
         });
 
-        api.events.once('gamemode-activated', () => watcher.close());
+        api.events.once('gamemode-activated', controller.abort);
     }
 
     await showSubnautica2InfoDialog(api);
     await validateBranch(api, discovery);
-    await Promise.all([validateQModManager(api), validateBepInEx(api)]);
+    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
 const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     await validateBranch(api, discovery);
-    await Promise.all([validateQModManager(api), validateBepInEx(api)]);
+    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
 const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
@@ -170,6 +172,15 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             allowSuppress: true,
         });
 
+        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && await isBepInExInstalled(api)) {
+            api.sendNotification?.({
+                id: 'reinstall-bepinex',
+                type: 'warning',
+                title: api.translate('Detected previous {{bepinex}} installation.', TRANSLATION_OPTIONS),
+                message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
+            });
+        }
+
         await setup(api, discovery);
     }
 
@@ -186,7 +197,8 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
         // and inform them of branch specifics i.e. QMM is only supported on legacy, BepInEx is required for 2.0 & experimental modding, etc.
         const title = api.translate('{{game}} 2.0 {{living-large}} Update', TRANSLATION_OPTIONS);
         const bbcode = api.translate('An update to {{game}} known as the {{living-large}} update or the {{game}} 2.0 update has been released.{{br}}{{br}}' +
-            'This update is incompatible with mods which were made for {{qmodmanager}}. {{bepinex}} is now required for modding moving forward.', TRANSLATION_OPTIONS);
+            'This update is incompatible with mods which were made for {{qmodmanager}}. {{bepinex}} is now required for modding moving forward.{{br}}{{br}}' +
+            'If you wish to continue using mods made for {{qmodmanager}}, you must use the {{legacy}} branch of {{game}}, which is only available on {{steam}}.', TRANSLATION_OPTIONS);
 
         const result: IDialogResult | undefined = await api.showDialog?.('info', title, {
             bbcode,
@@ -198,6 +210,7 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
                 }
             ]
         }, [
+            { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL) },
             { label: api.translate('More info', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
             { label: api.translate('Close', TRANSLATION_OPTIONS) }
         ], 'subnautica-2.0-info-dialog');

@@ -1,10 +1,13 @@
-import { join, sep } from 'path';
-import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH } from '../bepinex';
-import { QMM_DIR } from '../qmodmanager';
-import { BEPINEX_5_CORE_DLL } from '../mod-types/bepinex-5';
-import { BEPINEX_6_CORE_DLL } from '../mod-types/bepinex-6';
+import { basename, dirname, join, sep } from 'path';
+import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExInstalled } from '../bepinex';
+import { TRANSLATION_OPTIONS } from '../constants';
+import { QMM_DIR, isQModManagerInstalled } from '../qmodmanager';
+import { getMods } from '../utils';
+import { BEPINEX_5_CORE_DLL, BEPINEX_5_MOD_TYPE } from '../mod-types/bepinex-5';
+import { BEPINEX_6_CORE_DLL, BEPINEX_6_MOD_TYPE } from '../mod-types/bepinex-6';
 import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
+import { getBranch } from '../platforms/steam';
 import { IExtensionApi, IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
 
 /**
@@ -25,8 +28,8 @@ export const testSupported: TestSupported = async (files, gameId) => {
         supported: gameId === NEXUS_GAME_ID
             && filesLowerCase.some(file => file.split(sep)[0] === BEPINEX_DIR.toLowerCase())
             && !filesLowerCase.includes(join(BEPINEX_MOD_PATH, QMM_DIR, QMM_CORE_DLL).toLowerCase())
-            && (filesLowerCase.includes(BEPINEX_5_CORE_DLL.toLowerCase())
-                || filesLowerCase.includes(BEPINEX_6_CORE_DLL.toLowerCase()))
+            && (filesLowerCase.includes(join(BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_5_CORE_DLL).toLowerCase())
+                || filesLowerCase.includes(join(BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_6_CORE_DLL).toLowerCase()))
             && BEPINEX_INJECTOR_CORE_FILES.every(file => filesLowerCase.includes(join(BEPINEX_DIR, BEPINEX_CORE_DIR, file).toLowerCase()))
     };
 }
@@ -40,15 +43,57 @@ export const testSupported: TestSupported = async (files, gameId) => {
 export const install = async (api: IExtensionApi, files: string[]): Promise<IInstallResult> => {
     api.dismissNotification?.('bepinex-missing');
 
+    const legacyConfig = files.find(file => basename(file).toLowerCase() === 'bepinex.legacy.cfg'
+        && basename(dirname(file)).toLowerCase() === BEPINEX_CONFIG_DIR.toLowerCase());
+    const stableConfig = files.find(file => basename(file).toLowerCase() === 'bepinex.cfg'
+        && basename(dirname(file)).toLowerCase() === BEPINEX_CONFIG_DIR.toLowerCase());
+
+    const branch = await getBranch(api);
+
+    if (branch === 'legacy') {
+        if (isQModManagerInstalled(api)
+            && await isBepInExInstalled(api)
+            && !getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type))) {
+
+            api.sendNotification?.({
+                id: 'reinstall-qmm',
+                type: 'warning',
+                title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
+                message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
+            });
+
+            return {
+                instructions: []
+            }
+        }
+    } else {
+        api.dismissNotification?.('reinstall-bepinex');
+    }
+
     return {
         instructions: [
             ...files.filter(file => !file.endsWith(sep)).map((source): IInstruction => {
+                let destination = source;
+
+                if (branch === 'legacy') {
+                    if (source === legacyConfig) {
+                        const dir = dirname(source);
+                        const file = basename(source).split('.').filter(x => x !== branch).join('.');
+                        destination = join(dir, file);
+                    } else if (source === stableConfig) {
+                        const dir = dirname(source);
+                        const file = basename(source).split('.');
+                        file.splice(file.length - 1, 0, 'stable');
+                        destination = join(dir, file.join('.'));
+                    }
+                }
+
                 return {
                     type: 'copy',
                     source,
-                    destination: source
+                    destination
                 }
-            })
+            }).filter(instruction => instruction.destination !== stableConfig || branch !== 'legacy' || (legacyConfig && instruction.source === legacyConfig))
         ]
     }
 }

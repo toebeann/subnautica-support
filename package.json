@@ -1,6 +1,6 @@
 {
   "name": "subnautica-support",
-  "version": "3.0.0",
+  "version": "3.1.0-alpha.1.0.1",
   "description": "Vortex support for Subnautica",
   "author": "tobeyStraitjacket MrPurple6411 PrimeSonic Pickysaurus",
   "license": "LGPL-3.0",
@@ -8,7 +8,7 @@
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "build": "npm run webpack",
     "postbuild": "extractInfo && cpx assets/**/* dist",
-    "bundle7z": "del game-subnautica.7z && 7z a -t7z game-subnautica.7z ./dist/*",
+    "bundle7z": "del subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/*",
     "prebundle7z": "npm run build"
   },
   "devDependencies": {
@@ -17,7 +17,6 @@
     "@types/node": "^18.11.18",
     "@types/relaxed-json": "^1.0.1",
     "@types/semver": "^7.3.13",
-    "chokidar": "^3.5.3",
     "cpx": "^1.5.0",
     "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",
