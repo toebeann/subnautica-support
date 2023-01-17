@@ -175,7 +175,7 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
         if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && await isBepInExInstalled(api)) {
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
-                type: 'warning',
+                type: 'error',
                 title: api.translate('Detected previous {{bepinex}} installation.', TRANSLATION_OPTIONS),
                 message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
             });
