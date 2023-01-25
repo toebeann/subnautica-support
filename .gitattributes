@@ -1,14 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text eol=lf
-*.gitignore filter=lfs diff=lfs merge=lfs -text
-*.npmrc filter=lfs diff=lfs merge=lfs -text
-/LICENSE filter=lfs diff=lfs merge=lfs -text
+
+*.exe filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
-*.json filter=lfs diff=lfs merge=lfs -text
-*.yaml filter=lfs diff=lfs merge=lfs -text
-*.ts filter=lfs diff=lfs merge=lfs -text
-*.js filter=lfs diff=lfs merge=lfs -text
-=*.jpg !text !filter !merge !diff
-=* !text !filter !merge !diff
-=*.* !text !filter !merge !diff
-* !text !filter !merge !diff
