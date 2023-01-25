@@ -1,3 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text eol=lf
+
+*.exe filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
 * !text !filter !merge !diff
