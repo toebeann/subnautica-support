@@ -9,6 +9,7 @@ specifiers:
   cpx: ^1.5.0
   exe-version: github:Nexus-Mods/node-exe-version
   relaxed-json: ^1.0.3
+  rimraf: ^4.1.2
   steam-acf-parser: github:mattb-prg/steam-acf-parser
   store2: ^2.14.2
   ts-loader: ^8.4.0
@@ -26,11 +27,12 @@ devDependencies:
   cpx: 1.5.0
   exe-version: github.com/Nexus-Mods/node-exe-version/893a394c9e113f9b5c797acb32f93e172829ae00
   relaxed-json: 1.0.3
+  rimraf: 4.1.2
   steam-acf-parser: github.com/mattb-prg/steam-acf-parser/18de58e9ff5cb4c468949063ba176de857da8dd0
   store2: 2.14.2
   ts-loader: 8.4.0_ad6xlx6c2kce7qmj5vxus5gywi
   typescript: 4.9.4
-  vortex-api: github.com/Nexus-Mods/vortex-api/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a
+  vortex-api: github.com/Nexus-Mods/vortex-api/18314d002399997d527af6f8923718f2e4e1933b
   webpack: 4.46.0_webpack-cli@3.3.12
   webpack-cli: 3.3.12_webpack@4.46.0
 
@@ -3159,6 +3161,12 @@ packages:
       glob: 7.2.3
     dev: true
 
+  /rimraf/4.1.2:
+    resolution: {integrity: sha512-BlIbgFryTbw3Dz6hyoWFhKk+unCcHMSkZGrTFVAx2WmttdBSonsdtRlwiuTbDqTKr+UlXIUqJVS4QT5tUzGENQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /ripemd160/2.0.2:
     resolution: {integrity: sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==}
     dependencies:
@@ -3991,8 +3999,8 @@ packages:
       - supports-color
     dev: true
 
-  github.com/Nexus-Mods/vortex-api/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a:
-    resolution: {tarball: https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/cc16ed091b0b6d643e81e4c34fe7e16c7f90019a}
+  github.com/Nexus-Mods/vortex-api/18314d002399997d527af6f8923718f2e4e1933b:
+    resolution: {tarball: https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/18314d002399997d527af6f8923718f2e4e1933b}
     name: vortex-api
     version: 1.8.0-r2
     hasBin: true

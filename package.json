@@ -6,9 +6,9 @@
   "license": "LGPL-3.0",
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
-    "build": "npm run webpack",
+    "build": "rimraf dist && npm run webpack",
     "postbuild": "extractInfo && cpx assets/**/* dist",
-    "bundle7z": "del subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/*",
+    "bundle7z": "rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/*",
     "prebundle7z": "npm run build"
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
     "cpx": "^1.5.0",
     "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",
+    "rimraf": "^4.1.2",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
     "store2": "^2.14.2",
     "ts-loader": "^8.4.0",
