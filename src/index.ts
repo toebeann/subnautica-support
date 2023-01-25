@@ -10,7 +10,6 @@ import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
 import registerInstallerBepInExPlugin from './installers/bepinex-plugin';
 import registerInstallerCustomCraft2Plugin from './installers/customcraft2-plugin';
 import registerInstallerMrPurple6411AddonPack from './installers/mrpurple6411-addon-pack';
-import registerInstallerQModManagerMod from './installers/qmodmanager-mod';
 import registerModTypeBepInEx5 from './mod-types/bepinex-5';
 import registerModTypeBepInEx6 from './mod-types/bepinex-6';
 import registerModTypeBepInExMixed from './mod-types/bepinex-mixed';
@@ -91,7 +90,6 @@ export default function main(context: IExtensionContext): boolean {
     registerInstallerBepInExPlugin(context);
     registerInstallerBepInExPatcher(context);
     registerInstallerBepInExMixed(context);
-    registerInstallerQModManagerMod(context);
     registerInstallerMrPurple6411AddonPack(context);
     registerInstallerCustomCraft2Plugin(context);
 

@@ -1,14 +1,18 @@
 import { basename, dirname, extname, join, sep } from 'path';
+import { QMM_MOD_PATH } from '../qmodmanager';
 import { getDiscovery } from '../utils';
-import { QMM_MOD_MANIFEST } from '../installers/qmodmanager-mod';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
-import { QMM_MOD_PATH } from '../qmodmanager';
 
 /**
  * QModManager Mod mod type.
  */
 export const QMM_MOD_MOD_TYPE = 'qmodmanager-mod';
+
+/**
+ * QModManager mod manifest filename.
+ */
+export const QMM_MOD_MANIFEST = 'mod.json';
 
 /**
  * Determines whether the mod type is supported for the specified game.
