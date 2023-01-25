@@ -1,8 +1,8 @@
 import { basename, dirname, sep } from 'path';
 import { getDiscovery, getModPath } from '../utils';
+import { CUSTOMCRAFT2_FOLDER, CUSTOMCRAFT2_PLUGIN_FOLDERS } from '../installers/customcraft2-plugin';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
-import { CUSTOMCRAFT2_FOLDER, CUSTOMCRAFT2_PLUGIN_FOLDERS } from '../installers/customcraft2-plugin';
 
 /**
  * CustomCraft2 plugin mod type.
