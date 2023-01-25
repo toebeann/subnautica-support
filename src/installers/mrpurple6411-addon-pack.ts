@@ -40,21 +40,21 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (files: string[], destination: string): Promise<IInstallResult> => {
+export const install = async (files: string[], workingPath: string): Promise<IInstallResult> => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const manifests = sansDirectories.filter(file => basename(file).toLowerCase() === MRPURPLE6411_ADDON_MANIFEST.toLowerCase());
     const rootDir = basename(dirname(dirname(manifests[0] ?? '')));
     const dirs = sansDirectories.map(file => dirname(file).toLowerCase().split(sep));
     const index = dirs[0]?.indexOf(rootDir);
     const filtered = manifests.filter(file => file.toLowerCase().split(sep).indexOf(rootDir) === index);
-    const manifestsData = await Promise.all(filtered.map(async (manifest) => parse(util.deBOM(await fs.readFileAsync(join(destination, manifest), { encoding: 'utf-8' })))));
+    const manifestsData = await Promise.all(filtered.map(async (manifest) => parse(util.deBOM(await fs.readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' })))));
     const posterManifests = filtered.filter((_, index) => 'Orientation' in manifestsData[index]);
     const hullPlateManifests = filtered.filter(file => !posterManifests.includes(file));
 
     const filesFromManifestMap = async (manifest: string) => {
         return {
             files: sansDirectories.filter(file => dirname(file) === dirname(manifest)),
-            folder: await getAddonName(manifest, destination),
+            folder: await getAddonName(manifest, workingPath),
             index: manifest.split(sep).indexOf(basename(dirname(manifest)))
         }
     }
@@ -82,12 +82,12 @@ export const install = async (files: string[], destination: string): Promise<IIn
     }
 }
 
-const getAddonName = async (manifest: string, destination: string) => {
+const getAddonName = async (manifest: string, workingPath: string) => {
     const folder = basename(dirname(manifest));
     if (folder !== '.') return folder;
 
     try {
-        const data = await fs.readFileAsync(join(destination, manifest), { encoding: 'utf-8' });
+        const data = await fs.readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' });
         const json = parse(util.deBOM(data));
         if ('InternalName' in json && typeof json.InternalName === 'string') {
             return json.InternalName as string;
