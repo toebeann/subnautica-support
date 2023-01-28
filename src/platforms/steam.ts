@@ -87,8 +87,8 @@ export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult 
  * @returns The current beta branch for Subnautica. Returns 'stable' if the manifest does not contain a valid beta branch.
  */
 export const getBranchFromManifest = (manifest: parseAcf.AcfData): SteamBetaBranch => {
-    const { UserConfig, MountedConfig } = manifest.AppState;
-    const branch = (MountedConfig.BetaKey || UserConfig.BetaKey) as SteamBetaBranch;
+    const { UserConfig, MountedConfig } = manifest?.AppState;
+    const branch = MountedConfig?.BetaKey ?? UserConfig?.BetaKey ?? 'stable';
     return STEAM_BETA_BRANCHES.includes(branch)
         ? branch
         : 'stable';
