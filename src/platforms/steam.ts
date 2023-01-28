@@ -70,11 +70,15 @@ export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult 
                 return 'stable';
             }
 
-            const manifest = await getManifest(api, discovery);
-            if (manifest) {
-                return getBranchFromManifest(manifest);
-            } else {
-                return 'stable';
+            try {
+                const manifest = await getManifest(api, discovery);
+                if (manifest) {
+                    return getBranchFromManifest(manifest);
+                } else {
+                    return 'stable';
+                }
+            } catch {
+                return 'stable'; // if the manifest cannot be read, assume the game is on the stable branch
             }
         default: // at present, steam is the only platform that supports beta branches
             return 'stable';
@@ -88,7 +92,7 @@ export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult 
  */
 export const getBranchFromManifest = (manifest: parseAcf.AcfData): SteamBetaBranch => {
     const { UserConfig, MountedConfig } = manifest?.AppState;
-    const branch = MountedConfig?.BetaKey ?? UserConfig?.BetaKey ?? 'stable';
+    const branch = MountedConfig?.BetaKey ?? UserConfig?.BetaKey ?? 'stable'; // fallback to 'stable' if no branch is specified
     return STEAM_BETA_BRANCHES.includes(branch)
         ? branch
         : 'stable';
