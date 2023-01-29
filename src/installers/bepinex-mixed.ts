@@ -34,7 +34,8 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
     const index = dirs.some(segments => segments[0] === BEPINEX_DIR.toLowerCase()) ? 1 : 0;
     const filtered = sansDirectories.filter(file =>
         file.split(sep).length > index
-        && file.split(sep)[index].toLowerCase() !== BEPINEX_CORE_DIR.toLowerCase()
+        && (file.split(sep)[index].toLowerCase() !== BEPINEX_CORE_DIR.toLowerCase()
+            || (isQMM && ['0harmony109.dll', '0harmony12.dll'].includes(basename(file).toLowerCase())))
         && (!isQMM || basename(file).toLowerCase() !== 'bepinex.cfg'));
 
     if (isQMM) {
