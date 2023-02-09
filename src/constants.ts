@@ -14,6 +14,11 @@ export const GAME_NAME = 'Subnautica';
 export const GAME_EXE = 'Subnautica.exe';
 
 /**
+ * Path to the Unity Player assembly relative to the game directory.
+ */
+export const UNITY_PLAYER = 'UnityPlayer.dll';
+
+/**
  * Options for Vortex translation API.
  */
 export const TRANSLATION_OPTIONS = {

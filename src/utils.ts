@@ -1,10 +1,10 @@
 import { join } from 'path';
 import { store } from '.';
-import { GAME_EXE } from './constants';
+import { GAME_EXE, UNITY_PLAYER } from './constants';
 import { BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_PATH } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { getFileVersion } from 'exe-version';
+import { getFileVersion, getProductVersion } from 'exe-version';
 import { fs } from 'vortex-api';
 import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 
@@ -16,23 +16,38 @@ import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 export const getGameVersion = async (gamePath: string): Promise<string> => {
     try {
         const plasticStatusPath = join(gamePath, 'Subnautica_Data', 'StreamingAssets', 'SNUnmanagedData', 'plastic_status.ignore');
-        return await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' });
+        return (await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim()
+            || (await getUnityVersion(gamePath)).trim()
+            || 'Unknown';
     } catch {
-        return getUnityVersion(gamePath);
+        return getUnityVersion(gamePath) || 'Unknown';
     }
 }
 
 /**
- * Utility function to determine the Unity version of the Subnautica game.
- * @param gamePath The path to the Subnautica game directory.
- * @returns The Unity version of the Subnautica game, or an empty string if the game executable could not be found.
+ * Gets the game version from the Unity executable.
+ * @param gamePath 
+ * @returns 
  */
-export const getUnityVersion = async (gamePath: string): Promise<string> => {
+export const getUnityVersion = async (gamePath: string) => {
+    const exePath = join(gamePath, GAME_EXE);
+    const playerPath = join(gamePath, UNITY_PLAYER);
     try {
-        const exePath = join(gamePath, GAME_EXE);
-        return await getFileVersion(exePath);
+        return await getProductVersion(exePath);
     } catch {
-        return '';
+        try {
+            return await getProductVersion(playerPath);
+        } catch {
+            try {
+                return await getFileVersion(exePath);
+            } catch {
+                try {
+                    return await getFileVersion(playerPath);
+                } catch {
+                    return undefined;
+                }
+            }
+        }
     }
 }
 
