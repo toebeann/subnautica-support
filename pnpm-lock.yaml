@@ -1,9 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@tsconfig/recommended': ^1.0.1
+  '@tsconfig/recommended': ^1.0.2
   '@types/i18next': ^8
-  '@types/node': ^18.11.18
+  '@types/node': ^18.13.0
   '@types/relaxed-json': ^1.0.1
   '@types/semver': ^7.3.13
   cpx: ^1.5.0
@@ -13,7 +13,7 @@ specifiers:
   steam-acf-parser: github:mattb-prg/steam-acf-parser
   store2: ^2.14.2
   ts-loader: ^8.4.0
-  typescript: ^4.9.4
+  typescript: ^4.9.5
   vortex-api: github:Nexus-Mods/vortex-api
   webpack: ^4.46.0
   webpack-cli: ^3.3.12
@@ -21,7 +21,7 @@ specifiers:
 devDependencies:
   '@tsconfig/recommended': 1.0.2
   '@types/i18next': 8.4.6
-  '@types/node': 18.11.18
+  '@types/node': 18.13.0
   '@types/relaxed-json': 1.0.1
   '@types/semver': 7.3.13
   cpx: 1.5.0
@@ -30,8 +30,8 @@ devDependencies:
   rimraf: 4.1.2
   steam-acf-parser: github.com/mattb-prg/steam-acf-parser/18de58e9ff5cb4c468949063ba176de857da8dd0
   store2: 2.14.2
-  ts-loader: 8.4.0_ad6xlx6c2kce7qmj5vxus5gywi
-  typescript: 4.9.4
+  ts-loader: 8.4.0_evijigonbo4skk2vlqtwtdqibu
+  typescript: 4.9.5
   vortex-api: github.com/Nexus-Mods/vortex-api/18314d002399997d527af6f8923718f2e4e1933b
   webpack: 4.46.0_webpack-cli@3.3.12
   webpack-cli: 3.3.12_webpack@4.46.0
@@ -72,8 +72,8 @@ packages:
     resolution: {integrity: sha512-ZiSCqW8j9/gQCYixz1nMhyCprSGh3rwdyX+FHAzEN+bMCmc7yCYjNutl6jvMYSxSIGeL0CLEXPM8Nlk2lE0t5w==}
     dev: true
 
-  /@types/node/18.11.18:
-    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
+  /@types/node/18.13.0:
+    resolution: {integrity: sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==}
     dev: true
 
   /@types/relaxed-json/1.0.1:
@@ -3666,7 +3666,7 @@ packages:
       safe-regex: 1.1.0
     dev: true
 
-  /ts-loader/8.4.0_ad6xlx6c2kce7qmj5vxus5gywi:
+  /ts-loader/8.4.0_evijigonbo4skk2vlqtwtdqibu:
     resolution: {integrity: sha512-6nFY3IZ2//mrPc+ImY3hNWx1vCHyEhl6V+wLmL4CZcm6g1CqX7UKrkc6y0i4FwcfOhxyMPCfaEvh20f4r9GNpw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -3678,7 +3678,7 @@ packages:
       loader-utils: 2.0.4
       micromatch: 4.0.5
       semver: 7.3.8
-      typescript: 4.9.4
+      typescript: 4.9.5
       webpack: 4.46.0_webpack-cli@3.3.12
     dev: true
 
@@ -3696,8 +3696,8 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typescript/4.9.4:
-    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
