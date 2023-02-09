@@ -7,8 +7,8 @@
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "build": "rimraf dist && npm run webpack",
-    "postbuild": "extractInfo && cpx assets/**/* dist",
-    "bundle7z": "rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/*",
+    "postbuild": "extractInfo",
+    "bundle7z": "rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/* && 7z a -t7z subnautica-support.7z ./assets/*",
     "prebundle7z": "npm run build"
   },
   "devDependencies": {
@@ -17,7 +17,6 @@
     "@types/node": "^18.13.0",
     "@types/relaxed-json": "^1.0.1",
     "@types/semver": "^7.3.13",
-    "cpx": "^1.5.0",
     "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",
     "rimraf": "^4.1.2",
