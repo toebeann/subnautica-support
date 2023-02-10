@@ -68,14 +68,14 @@ export const install = async (files: string[], workingPath: string): Promise<IIn
                 return {
                     type: 'copy',
                     source,
-                    destination: join(CUSTOMPOSTERS_FOLDER, fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
+                    destination: join(CUSTOMPOSTERS_FOLDER, 'Posters', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
                 }
             })),
             ...hullPlatesFileMaps.flatMap(fileMap => fileMap.files.map((source): IInstruction => {
                 return {
                     type: 'copy',
                     source,
-                    destination: join(CUSTOMHULLPLATES_FOLDER, fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
+                    destination: join(CUSTOMHULLPLATES_FOLDER, 'HullPlates', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
                 }
             }))
         ]
