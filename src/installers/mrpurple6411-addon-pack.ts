@@ -23,13 +23,9 @@ export const CUSTOMHULLPLATES_FOLDER = 'CustomHullPlates';
  */
 export const testSupported: TestSupported = async (files, gameId) => {
     const filesLowerCase = files.filter(file => !file.endsWith(sep)).map(file => file.toLowerCase());
-    const manifests = filesLowerCase.filter(file => basename(file) === MRPURPLE6411_ADDON_MANIFEST.toLowerCase());
-    const rootDir = basename(dirname(dirname(manifests[0] ?? '')));
-    const dirs = filesLowerCase.map(file => dirname(file).toLowerCase().split(sep));
-    const index = dirs[0]?.indexOf(rootDir);
 
     return {
-        requiredFiles: [join()],
+        requiredFiles: [],
         supported: gameId == NEXUS_GAME_ID
             && MRPURPLE6411_ADDON_FILES.every(file => filesLowerCase.map(f => basename(f)).includes(file.toLowerCase()))
     }
@@ -44,8 +40,8 @@ export const install = async (files: string[], workingPath: string): Promise<IIn
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const manifests = sansDirectories.filter(file => basename(file).toLowerCase() === MRPURPLE6411_ADDON_MANIFEST.toLowerCase());
     const rootDir = basename(dirname(dirname(manifests[0] ?? '')));
-    const dirs = sansDirectories.map(file => dirname(file).toLowerCase().split(sep));
-    const index = dirs[0]?.indexOf(rootDir);
+    const manifestDirs = manifests.map(file => dirname(file).toLowerCase().split(sep));
+    const index = manifestDirs[0]?.indexOf(rootDir);
     const filtered = manifests.filter(file => file.toLowerCase().split(sep).indexOf(rootDir) === index);
     const manifestsData = await Promise.all(filtered.map(async (manifest) => parse(util.deBOM(await fs.readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' })))));
     const posterManifests = filtered.filter((_, index) => 'Orientation' in manifestsData[index]);
