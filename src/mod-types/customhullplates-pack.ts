@@ -5,7 +5,7 @@ import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
 /**
- * QModManager Mod mod type.
+ * CustomHullPlates Pack mod type.
  */
 export const CUSTOMHULLPLATES_PACK_MOD_TYPE = 'customhullplates-pack';
 

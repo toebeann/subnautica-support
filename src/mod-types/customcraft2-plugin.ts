@@ -5,7 +5,7 @@ import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
 /**
- * CustomCraft2 plugin mod type.
+ * CustomCraft2 Plugin mod type.
  */
 export const CUSTOMCRAFT2_PLUGIN_MOD_TYPE = 'customcraft2-plugin';
 

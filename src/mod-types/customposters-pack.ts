@@ -5,7 +5,7 @@ import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
 /**
- * QModManager Mod mod type.
+ * CustomPosters Pack mod type.
  */
 export const CUSTOMPOSTERS_PACK_MOD_TYPE = 'customposters-pack';
 

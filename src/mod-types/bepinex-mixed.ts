@@ -5,7 +5,7 @@ import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
 /**
- * BepInEx mixed mod type.
+ * BepInEx Mod mod type.
  */
 export const BEPINEX_MIXED_MOD_TYPE = 'bepinex-mixed';
 

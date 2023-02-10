@@ -5,7 +5,7 @@ import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
 /**
- * BepInEx plugin mod type.
+ * BepInEx Plugin mod type.
  */
 export const BEPINEX_PLUGIN_MOD_TYPE = 'bepinex-plugin';
 
