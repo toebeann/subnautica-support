@@ -142,7 +142,7 @@ const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult
             await Promise.all([validateBepInEx(api), validateQModManager(api)]);
         });
 
-        api.events.once('gamemode-activated', controller.abort);
+        api.events.once('gamemode-activated', () => controller.abort());
     }
 
     await showSubnautica2InfoDialog(api);
