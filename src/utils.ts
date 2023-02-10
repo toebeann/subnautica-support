@@ -16,11 +16,15 @@ import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
 export const getGameVersion = async (gamePath: string): Promise<string> => {
     try {
         const plasticStatusPath = join(gamePath, 'Subnautica_Data', 'StreamingAssets', 'SNUnmanagedData', 'plastic_status.ignore');
-        return (await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim()
-            || (await getUnityVersion(gamePath)).trim()
-            || 'Unknown';
+        const version = (await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim();
+
+        if (typeof version === 'string' && version.length > 0) {
+            return version;
+        }
+
+        throw new Error('No version found in plastic_status.ignore file.');
     } catch {
-        return getUnityVersion(gamePath) || 'Unknown';
+        return (await getUnityVersion(gamePath)).trim() || 'Unknown';
     }
 }
 
