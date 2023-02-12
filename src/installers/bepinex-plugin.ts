@@ -8,6 +8,7 @@ import { QMM_MOD_MANIFEST } from '../mod-types/qmodmanager-mod';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
 import { IDiscoveryResult, IExtensionApi, IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { z } from 'zod';
 
 /**
  * Determines whether the installer is supported for the given mod files and game.
@@ -81,6 +82,8 @@ const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPat
     const managedPath = join(discovery.path, 'Subnautica_Data', 'Managed');
 
     try {
+        const booleanParser = z.boolean();
+
         for (const assembly of assemblies) {
             if (await new Promise<boolean>((resolve, reject) => {
                 execFile(join(api.extension!.path, 'BepInEx.AssemblyInspection.Console.exe'),
@@ -94,7 +97,7 @@ const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPat
                             reject(error);
                         } else {
                             try {
-                                resolve(JSON.parse(stdout.trim()));
+                                resolve(booleanParser.parse(JSON.parse(stdout.trim())));
                             } catch {
                                 resolve(false);
                             }
@@ -102,9 +105,8 @@ const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPat
                     });
             })) return true;
         }
-    } catch {
-        return false;
-    }
+    } catch { }
+    return false;
 }
 
 /**
