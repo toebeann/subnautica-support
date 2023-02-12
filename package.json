@@ -6,10 +6,9 @@
   "license": "LGPL-3.0",
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
-    "build": "rimraf dist && npm run webpack",
-    "postbuild": "extractInfo",
-    "bundle7z": "rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./dist/* && 7z a -t7z subnautica-support.7z ./assets/*",
-    "prebundle7z": "npm run build"
+    "build": "rimraf dist && mkdir dist && extractInfo && pnpm webpack",
+    "bundle": "pnpm build && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*",
+    "release": "pnpm build --mode production && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
