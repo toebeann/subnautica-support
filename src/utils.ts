@@ -1,59 +1,9 @@
 import { join } from 'path';
 import { store } from '.';
-import { GAME_EXE, UNITY_PLAYER } from './constants';
 import { BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_PATH } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { getFileVersion, getProductVersion } from 'exe-version';
-import { fs } from 'vortex-api';
 import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
-
-/**
- * Utility function to determine the Subnautica game version.
- * @param gamePath The path to the Subnautica game directory.
- * @returns The Subnautica game version from the plastic_status.ignore file if it exists, otherwise the Unity version from the game executable.
- */
-export const getGameVersion = async (gamePath: string): Promise<string> => {
-    try {
-        const plasticStatusPath = join(gamePath, 'Subnautica_Data', 'StreamingAssets', 'SNUnmanagedData', 'plastic_status.ignore');
-        const version = (await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim();
-
-        if (typeof version === 'string' && version.length > 0) {
-            return version;
-        }
-
-        throw new Error('No version found in plastic_status.ignore file.');
-    } catch {
-        return (await getUnityVersion(gamePath)).trim() || 'Unknown';
-    }
-}
-
-/**
- * Gets the game version from the Unity executable.
- * @param gamePath 
- * @returns 
- */
-export const getUnityVersion = async (gamePath: string) => {
-    const exePath = join(gamePath, GAME_EXE);
-    const playerPath = join(gamePath, UNITY_PLAYER);
-    try {
-        return await getProductVersion(exePath);
-    } catch {
-        try {
-            return await getProductVersion(playerPath);
-        } catch {
-            try {
-                return await getFileVersion(exePath);
-            } catch {
-                try {
-                    return await getFileVersion(playerPath);
-                } catch {
-                    return undefined;
-                }
-            }
-        }
-    }
-}
 
 /**
  * Utility function to retrieve a game discovery result from the Vortex API.

@@ -1,9 +1,9 @@
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExModTypeInstalled, validateBepInEx } from './bepinex';
-import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS } from './constants';
+import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
-import { getDiscovery, getGameVersion, getModPath } from './utils';
+import { getDiscovery, getModPath } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
@@ -24,10 +24,12 @@ import { EPIC_GAME_ID } from './platforms/epic';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, SteamBetaBranch, getBranch, getManifestPath } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
+import { getFileVersion, getProductVersion } from 'exe-version';
 import { major, prerelease } from 'semver';
 import store2 from 'store2';
 import { fs, selectors, util } from 'vortex-api';
 import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
+import { z } from 'zod';
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
 store.isFake(['alpha', 'beta', 'dev'].includes(prerelease(version)?.[0].toString() ?? ''));
@@ -54,7 +56,33 @@ export default function main(context: IExtensionContext): boolean {
             xbox: [{ id: XBOX_GAME_ID }]
         },
         setup: (discovery) => setup(context.api, discovery),
-        getGameVersion,
+        getGameVersion: async (gamePath) => {
+            const versionParser = z.string().min(0);
+            try {
+                const plasticStatusPath = join(gamePath, 'Subnautica_Data', 'StreamingAssets', 'SNUnmanagedData', 'plastic_status.ignore');
+                return versionParser.parse((await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim());
+            } catch {
+                const exePath = join(gamePath, GAME_EXE);
+                try {
+                    return versionParser.parse((await getProductVersion(exePath)).trim());
+                } catch {
+                    const playerPath = join(gamePath, UNITY_PLAYER);
+                    try {
+                        return versionParser.parse((await getProductVersion(playerPath)).trim());
+                    } catch {
+                        try {
+                            return versionParser.parse((await getFileVersion(exePath)).trim());
+                        } catch {
+                            try {
+                                return versionParser.parse((await getFileVersion(playerPath)).trim());
+                            } catch {
+                                return 'Unknown';
+                            }
+                        }
+                    }
+                }
+            }
+        }
     });
 
     context.once(async () => {
