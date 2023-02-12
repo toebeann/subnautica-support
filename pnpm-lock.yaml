@@ -18,9 +18,6 @@ specifiers:
   webpack-cli: ^3.3.12
   zod: ^3.20.6
 
-dependencies:
-  zod: 3.20.6
-
 devDependencies:
   '@tsconfig/recommended': 1.0.2
   '@types/i18next': 8.4.6
@@ -37,6 +34,7 @@ devDependencies:
   vortex-api: github.com/Nexus-Mods/vortex-api/18314d002399997d527af6f8923718f2e4e1933b
   webpack: 4.46.0_webpack-cli@3.3.12
   webpack-cli: 3.3.12_webpack@4.46.0
+  zod: 3.20.6
 
 packages:
 
@@ -3675,7 +3673,7 @@ packages:
 
   /zod/3.20.6:
     resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
-    dev: false
+    dev: true
 
   github.com/Nexus-Mods/node-exe-version/893a394c9e113f9b5c797acb32f93e172829ae00:
     resolution: {tarball: https://codeload.github.com/Nexus-Mods/node-exe-version/tar.gz/893a394c9e113f9b5c797acb32f93e172829ae00}
