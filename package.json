@@ -8,7 +8,7 @@
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "build": "rimraf dist && mkdir dist && extractInfo && pnpm webpack",
     "bundle": "pnpm build && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*",
-    "release": "pnpm build --mode production && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*"
+    "release": "pnpm build --mode production --devtool none && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
