@@ -36,7 +36,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (files: string[], workingPath: string): Promise<IInstallResult> => {
+export const install = async (files: string[], workingPath: string) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const manifests = sansDirectories.filter(file => basename(file).toLowerCase() === MRPURPLE6411_ADDON_MANIFEST.toLowerCase());
     const rootDir = basename(dirname(dirname(manifests[0] ?? '')));
@@ -47,33 +47,27 @@ export const install = async (files: string[], workingPath: string): Promise<IIn
     const posterManifests = filtered.filter((_, index) => 'Orientation' in manifestsData[index]);
     const hullPlateManifests = filtered.filter(file => !posterManifests.includes(file));
 
-    const filesFromManifestMap = async (manifest: string) => {
-        return {
-            files: sansDirectories.filter(file => dirname(file) === dirname(manifest)),
-            folder: await getAddonName(manifest, workingPath),
-            index: manifest.split(sep).indexOf(basename(dirname(manifest)))
-        }
-    }
+    const filesFromManifestMap = async (manifest: string) => ({
+        files: sansDirectories.filter(file => dirname(file) === dirname(manifest)),
+        folder: await getAddonName(manifest, workingPath),
+        index: manifest.split(sep).indexOf(basename(dirname(manifest)))
+    });
 
     const posterFileMaps = await Promise.all(posterManifests.map(filesFromManifestMap));
     const hullPlatesFileMaps = await Promise.all(hullPlateManifests.map(filesFromManifestMap));
 
-    return {
+    return <IInstallResult>{
         instructions: [
-            ...posterFileMaps.flatMap(fileMap => fileMap.files.map((source): IInstruction => {
-                return {
-                    type: 'copy',
-                    source,
-                    destination: join(CUSTOMPOSTERS_FOLDER, 'Posters', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
-                }
-            })),
-            ...hullPlatesFileMaps.flatMap(fileMap => fileMap.files.map((source): IInstruction => {
-                return {
-                    type: 'copy',
-                    source,
-                    destination: join(CUSTOMHULLPLATES_FOLDER, 'HullPlates', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
-                }
-            }))
+            ...posterFileMaps.flatMap(fileMap => fileMap.files.map((source) => <IInstruction>({
+                type: 'copy',
+                source,
+                destination: join(CUSTOMPOSTERS_FOLDER, 'Posters', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
+            }))),
+            ...hullPlatesFileMaps.flatMap(fileMap => fileMap.files.map((source) => <IInstruction>({
+                type: 'copy',
+                source,
+                destination: join(CUSTOMHULLPLATES_FOLDER, 'HullPlates', fileMap.folder, dirname(source).split(sep).slice(fileMap.index + 1).join(sep), basename(source))
+            })))
         ]
     }
 }

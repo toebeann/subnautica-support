@@ -35,7 +35,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (api: IExtensionApi, files: string[], workingPath: string): Promise<IInstallResult> => {
+export const install = async (api: IExtensionApi, files: string[], workingPath: string) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const assembly = sansDirectories.find(file => extname(file).toLowerCase() === '.dll')!;
     const assemblyDir = basename(dirname(assembly));
@@ -43,13 +43,11 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
     const filtered = sansDirectories.filter(file => file.split(sep).indexOf(assemblyDir) === assemblyDirIndex);
     const index = assembly.split(sep).indexOf(BEPINEX_PLUGINS_DIR);
 
-    const instructions = filtered.map((source): IInstruction => {
-        return {
-            type: 'copy',
-            source,
-            destination: join(dirname(source).split(sep).slice(index + 1).join(sep), basename(source)),
-        }
-    });
+    const instructions = filtered.map((source): IInstruction => ({
+        type: 'copy',
+        source,
+        destination: join(dirname(source).split(sep).slice(index + 1).join(sep), basename(source)),
+    }));
 
     // if the mod contains a QModManager manifest but we're not on the legacy branch,
     // determine whether the mod contains BepInEx plugins and set the mod type accordingly
@@ -63,7 +61,7 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
         });
     }
 
-    return { instructions };
+    return <IInstallResult>{ instructions };
 }
 
 /**

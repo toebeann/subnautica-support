@@ -17,9 +17,9 @@ export const testSupported: TestSupported = async (files, gameId) => {
     return {
         requiredFiles: [],
         supported: gameId === NEXUS_GAME_ID
-        && assemblies.length > 0
-        && assemblyDirs[0]?.includes(BEPINEX_PATCHERS_DIR.toLowerCase())
-        && assemblyDirs.every(segments => segments.indexOf(BEPINEX_PATCHERS_DIR.toLowerCase()) === index)
+            && assemblies.length > 0
+            && assemblyDirs[0]?.includes(BEPINEX_PATCHERS_DIR.toLowerCase())
+            && assemblyDirs.every(segments => segments.indexOf(BEPINEX_PATCHERS_DIR.toLowerCase()) === index)
     };
 }
 
@@ -28,7 +28,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (files: string[]): Promise<IInstallResult> => {
+export const install = async (files: string[]) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const assembly = sansDirectories.find(file => extname(file).toLowerCase() === '.dll')!;
     const assemblyDir = basename(dirname(assembly));
@@ -36,15 +36,13 @@ export const install = async (files: string[]): Promise<IInstallResult> => {
     const filtered = sansDirectories.filter(file => file.split(sep).indexOf(assemblyDir) === assemblyDirIndex);
     const index = assembly.split(sep).indexOf(BEPINEX_PATCHERS_DIR);
 
-    return {
+    return <IInstallResult>{
         instructions: [
-            ...filtered.map((source): IInstruction => {
-                return {
-                    type: 'copy',
-                    source,
-                    destination: join(dirname(source).split(sep).slice(index).join(sep), basename(source)),
-                }
-            })
+            ...filtered.map((source) => <IInstruction>({
+                type: 'copy',
+                source,
+                destination: join(dirname(source).split(sep).slice(index).join(sep), basename(source)),
+            }))
         ]
     }
 }

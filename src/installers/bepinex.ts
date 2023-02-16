@@ -39,7 +39,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (api: IExtensionApi, files: string[]): Promise<IInstallResult> => {
+export const install = async (api: IExtensionApi, files: string[]) => {
     api.dismissNotification?.('bepinex-missing');
     api.dismissNotification?.('reinstall-bepinex');
 
@@ -62,16 +62,16 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
                 message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
             });
 
-            return {
+            return <IInstallResult>{
                 instructions: []
             }
         }
     }
     
 
-    return {
+    return <IInstallResult>{
         instructions: [
-            ...files.filter(file => !file.endsWith(sep)).map((source): IInstruction => {
+            ...files.filter(file => !file.endsWith(sep)).map((source) => {
                 let destination = source;
 
                 if (branch === 'legacy') {
@@ -87,7 +87,7 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
                     }
                 }
 
-                return {
+                return <IInstruction>{
                     type: 'copy',
                     source,
                     destination

@@ -33,21 +33,19 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (files: string[]): Promise<IInstallResult> => {
+export const install = async (files: string[]) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const filtered = sansDirectories.filter(file => file.toLowerCase().includes(CUSTOMCRAFT2_FOLDER.toLowerCase()));
     const dirs = filtered.map(file => dirname(file).toLowerCase().split(sep));
     const index = dirs[0]?.indexOf(CUSTOMCRAFT2_FOLDER.toLowerCase());
 
-    return {
+    return <IInstallResult>{
         instructions: [
-            ...filtered.map((source): IInstruction => {
-                return {
-                    type: 'copy',
-                    source,
-                    destination: join(CUSTOMCRAFT2_FOLDER, dirname(source).split(sep).slice(index + 1).join(sep), basename(source))
-                }
-            })
+            ...filtered.map((source) => <IInstruction>({
+                type: 'copy',
+                source,
+                destination: join(CUSTOMCRAFT2_FOLDER, dirname(source).split(sep).slice(index + 1).join(sep), basename(source))
+            }))
         ]
     }
 }

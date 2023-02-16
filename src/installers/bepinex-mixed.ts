@@ -27,7 +27,7 @@ export const testSupported: TestSupported = async (files, gameId) => {
  * @param files 
  * @returns 
  */
-export const install = async (api: IExtensionApi, files: string[]): Promise<IInstallResult> => {
+export const install = async (api: IExtensionApi, files: string[]) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const isQMM = sansDirectories.map(file => file.toLowerCase()).includes(join(BEPINEX_MOD_PATH, QMM_DIR, QMM_CORE_DLL).toLowerCase());
     const dirs = sansDirectories.map(file => dirname(file).toLowerCase().split(sep));
@@ -42,15 +42,13 @@ export const install = async (api: IExtensionApi, files: string[]): Promise<IIns
         api.dismissNotification?.('reinstall-qmm');
     }
 
-    return {
+    return <IInstallResult>{
         instructions: [
-            ...filtered.map((source): IInstruction => {
-                return {
-                    type: 'copy',
-                    source,
-                    destination: join(dirname(source).split(sep).slice(index).join(sep), basename(source)),
-                }
-            })
+            ...filtered.map((source) => <IInstruction>({
+                type: 'copy',
+                source,
+                destination: join(dirname(source).split(sep).slice(index).join(sep), basename(source)),
+            }))
         ]
     }
 }
