@@ -2,7 +2,7 @@
   "name": "subnautica-support",
   "version": "3.2.8",
   "description": "Vortex support for Subnautica",
-  "author": "tobeyStraitjacket MrPurple6411 PrimeSonic Pickysaurus",
+  "author": "toebeann, MrPurple6411, PrimeSonic, Pickysaurus",
   "license": "LGPL-3.0",
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
