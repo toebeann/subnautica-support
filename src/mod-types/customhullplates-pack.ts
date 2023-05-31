@@ -2,7 +2,11 @@ import { basename, dirname, sep } from 'path';
 import { getDiscovery, getModPath } from '../utils';
 import { CUSTOMHULLPLATES_FOLDER, MRPURPLE6411_ADDON_FILES, MRPURPLE6411_ADDON_MANIFEST } from '../installers/mrpurple6411-addon-pack';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * CustomHullPlates Pack mod type.

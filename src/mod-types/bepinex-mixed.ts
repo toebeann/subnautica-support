@@ -2,7 +2,11 @@ import { dirname, join, sep } from 'path';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_PATCHERS_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
 import { getDiscovery } from '../utils';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * BepInEx Mod mod type.

@@ -3,8 +3,11 @@ import { TRANSLATION_OPTIONS } from './constants';
 import { getDiscovery, getMods } from './utils';
 import { BEPINEX_5_CORE_DLL, BEPINEX_5_MOD_TYPE } from './mod-types/bepinex-5';
 import { BEPINEX_6_CORE_DLL, BEPINEX_6_MOD_TYPE } from './mod-types/bepinex-6';
-import { fs, util } from 'vortex-api';
-import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
+import { fs, types, util } from 'vortex-api';
+import statAsync = fs.statAsync;
+import IDiscoveryResult = types.IDiscoveryResult;
+import IExtensionApi = types.IExtensionApi;
+import opn = util.opn;
 
 /**
  * URL to the BepInEx page on Nexus Mods.
@@ -53,11 +56,11 @@ export const isBepInExCoreFileInstalled = async (api: IExtensionApi, discovery: 
     if (!discovery?.path) return false;
 
     try {
-        await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_5_CORE_DLL));
+        await statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_5_CORE_DLL));
         return true;
     } catch {
         try {
-            await fs.statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_6_CORE_DLL));
+            await statAsync(join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR, BEPINEX_6_CORE_DLL));
             return true;
         } catch {
             return false;
@@ -79,7 +82,7 @@ export const validateBepInEx = async (api: IExtensionApi) => {
             actions: [
                 {
                     title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS),
-                    action: () => util.opn(BEPINEX_URL)
+                    action: () => opn(BEPINEX_URL)
                 }
             ]
         });

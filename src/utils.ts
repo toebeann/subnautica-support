@@ -3,7 +3,9 @@ import { store } from '.';
 import { BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_PATH } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IDiscoveryResult = types.IDiscoveryResult;
+import IExtensionApi = types.IExtensionApi;
 
 /**
  * Utility function to retrieve a game discovery result from the Vortex API.

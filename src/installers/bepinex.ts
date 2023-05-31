@@ -7,7 +7,12 @@ import { BEPINEX_6_CORE_DLL } from '../mod-types/bepinex-6';
 import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
-import { IExtensionApi, IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IInstallResult = types.IInstallResult;
+import IInstruction = types.IInstruction;
+import TestSupported = types.TestSupported;
 
 /**
  * BepInEx core filenames.

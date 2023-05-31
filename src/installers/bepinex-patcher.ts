@@ -1,7 +1,11 @@
 import { basename, dirname, extname, join, sep } from 'path';
 import { BEPINEX_PATCHERS_DIR } from '../bepinex';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionContext = types.IExtensionContext;
+import IInstallResult = types.IInstallResult;
+import IInstruction = types.IInstruction;
+import TestSupported = types.TestSupported;
 
 /**
  * Determines whether the installer is supported for the given mod files and game.

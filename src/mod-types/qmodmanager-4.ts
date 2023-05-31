@@ -2,7 +2,10 @@ import { join } from 'path';
 import { getPath, isSupported } from './bepinex-5';
 import { BEPINEX_PLUGINS_DIR } from '../bepinex';
 import { QMM_DIR } from '../qmodmanager';
-import { IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * QModManager 4 mod type.

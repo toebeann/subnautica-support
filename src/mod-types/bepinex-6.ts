@@ -4,7 +4,10 @@ import { QMM_CORE_DLL } from './qmodmanager-4';
 import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH } from '../bepinex';
 import { QMM_DIR } from '../qmodmanager';
 import { BEPINEX_INJECTOR_CORE_FILES } from '../installers/bepinex';
-import { IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * BepInEx 6 mod type.

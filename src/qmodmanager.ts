@@ -3,8 +3,9 @@ import { TRANSLATION_OPTIONS } from './constants';
 import { getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
 import { SteamBetaBranch } from './platforms/steam';
-import { util } from 'vortex-api';
-import { IExtensionApi } from 'vortex-api/lib/types/api';
+import { types, util } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import opn = util.opn;
 
 /**
  * URL to the QModManager page on Nexus Mods.
@@ -47,7 +48,7 @@ export const validateQModManager = async (api: IExtensionApi) => {
                     actions: [
                         {
                             title: api.translate('Get QMM'),
-                            action: () => util.opn(QMM_URL)
+                            action: () => opn(QMM_URL)
                         }
                     ]
                 });

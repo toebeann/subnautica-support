@@ -1,6 +1,10 @@
 import { basename, dirname, join, sep } from 'path';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionContext = types.IExtensionContext;
+import IInstallResult = types.IInstallResult;
+import IInstruction = types.IInstruction;
+import TestSupported = types.TestSupported;
 
 /**
  * CustomCraft2 root mod folder.

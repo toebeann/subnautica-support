@@ -1,8 +1,10 @@
 import { dirname, join } from 'path';
 import { getDiscovery } from '../utils';
 import parseAcf from 'steam-acf-parser';
-import { fs } from 'vortex-api';
-import { IDiscoveryResult, IExtensionApi } from 'vortex-api/lib/types/api';
+import { fs, types } from 'vortex-api';
+import readFileAsync = fs.readFileAsync;
+import IDiscoveryResult = types.IDiscoveryResult;
+import IExtensionApi = types.IExtensionApi;
 
 /**
  * Steam game id for Subnautica.
@@ -52,7 +54,7 @@ export const getManifestPath = (api: IExtensionApi, discovery: IDiscoveryResult 
 export const getManifest = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     const path = getManifestPath(api, discovery);
     if (path) {
-        const data = await fs.readFileAsync(path, { encoding: 'utf-8' });
+        const data = await readFileAsync(path, { encoding: 'utf-8' });
         return parseAcf(data);
     }
 }

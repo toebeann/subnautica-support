@@ -27,9 +27,19 @@ import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
 import { getFileVersion, getProductVersion } from 'exe-version';
 import { major, prerelease } from 'semver';
 import store2 from 'store2';
-import { fs, selectors, util } from 'vortex-api';
-import { IDialogResult, IDiscoveryResult, IExtensionApi, IExtensionContext, IGame } from 'vortex-api/lib/types/api';
+import { fs, selectors, types, util } from 'vortex-api';
 import { z } from 'zod';
+import readFileAsync = fs.readFileAsync;
+import ensureDirWritableAsync = fs.ensureDirWritableAsync;
+import watch = fs.watch;
+import profileById = selectors.profileById;
+import IDialogResult = types.IDialogResult;
+import IDiscoveryResult = types.IDiscoveryResult;
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import GameStoreHelper = util.GameStoreHelper;
+import opn = util.opn;
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
 store.isFake(['alpha', 'beta', 'dev'].includes(prerelease(version)?.[0].toString() ?? ''));
@@ -60,7 +70,7 @@ export default function main(context: IExtensionContext): boolean {
             const versionParser = z.string().min(0);
             try {
                 const plasticStatusPath = join(gamePath, 'Subnautica_Data', 'StreamingAssets', 'SNUnmanagedData', 'plastic_status.ignore');
-                return versionParser.parse((await fs.readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim());
+                return versionParser.parse((await readFileAsync(plasticStatusPath, { encoding: 'utf8' })).trim());
             } catch {
                 const exePath = join(gamePath, GAME_EXE);
                 try {
@@ -95,7 +105,7 @@ export default function main(context: IExtensionContext): boolean {
         });
 
         context.api.onAsync('did-deploy', async (profileId: string) => {
-            if (selectors.profileById(context.api.getState(), profileId)?.gameId !== NEXUS_GAME_ID) {
+            if (profileById(context.api.getState(), profileId)?.gameId !== NEXUS_GAME_ID) {
                 return;
             }
 
@@ -131,7 +141,7 @@ export default function main(context: IExtensionContext): boolean {
  */
 const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     if (discovery?.path) {
-        await Promise.all([QMM_MOD_PATH, BEPINEX_MOD_PATH].map(path => fs.ensureDirWritableAsync(join(discovery.path!, path))));
+        await Promise.all([QMM_MOD_PATH, BEPINEX_MOD_PATH].map(path => ensureDirWritableAsync(join(discovery.path!, path))));
         await validateBranch(api, discovery);
     }
 }
@@ -148,7 +158,7 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
                 addInfo: {
                     appId: XBOX_GAME_ID,
                     parameters: [{
-                        appExecName: getAppExecName(await util.GameStoreHelper.findByAppId([XBOX_GAME_ID]))
+                        appExecName: getAppExecName(await GameStoreHelper.findByAppId([XBOX_GAME_ID]))
                     }],
                 }
             };
@@ -162,7 +172,7 @@ const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult
         const controller = new AbortController();
         const signal = controller.signal;
 
-        fs.watch(manifest, {
+        watch(manifest, {
             persistent: false,
             signal
         }, async () => {
@@ -238,8 +248,8 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
                 }
             ]
         }, [
-            { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => util.opn(BEPINEX_URL) },
-            { label: api.translate('More', TRANSLATION_OPTIONS), action: () => util.opn('https://www.nexusmods.com/news/14813') },
+            { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => opn(BEPINEX_URL) },
+            { label: api.translate('More', TRANSLATION_OPTIONS), action: () => opn('https://www.nexusmods.com/news/14813') },
             { label: api.translate('Close', TRANSLATION_OPTIONS) }
         ], 'subnautica-2.0-info-dialog');
 

@@ -2,7 +2,11 @@ import { basename, dirname, extname, join, sep } from 'path';
 import { QMM_MOD_PATH } from '../qmodmanager';
 import { getDiscovery } from '../utils';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * QModManager Mod mod type.

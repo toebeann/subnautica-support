@@ -1,8 +1,14 @@
 import { basename, dirname, join, sep } from 'path';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
 import { parse } from 'relaxed-json';
-import { fs, util } from 'vortex-api';
+import { fs, types, util } from 'vortex-api';
+import readFileAsync = fs.readFileAsync;
+import IExtensionContext = types.IExtensionContext;
+import IInstallResult = types.IInstallResult;
+import IInstruction = types.IInstruction;
+import TestSupported = types.TestSupported;
+import DataInvalid = util.DataInvalid;
+import deBOM = util.deBOM;
 
 /**
  * MrPurple6411 addon manifest filename.
@@ -43,7 +49,7 @@ export const install = async (files: string[], workingPath: string) => {
     const manifestDirs = manifests.map(file => dirname(file).toLowerCase().split(sep));
     const index = manifestDirs[0]?.indexOf(rootDir);
     const filtered = manifests.filter(file => file.toLowerCase().split(sep).indexOf(rootDir) === index);
-    const manifestsData = await Promise.all(filtered.map(async (manifest) => parse(util.deBOM(await fs.readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' })))));
+    const manifestsData = await Promise.all(filtered.map(async (manifest) => parse(deBOM(await readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' })))));
     const posterManifests = filtered.filter((_, index) => 'Orientation' in manifestsData[index]);
     const hullPlateManifests = filtered.filter(file => !posterManifests.includes(file));
 
@@ -77,20 +83,20 @@ const getAddonName = async (manifest: string, workingPath: string) => {
     if (folder !== '.') return folder;
 
     try {
-        const data = await fs.readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' });
-        const json = parse(util.deBOM(data));
+        const data = await readFileAsync(join(workingPath, manifest), { encoding: 'utf-8' });
+        const json = parse(deBOM(data));
         if ('InternalName' in json && typeof json.InternalName === 'string') {
             return json.InternalName as string;
         } else if ('InternalName' in json) {
-            throw new util.DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}: 'InternalName' is not a string`);
+            throw new DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}: 'InternalName' is not a string`);
         } else {
-            throw new util.DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}: missing property 'InternalName'`);
+            throw new DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}: missing property 'InternalName'`);
         }
     } catch (e) {
-        if (e instanceof util.DataInvalid) {
+        if (e instanceof DataInvalid) {
             throw e;
         } else {
-            throw new util.DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}`);
+            throw new DataInvalid(`Failed to parse ${MRPURPLE6411_ADDON_MANIFEST}`);
         }
     }
 };

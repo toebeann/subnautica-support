@@ -5,7 +5,11 @@ import { QMM_DIR } from '../qmodmanager';
 import { getDiscovery } from '../utils';
 import { BEPINEX_INJECTOR_CORE_FILES } from '../installers/bepinex';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionApi, IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IGame = types.IGame;
+import IInstruction = types.IInstruction;
 
 /**
  * BepInEx 5 mod type.

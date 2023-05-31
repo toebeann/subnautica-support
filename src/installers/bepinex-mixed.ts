@@ -3,7 +3,12 @@ import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BE
 import { QMM_DIR } from '../qmodmanager';
 import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
-import { IExtensionApi, IExtensionContext, IInstallResult, IInstruction, TestSupported } from 'vortex-api/lib/types/api';
+import { types } from 'vortex-api';
+import IExtensionApi = types.IExtensionApi;
+import IExtensionContext = types.IExtensionContext;
+import IInstallResult = types.IInstallResult;
+import IInstruction = types.IInstruction;
+import TestSupported = types.TestSupported;
 
 /**
  * Determines whether the installer is supported for the given mod files and game.
