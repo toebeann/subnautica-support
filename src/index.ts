@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExModTypeInstalled, validateBepInEx } from './bepinex';
-import { EXTENSION_ID, GAME_EXE, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
+import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 import { getDiscovery, getModPath } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
@@ -38,7 +38,7 @@ export default function main(context: IExtensionContext): boolean {
     // register Subnautica with Vortex
     context.registerGame({
         id: NEXUS_GAME_ID,
-        name: 'Subnautica',
+        name: GAME_NAME,
         logo: 'gameart.jpg',
         mergeMods: true,
         queryModPath: getModPath,
