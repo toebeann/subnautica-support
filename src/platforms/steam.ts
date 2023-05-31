@@ -52,7 +52,7 @@ export const getManifestPath = (api: IExtensionApi, discovery: IDiscoveryResult 
 export const getManifest = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
     const path = getManifestPath(api, discovery);
     if (path) {
-        const data = await fs.readFileAsync(getManifestPath(api, discovery), { encoding: 'utf-8' });
+        const data = await fs.readFileAsync(path, { encoding: 'utf-8' });
         return parseAcf(data);
     }
 }
