@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { getPath, isSupported } from './bepinex-5';
-import { BEPINEX_MOD_PATH } from '../bepinex';
+import { BEPINEX_PLUGINS_DIR } from '../bepinex';
 import { QMM_DIR } from '../qmodmanager';
 import { IExtensionContext, IGame, IInstruction } from 'vortex-api/lib/types/api';
 
@@ -21,8 +21,8 @@ export const QMM_CORE_DLL = 'QModInstaller.dll';
  */
 export const test = async (installInstructions: IInstruction[]): Promise<boolean> => installInstructions
     .filter(instruction => instruction.type === 'copy' && instruction.destination)
-    .map(instruction => instruction.destination!.toLowerCase())
-    .includes(join(BEPINEX_MOD_PATH, QMM_DIR, QMM_CORE_DLL).toLowerCase());
+    .map(instruction => instruction.destination!)
+    .some(destination => destination.toLowerCase().endsWith(join(BEPINEX_PLUGINS_DIR, QMM_DIR, QMM_CORE_DLL).toLowerCase()));
 
 /**
  * Registers the QModManager 4 mod type with the Vortex API.
