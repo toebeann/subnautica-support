@@ -1,18 +1,20 @@
 import { basename, dirname, join, sep } from 'path';
 import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExCoreFileInstalled, isBepInExEnabled } from '../bepinex';
 import { TRANSLATION_OPTIONS } from '../constants';
-import { QMM_DIR, isQModManagerEnabled } from '../qmodmanager';
+import { QMM_DIR, QMM_URL, isQModManagerEnabled } from '../qmodmanager';
+import { getMods, reinstallMod } from '../utils';
 import { BEPINEX_5_CORE_DLL } from '../mod-types/bepinex-5';
 import { BEPINEX_6_CORE_DLL } from '../mod-types/bepinex-6';
-import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
+import { QMM_4_MOD_TYPE, QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
-import { types } from 'vortex-api';
+import { types, util } from 'vortex-api';
 import IExtensionApi = types.IExtensionApi;
 import IExtensionContext = types.IExtensionContext;
 import IInstallResult = types.IInstallResult;
 import IInstruction = types.IInstruction;
 import TestSupported = types.TestSupported;
+import opn = util.opn;
 
 /**
  * BepInEx core filenames.
@@ -60,11 +62,25 @@ export const install = async (api: IExtensionApi, files: string[]) => {
             && !isBepInExEnabled(api.getState())
             && (await isBepInExCoreFileInstalled(api.getState()))) {
 
+            // the user appears to have installed QModManager with an old version of the extension,
+            // so they need to reinstall it so we can filter out the bepinex files to avoid conflicts
+
+            const potentials = getMods(api.getState(), 'enabled').filter(mod =>
+                mod.attributes?.homepage === QMM_URL ||
+                (mod.attributes?.modId === 201 && mod.attributes?.downloadGame === 'subnautica') ||
+                mod.type === QMM_4_MOD_TYPE);
+            const qmm = potentials.length === 1 ? potentials[0] : undefined;
+
             api.sendNotification?.({
                 id: 'reinstall-qmm',
                 type: 'error',
                 title: api.translate('Incompatible {{qmodmanager}} installation detected', TRANSLATION_OPTIONS),
                 message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
+                actions: [
+                    qmm // if QMM is enabled, offer to reinstall it
+                        ? { title: api.translate('Reinstall', TRANSLATION_OPTIONS), action: () => reinstallMod(api, qmm) }
+                        : { title: api.translate('Get {{qmodmanager}}', TRANSLATION_OPTIONS), action: () => opn(QMM_URL) }
+                ],
             });
 
             return <IInstallResult>{

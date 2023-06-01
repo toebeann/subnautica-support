@@ -3,7 +3,7 @@ import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
-import { getDiscovery, getModPath, getMods, isFile } from './utils';
+import { getDiscovery, getModPath, getMods, isFile, reinstallMod } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
@@ -238,12 +238,22 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             bepinexPacks.length > 0 && // bepinex pack is installed
             (bepinexPacks.length > 1 || // save my sanity from attempting to work out what to do when they have multiple bepinex packs installed...
                 await isFile(join(stagingFolder, bepinexPacks[0].installationPath, BEPINEX_DIR, BEPINEX_CONFIG_DIR, `BepInEx.${currentBranch === 'legacy' ? 'legacy' : 'stable'}.cfg`)))) {
+
             // if there is an alt config file in the staging folder, it's an old version of the bepinex pack which requires reinstalling when branch is changed
+
+            const potentials = getMods(api.getState(), 'enabled').filter(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
+            const bepinex = potentials.length === 1 ? potentials[0] : undefined;
+
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
                 type: 'error',
-                title: api.translate('Previous {{bepinex}} installation detected', TRANSLATION_OPTIONS),
-                message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
+                title: api.translate('{{bepinex}} config file update needed', TRANSLATION_OPTIONS),
+                message: api.translate(`Please reinstall {{bepinex}} to apply update.`, TRANSLATION_OPTIONS),
+                actions: [
+                    bepinex // if BepInEx pack is enabled, offer to reinstall it
+                        ? { title: api.translate('Reinstall'), action: () => reinstallMod(api, bepinex) }
+                        : { title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => opn(BEPINEX_URL) }
+                ],
             });
         } else {
             api.dismissNotification?.('reinstall-bepinex');
