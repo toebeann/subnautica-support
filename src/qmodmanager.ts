@@ -1,7 +1,8 @@
 import { store } from '.';
 import { TRANSLATION_OPTIONS } from './constants';
-import { getMods } from './utils';
+import { enableMods, getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
+import { QMM_MOD_MOD_TYPE } from './mod-types/qmodmanager-mod';
 import { SteamBetaBranch } from './platforms/steam';
 import { types, util } from 'vortex-api';
 import IExtensionApi = types.IExtensionApi;
@@ -33,25 +34,36 @@ export const isQModManagerEnabled = (state: IState) =>
         mod.type === QMM_4_MOD_TYPE);
 
 /**
+ * Utility function to determing whether any QMods are enabled via the Vortex API.
+ * @param state 
+ * @returns True if any QMods are installed, false otherwise. Always returns false is no QMods were installed and enabled via Vortex.
+ */
+export const areAnyQModsEnabled = (state: IState) => getMods(state, 'enabled').some(mod => mod.type === QMM_MOD_MOD_TYPE);
+
+/**
  * Utility function to validate the QModManager installation and notify the user of any issues.
  * @param api 
  */
 export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
-            if (!isQModManagerEnabled(api.getState())) {
+            if (!isQModManagerEnabled(api.getState()) && areAnyQModsEnabled(api.getState())) {
+                // user has QMods enabled but has not installed/enabled QModManager
+
                 api.dismissNotification?.('qmodmanager-stable');
+
+                const potentials = getMods(api.getState(), 'disabled').filter(mod => mod.type === QMM_4_MOD_TYPE);
+                const disabledQmm = potentials.length === 1 ? potentials[0] : undefined;
 
                 api.sendNotification?.({
                     id: 'qmodmanager-missing',
                     type: 'warning',
-                    title: api.translate('{{qmodmanager}} not installed', TRANSLATION_OPTIONS),
-                    message: api.translate('On the {{legacy}} branch of {{game}}, {{qmodmanager}} is required.', TRANSLATION_OPTIONS),
+                    title: api.translate(`{{qmodmanager}} is ${disabledQmm ? 'disabled' : 'not installed'}`, TRANSLATION_OPTIONS),
+                    message: api.translate('{{qmodmanager}} is required to use {{qmods}}.', TRANSLATION_OPTIONS),
                     actions: [
-                        {
-                            title: api.translate('Get QMM'),
-                            action: () => opn(QMM_URL)
-                        }
+                        disabledQmm // if QMM is disabled, offer to enable it
+                            ? { title: api.translate('Enable'), action: () => enableMods(api, true, disabledQmm.id) }
+                            : { title: api.translate('Get {{qmm}}', TRANSLATION_OPTIONS), action: () => opn(QMM_URL) }
                     ]
                 });
             } else {
@@ -63,12 +75,21 @@ export const validateQModManager = async (api: IExtensionApi) => {
             api.dismissNotification?.('qmodmanager-missing');
 
             if (isQModManagerEnabled(api.getState())) {
+                // user has QModManager enabled but is not on the legacy branch
+
+                const potentials = getMods(api.getState(), 'enabled').filter(mod => mod.type === QMM_4_MOD_TYPE);
+                console.log(potentials);
+                const enabledQmm = potentials.length === 1 ? potentials[0] : undefined;
+
                 api.sendNotification?.({
                     id: 'qmodmanager-stable',
                     type: 'error',
-                    title: api.translate('Please uninstall {{qmodmanager}}.', TRANSLATION_OPTIONS),
-                    message: api.translate('{{qmodmanager}} is only intended for use on the {{legacy}} branch.', TRANSLATION_OPTIONS),
-                    allowSuppress: true
+                    title: api.translate('Disable {{qmm}} or switch to {{legacy}} branch', TRANSLATION_OPTIONS),
+                    message: api.translate('Using {{qmodmanager}} may cause issues.', TRANSLATION_OPTIONS),
+                    allowSuppress: true,
+                    actions: enabledQmm // if QMM is enabled, offer to disable it
+                        ? [{ title: api.translate('Disable'), action: () => enableMods(api, false, enabledQmm.id) }]
+                        : undefined
                 });
             } else {
                 api.dismissNotification?.('qmodmanager-stable');
