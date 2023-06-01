@@ -25,9 +25,13 @@ You can also manually install it by downloading the main file and dragging it in
 
 Afterwards, restart Vortex and you can begin installing supported Subnautica mods with Vortex.
 
+***
+
 **<center><big>The rest of this page is intended for mod authors only.<br/>Users can simply follow the instructions above to install, and you're done!</big></center>**
 
 <center><a href="https://ko-fi.com/toebean_" target="_blank"><img src="https://uploads-ssl.webflow.com/5c14e387dab576fe667689cf/61e11d503cc13747866d338b_Button-2-p-800.png" alt="Support toebeann on Ko-fi"/></a></center>
+
+***
 
 ## How to make my mod compatible with this extension?
 
