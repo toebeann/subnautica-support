@@ -304,5 +304,16 @@ Any of the following structures are valid. Note that although these examples onl
 
 If you have followed the packaging examples above and your mod is still being incorrectly installed by this extension, please [raise an issue on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page or with a sample archive attached so that I can get it fixed.
 
+## Copyright notice
+
+Subnautica Support - Vortex support for Subnautica
+Copyright (C) 2023 Tobey Blaber
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, see <https://www.gnu.org/licenses>.
+
 [Vortex]: https://www.nexusmods.com/about/vortex/
 [Vortex Mod Manager]: https://www.nexusmods.com/about/vortex/
