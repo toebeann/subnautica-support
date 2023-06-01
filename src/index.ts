@@ -1,3 +1,4 @@
+import '@total-typescript/ts-reset';
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
