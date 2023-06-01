@@ -23,7 +23,7 @@
 
 ### Fixed
 
-- Correct handling of `BepInEx.cfg` on legacy branch for BepInEx pack version 5.4.21-payload.1.4.0 or newer ([`738f485`](https://github.com/toebeann/subnautica-support/commit/738f485))
+- Correct handling of `BepInEx.cfg` on legacy branch for BepInEx packs without an included `BepInEx.legacy.cfg` ([`738f485`](https://github.com/toebeann/subnautica-support/commit/738f485))
 
 ## [3.2.8] - 2023-02-12
 
