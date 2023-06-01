@@ -145,7 +145,7 @@ const debugSetup = (context: IExtensionContext) => {
             sn1: {
                 context,
                 getState: () => context.api.getState(),
-                getDiscovery: () => getDiscovery(context.api),
+                getDiscovery: () => getDiscovery(context.api.getState()),
                 getMods: () => getMods(context.api.getState()),
                 'vortex-api': {
                     actions,
@@ -163,7 +163,7 @@ const debugSetup = (context: IExtensionContext) => {
  * @param api 
  * @param discovery 
  */
-const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     if (discovery?.path) {
         await Promise.all([QMM_MOD_PATH, BEPINEX_MOD_PATH].map(path => ensureDirWritableAsync(join(discovery.path!, path))));
         await validateBranch(api, discovery);
@@ -189,8 +189,8 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
     }
 }
 
-const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
-    const manifest = getManifestPath(api, discovery);
+const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
+    const manifest = getManifestPath(api.getState(), discovery);
 
     if (manifest) {
         const controller = new AbortController();
@@ -212,14 +212,14 @@ const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult
     await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
-const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     await validateBranch(api, discovery);
     await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
-const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     const storedBranch = store('branch');
-    const currentBranch = await getBranch(api, discovery);
+    const currentBranch = await getBranch(api.getState(), discovery);
 
     if (currentBranch !== storedBranch) {
         store('branch', currentBranch);
@@ -261,7 +261,7 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
 
 const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
     if (!store('suppress-subnautica-2.0-info-dialog')) {
-        const branch = store('branch') as SteamBetaBranch ?? await getBranch(api);
+        const branch = store('branch') as SteamBetaBranch ?? await getBranch(api.getState());
         if (!store('branch')) store('branch', branch);
 
         // this is the first time the extension has loaded since updating to v3, so we should

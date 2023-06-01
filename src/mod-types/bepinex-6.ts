@@ -42,7 +42,7 @@ export const register = (context: IExtensionContext) =>
         BEPINEX_6_MOD_TYPE,
         50,
         isSupported,
-        (game: IGame) => getPath(context.api, game),
+        (game: IGame) => getPath(context.api.getState(), game),
         test,
         {
             name: 'BepInEx 6',

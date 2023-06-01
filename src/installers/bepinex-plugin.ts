@@ -59,7 +59,7 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
     // determine whether the mod contains BepInEx plugins and set the mod type accordingly
     // to handle the case where a mod can be installed either as a QModManager mod or a BepInEx plugin
     if (sansDirectories.some(f => basename(f).toLowerCase() === QMM_MOD_MANIFEST)
-        && await getBranch(api) !== 'legacy'
+        && await getBranch(api.getState()) !== 'legacy'
         && await hasBepInExPlugins(api, files, workingPath)) {
         instructions.push({
             type: 'setmodtype',
@@ -78,7 +78,7 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
  * @param discovery 
  * @returns 
  */
-const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPath: string, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPath: string, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     if (!discovery?.path) return false;
 
     const sansDirectories = files.filter(file => !file.endsWith(sep));

@@ -6,19 +6,19 @@ import { NEXUS_GAME_ID } from './platforms/nexus';
 import { fs, selectors, types } from 'vortex-api';
 import statAsync = fs.statAsync;
 import activeProfile = selectors.activeProfile;
+import discoveryByGame = selectors.discoveryByGame;
 import IDiscoveryResult = types.IDiscoveryResult;
-import IExtensionApi = types.IExtensionApi;
 import IMod = types.IMod;
 import IState = types.IState;
 
 /**
  * Utility function to retrieve a game discovery result from the Vortex API.
- * @param api 
+ * @param state 
  * @param gameId The game ID to retrieve the discovery result for. Defaults to Subnautica.
  * @returns The game discovery result, or undefined if the game has not been discovered.
  */
-export const getDiscovery = (api: IExtensionApi, gameId: string = NEXUS_GAME_ID): IDiscoveryResult | undefined =>
-    api.getState().settings.gameMode.discovered[gameId];
+export const getDiscovery = (state: IState, gameId: string = NEXUS_GAME_ID): IDiscoveryResult | undefined =>
+    discoveryByGame(state, gameId);
 
 /**
  * Utility function to retrieve the path to the mods directory based on the current Steam beta branch.

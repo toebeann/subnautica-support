@@ -3,10 +3,10 @@ import { QMM_MOD_PATH } from '../qmodmanager';
 import { getDiscovery } from '../utils';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { types } from 'vortex-api';
-import IExtensionApi = types.IExtensionApi;
 import IExtensionContext = types.IExtensionContext;
 import IGame = types.IGame;
 import IInstruction = types.IInstruction;
+import IState = types.IState;
 
 /**
  * QModManager Mod mod type.
@@ -27,11 +27,11 @@ export const isSupported = (gameId: string): boolean => gameId === NEXUS_GAME_ID
 
 /**
  * Retrieves the absolute path to the installation directory for this mod type.
- * @param api 
+ * @param state 
  * @param game 
  * @returns 
  */
-export const getPath = (api: IExtensionApi, game: IGame): string => join(getDiscovery(api, game.id)?.path ?? '', QMM_MOD_PATH);
+export const getPath = (state: IState, game: IGame): string => join(getDiscovery(state, game.id)?.path ?? '', QMM_MOD_PATH);
 
 /**
  * Determines whether a given mod is of this mod type.
@@ -60,7 +60,7 @@ export const register = (context: IExtensionContext) =>
         QMM_MOD_MOD_TYPE,
         80,
         isSupported,
-        (game: IGame) => getPath(context.api, game),
+        (game: IGame) => getPath(context.api.getState(), game),
         test,
         {
             name: 'QModManager Mod',

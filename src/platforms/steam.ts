@@ -5,6 +5,7 @@ import { fs, types } from 'vortex-api';
 import readFileAsync = fs.readFileAsync;
 import IDiscoveryResult = types.IDiscoveryResult;
 import IExtensionApi = types.IExtensionApi;
+import IState = types.IState;
 
 /**
  * Steam game id for Subnautica.
@@ -36,23 +37,23 @@ export type SteamBetaBranch = typeof STEAM_BETA_BRANCHES[number];
 
 /**
  * Retrieves the steam app manifest path
- * @param api 
+ * @param state 
  * @param discovery 
  * @returns 
  */
-export const getManifestPath = (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): string | void =>
+export const getManifestPath = (state: IState, discovery: IDiscoveryResult | undefined = getDiscovery(state)): string | void =>
     discovery?.path && discovery?.store === 'steam'
         ? join(dirname(dirname(discovery.path)), `appmanifest_${STEAM_GAME_ID}.acf`)
         : undefined;
 
 /**
  * Asynchronously retrieves the steam app manifest for Subnautica.
- * @param api 
+ * @param state 
  * @param discovery 
  * @returns 
  */
-export const getManifest = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
-    const path = getManifestPath(api, discovery);
+export const getManifest = async (state: IState, discovery: IDiscoveryResult | undefined = getDiscovery(state)) => {
+    const path = getManifestPath(state, discovery);
     if (path) {
         const data = await readFileAsync(path, { encoding: 'utf-8' });
         return parseAcf(data);
@@ -61,11 +62,11 @@ export const getManifest = async (api: IExtensionApi, discovery: IDiscoveryResul
 
 /**
  * Asynchronously retrieves the current beta branch for Subnautica.
- * @param api 
+ * @param state 
  * @param discovery 
  * @returns The current beta branch for Subnautica. Returns 'stable' if the game is not discovered on Steam.
  */
-export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)): Promise<SteamBetaBranch> => {
+export const getBranch = async (state: IState, discovery: IDiscoveryResult | undefined = getDiscovery(state)): Promise<SteamBetaBranch> => {
     switch (discovery?.store) {
         case 'steam':
             if (!discovery.path) {
@@ -73,7 +74,7 @@ export const getBranch = async (api: IExtensionApi, discovery: IDiscoveryResult 
             }
 
             try {
-                const manifest = await getManifest(api, discovery);
+                const manifest = await getManifest(state, discovery);
                 if (manifest) {
                     return getBranchFromManifest(manifest);
                 } else {

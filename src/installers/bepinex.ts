@@ -53,12 +53,12 @@ export const install = async (api: IExtensionApi, files: string[]) => {
     const stableConfig = files.find(file => basename(file).toLowerCase() === 'bepinex.cfg'
         && basename(dirname(file)).toLowerCase() === BEPINEX_CONFIG_DIR.toLowerCase());
 
-    const branch = await getBranch(api);
+    const branch = await getBranch(api.getState());
 
     if (branch === 'legacy') {
         if (isQModManagerEnabled(api.getState())
             && !isBepInExEnabled(api.getState())
-            && (await isBepInExCoreFileInstalled(api))) {
+            && (await isBepInExCoreFileInstalled(api.getState()))) {
 
             api.sendNotification?.({
                 id: 'reinstall-qmm',

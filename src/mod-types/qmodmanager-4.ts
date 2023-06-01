@@ -37,7 +37,7 @@ export const register = (context: IExtensionContext) =>
         QMM_4_MOD_TYPE,
         50,
         isSupported,
-        (game: IGame) => getPath(context.api, game),
+        (game: IGame) => getPath(context.api.getState(), game),
         test,
         {
             name: 'QModManager 4',

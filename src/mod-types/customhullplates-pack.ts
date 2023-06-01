@@ -3,10 +3,10 @@ import { getDiscovery, getModPath } from '../utils';
 import { CUSTOMHULLPLATES_FOLDER, MRPURPLE6411_ADDON_FILES, MRPURPLE6411_ADDON_MANIFEST } from '../installers/mrpurple6411-addon-pack';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { types } from 'vortex-api';
-import IExtensionApi = types.IExtensionApi;
 import IExtensionContext = types.IExtensionContext;
 import IGame = types.IGame;
 import IInstruction = types.IInstruction;
+import IState = types.IState;
 
 /**
  * CustomHullPlates Pack mod type.
@@ -22,11 +22,11 @@ export const isSupported = (gameId: string): boolean => gameId === NEXUS_GAME_ID
 
 /**
  * Retrieves the absolute path to the installation directory for this mod type.
- * @param api 
+ * @param state 
  * @param game 
  * @returns 
  */
-export const getPath = (api: IExtensionApi, game: IGame): string => getModPath(getDiscovery(api, game.id)?.path);
+export const getPath = (state: IState, game: IGame): string => getModPath(getDiscovery(state, game.id)?.path);
 
 /**
  * Determines whether a given mod is of this mod type.
@@ -55,7 +55,7 @@ export const register = (context: IExtensionContext) =>
         CUSTOMHULLPLATES_PACK_MOD_TYPE,
         90,
         isSupported,
-        (game: IGame) => getPath(context.api, game),
+        (game: IGame) => getPath(context.api.getState(), game),
         test,
         {
             name: 'CustomHullPlates Pack',

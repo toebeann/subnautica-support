@@ -49,11 +49,11 @@ export const isBepInExEnabled = (state: IState) =>
 
 /**
  * Utility function to determine whether BepInEx core files are installed to disk.
- * @param api 
+ * @param state 
  * @param discovery 
  * @returns 
  */
-export const isBepInExCoreFileInstalled = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api)) => {
+export const isBepInExCoreFileInstalled = async (state: IState, discovery: IDiscoveryResult | undefined = getDiscovery(state)) => {
     if (!discovery?.path) return false;
 
     try {
@@ -74,7 +74,7 @@ export const isBepInExCoreFileInstalled = async (api: IExtensionApi, discovery: 
  * @param api 
  */
 export const validateBepInEx = async (api: IExtensionApi) => {
-    if (!isBepInExEnabled(api.getState()) && !(await isBepInExCoreFileInstalled(api))) {
+    if (!isBepInExEnabled(api.getState()) && !(await isBepInExCoreFileInstalled(api.getState()))) {
         api.sendNotification?.({
             id: 'bepinex-missing',
             type: 'warning',
