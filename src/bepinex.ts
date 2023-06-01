@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { TRANSLATION_OPTIONS } from './constants';
-import { getDiscovery, getMods } from './utils';
+import { enableMods, getDiscovery, getMods } from './utils';
 import { BEPINEX_5_CORE_DLL, BEPINEX_5_MOD_TYPE } from './mod-types/bepinex-5';
 import { BEPINEX_6_CORE_DLL, BEPINEX_6_MOD_TYPE } from './mod-types/bepinex-6';
 import { fs, types, util } from 'vortex-api';
@@ -75,16 +75,19 @@ export const isBepInExCoreFileInstalled = async (state: IState, discovery: IDisc
  */
 export const validateBepInEx = async (api: IExtensionApi) => {
     if (!isBepInExEnabled(api.getState()) && !(await isBepInExCoreFileInstalled(api.getState()))) {
+
+        const potentials = getMods(api.getState(), 'disabled').filter(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
+        const disabledBepInEx = potentials.length === 1 ? potentials[0] : undefined;
+
         api.sendNotification?.({
             id: 'bepinex-missing',
             type: 'warning',
-            title: api.translate('{{bepinex}} not installed', TRANSLATION_OPTIONS),
+            title: api.translate(`{{bepinex}} is ${disabledBepInEx ? 'disabled' : 'not installed'}`, TRANSLATION_OPTIONS),
             message: api.translate('{{bepinex}} is required to mod {{game}}.', TRANSLATION_OPTIONS),
             actions: [
-                {
-                    title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS),
-                    action: () => opn(BEPINEX_URL)
-                }
+                disabledBepInEx // if BepInEx pack is disabled, offer to enable it
+                    ? { title: api.translate('Enable'), action: () => enableMods(api, true, disabledBepInEx.id) }
+                    : { title: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => opn(BEPINEX_URL) }
             ]
         });
     } else {

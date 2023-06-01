@@ -3,11 +3,13 @@ import { store } from '.';
 import { BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_PATH } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
-import { fs, selectors, types } from 'vortex-api';
+import { actions, fs, selectors, types } from 'vortex-api';
+import setModsEnabled = actions.setModsEnabled;
 import statAsync = fs.statAsync;
 import activeProfile = selectors.activeProfile;
 import discoveryByGame = selectors.discoveryByGame;
 import IDiscoveryResult = types.IDiscoveryResult;
+import IExtensionApi = types.IExtensionApi;
 import IMod = types.IMod;
 import IState = types.IState;
 
@@ -58,6 +60,15 @@ export const getMods = <T extends 'enabled' | 'disabled' | 'uninstalled' | 'all'
             ] as ReturnType<typeof getMods<T>>;
     }
 }
+
+/**
+ * Utility function to enable/disable mods via the Vortex API.
+ * @param api 
+ * @param enabled Whether the mod(s) should be enabled or disabled.
+ * @param modIds The ID(s) of the mods to enable/disable.
+ * @returns 
+ */
+export const enableMods = (api: IExtensionApi, enabled: boolean, ...modIds: string[]) => setModsEnabled(api, activeProfile(api.getState()).id, modIds, enabled);
 
 /**
  * Utility function to determine if a path is a file on disk.
