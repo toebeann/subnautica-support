@@ -13,13 +13,13 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.4.2",
     "@tsconfig/recommended": "^1.0.2",
-    "@types/i18next": "^8",
-    "@types/node": "^18.13.0",
+    "@types/i18next": "^8.4.6",
+    "@types/node": "^20.2.5",
     "@types/relaxed-json": "^1.0.1",
-    "@types/semver": "^7.3.13",
+    "@types/semver": "^7.5.0",
     "exe-version": "github:Nexus-Mods/node-exe-version",
     "relaxed-json": "^1.0.3",
-    "rimraf": "^4.1.2",
+    "rimraf": "^4.4.1",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
     "store2": "^2.14.2",
     "ts-loader": "^8.4.0",
@@ -27,7 +27,7 @@
     "vortex-api": "github:Nexus-Mods/vortex-api",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
-    "zod": "^3.20.6"
+    "zod": "^3.21.4"
   },
   "engines": {
     "node": "^16"
