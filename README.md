@@ -2,7 +2,7 @@
 
 ## Description
 
-This extension adds support for Subnautica: Below Zero to [Vortex Mod Manager], enabling you to easily automate installation of mods for Subnautica: Below Zero without having to worry about where the files are supposed to go, etc.
+This extension adds support for Subnautica to [Vortex Mod Manager], enabling you to easily automate installation of mods for Subnautica without having to worry about where the files are supposed to go, etc.
 
 At this time, the following mod types are supported:
 
