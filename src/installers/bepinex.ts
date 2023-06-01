@@ -78,7 +78,7 @@ export const install = async (api: IExtensionApi, files: string[]) => {
                 message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
                 actions: [
                     qmm // if QMM is enabled, offer to reinstall it
-                        ? { title: api.translate('Reinstall', TRANSLATION_OPTIONS), action: () => reinstallMod(api, qmm) }
+                        ? { title: api.translate('Reinstall'), action: () => reinstallMod(api, qmm) }
                         : { title: api.translate('Get {{qmodmanager}}', TRANSLATION_OPTIONS), action: () => opn(QMM_URL) }
                 ],
             });
