@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Change license from LGPL-3.0 to GPL-3.0 ([`68cdeae`](https://github.com/toebeann/subnautica-support/commit/68cdeae))
+- Change license from LGPL-3.0 to GPL-3.0 ([`184d239`](https://github.com/toebeann/subnautica-support/commit/184d239))
 - Only notify user to install QModManager on the legacy branch if user has at least one QMod enabled ([`4e65feb`](https://github.com/toebeann/subnautica-support/commit/4e65feb))
 - Offer to reinstall the BepInEx pack when necessary rather than just notifying the user that it needs to be reinstalled ([`a67aefd`](https://github.com/toebeann/subnautica-support/commit/a67aefd))
 - Offer to reinstall QModManager when necessary rather than just notifying the user that it needs to be reinstalled ([`a67aefd`](https://github.com/toebeann/subnautica-support/commit/a67aefd))
