@@ -307,6 +307,7 @@ If you have followed the packaging examples above and your mod is still being in
 ## Copyright notice
 
 Subnautica Support - Vortex support for Subnautica
+
 Copyright (C) 2023 Tobey Blaber
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
