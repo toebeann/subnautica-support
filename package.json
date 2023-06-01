@@ -2,8 +2,34 @@
   "name": "subnautica-support",
   "version": "3.2.8",
   "description": "Vortex support for Subnautica",
-  "author": "toebeann, MrPurple6411, PrimeSonic, Pickysaurus",
   "license": "LGPL-3.0",
+  "author": "toebeann, MrPurple6411, PrimeSonic, Pickysaurus",
+  "homepage": "https://github.com/toebeann/subnautica-support",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toebeann/subnautica-support.git"
+  },
+  "bugs": {
+    "url": "https://github.com/toebeann/subnautica-support/issues"
+  },
+  "funding": [
+    "https://github.com/toebeann/subnautica-support?sponsor=1",
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/toebeann"
+    },
+    {
+      "type": "kofi",
+      "url": "https://ko-fi.com/toebean_"
+    },
+    {
+      "type": "paypal",
+      "url": "https://paypal.me/tobeyblaber"
+    }
+  ],
+  "config": {
+    "issueTracker": "https://github.com/toebeann/subnautica-support/issues"
+  },
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
     "build": "rimraf dist && mkdir dist && extractInfo && pnpm webpack",
