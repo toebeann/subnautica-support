@@ -129,11 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# typescript declarations
-types
-
-# typedoc docs
-docs
-
 # bundled dist files
 subnautica-support.7z

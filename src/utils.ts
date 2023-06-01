@@ -3,6 +3,11 @@ import { store } from '.';
 import { BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_PATH } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
+import { remark } from 'remark';
+import rehypeFormat from 'rehype-format';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import strip from 'strip-markdown';
 import { actions, fs, selectors, types, util } from 'vortex-api';
 import setModsEnabled = actions.setModsEnabled;
 import statAsync = fs.statAsync;
@@ -103,3 +108,29 @@ export const isFile = async (path: string) => {
         return false;
     }
 }
+
+/**
+ * Strips markdown formatting from the given string.
+ * @param markdown 
+ * @returns 
+ */
+export const stripMarkdown = async (markdown: string) => String(
+    await remark()
+        .use(strip)
+        .process(markdown))
+    .trim();
+
+/**
+ * Converts a given markdown string to HTML.
+ * @param markdown 
+ * @param references An optional array of references to be used to convert markdown links with references to HTML links.
+ * @returns 
+ */
+export const markdownToHtml = async (markdown: string, references?: string[]) => String(
+    await remark()
+        .use(remarkRehype)
+        .use(rehypeFormat)
+        .use(rehypeStringify)
+        .process(`${markdown}\n\n${references?.join('\n') || ''}`))
+    .trim();
+
