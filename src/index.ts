@@ -1,17 +1,17 @@
 import { join } from 'path';
 import { version } from '../package.json';
-import { BEPINEX_MOD_PATH, BEPINEX_URL, isBepInExModTypeInstalled, validateBepInEx } from './bepinex';
+import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
-import { getDiscovery, getModPath } from './utils';
+import { getDiscovery, getModPath, getMods, isFile } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
 import registerInstallerBepInExPlugin from './installers/bepinex-plugin';
 import registerInstallerCustomCraft2Plugin from './installers/customcraft2-plugin';
 import registerInstallerMrPurple6411AddonPack from './installers/mrpurple6411-addon-pack';
-import registerModTypeBepInEx5 from './mod-types/bepinex-5';
-import registerModTypeBepInEx6 from './mod-types/bepinex-6';
+import registerModTypeBepInEx5, { BEPINEX_5_MOD_TYPE } from './mod-types/bepinex-5';
+import registerModTypeBepInEx6, { BEPINEX_6_MOD_TYPE } from './mod-types/bepinex-6';
 import registerModTypeBepInExMixed from './mod-types/bepinex-mixed';
 import registerModTypeBepInExPatcher from './mod-types/bepinex-patcher';
 import registerModTypeBepInExPlugin from './mod-types/bepinex-plugin';
@@ -27,11 +27,12 @@ import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
 import { getFileVersion, getProductVersion } from 'exe-version';
 import { major, prerelease } from 'semver';
 import store2 from 'store2';
-import { fs, selectors, types, util } from 'vortex-api';
+import { actions, fs, selectors, types, util } from 'vortex-api';
 import { z } from 'zod';
 import readFileAsync = fs.readFileAsync;
 import ensureDirWritableAsync = fs.ensureDirWritableAsync;
 import watch = fs.watch;
+import installPathForGame = selectors.installPathForGame;
 import profileById = selectors.profileById;
 import IDialogResult = types.IDialogResult;
 import IDiscoveryResult = types.IDiscoveryResult;
@@ -208,14 +209,24 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             allowSuppress: true,
         });
 
-        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && isBepInExModTypeInstalled(api)) {
+        const bepinexPacks = getMods(api.getState(), 'enabled').filter(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
+        const stagingFolder = installPathForGame(api.getState(), NEXUS_GAME_ID);
+        if ((!storedBranch || storedBranch === 'legacy' || currentBranch === 'legacy') && // branch has changed
+            bepinexPacks.length > 0 && // bepinex pack is installed
+            (bepinexPacks.length > 1 || // save my sanity from attempting to work out what to do when they have multiple bepinex packs installed...
+                await isFile(join(stagingFolder, bepinexPacks[0].installationPath, BEPINEX_DIR, BEPINEX_CONFIG_DIR, `BepInEx.${currentBranch === 'legacy' ? 'legacy' : 'stable'}.cfg`)))) {
+            // if there is an alt config file in the staging folder, it's an old version of the bepinex pack which requires reinstalling when branch is changed
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
                 type: 'error',
                 title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
                 message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
             });
-        } else if (currentBranch !== 'legacy') {
+        } else {
+            api.dismissNotification?.('reinstall-bepinex');
+        }
+
+        if (currentBranch !== 'legacy') {
             api.dismissNotification?.('reinstall-qmm');
         }
 

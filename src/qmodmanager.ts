@@ -5,6 +5,7 @@ import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
 import { SteamBetaBranch } from './platforms/steam';
 import { types, util } from 'vortex-api';
 import IExtensionApi = types.IExtensionApi;
+import IState = types.IState;
 import opn = util.opn;
 
 /**
@@ -21,14 +22,15 @@ export const QMM_DIR = 'QModManager';
 export const QMM_MOD_PATH = 'QMods';
 
 /**
- * Utility function to determine whether QModManager is installed via the Vortex API.
- * @param api 
- * @returns True if QModManager is installed, false otherwise. Always returns false if QModManager was not installed via Vortex.
+ * Utility function to determine whether QModManager is enabled via the Vortex API.
+ * @param state 
+ * @returns True if QModManager is enabled, false otherwise.
  */
-export const isQModManagerInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => mod.attributes?.homepage === QMM_URL
-        || (mod.attributes?.modId === 201 && mod.attributes?.downloadGame === 'subnautica')
-        || mod.type === QMM_4_MOD_TYPE);
+export const isQModManagerEnabled = (state: IState) =>
+    getMods(state, 'enabled').some(mod =>
+        mod.attributes?.homepage === QMM_URL ||
+        (mod.attributes?.modId === 201 && mod.attributes?.downloadGame === 'subnautica') ||
+        mod.type === QMM_4_MOD_TYPE);
 
 /**
  * Utility function to validate the QModManager installation and notify the user of any issues.
@@ -37,7 +39,7 @@ export const isQModManagerInstalled = (api: IExtensionApi) =>
 export const validateQModManager = async (api: IExtensionApi) => {
     switch (store('branch') as SteamBetaBranch) {
         case 'legacy':
-            if (!isQModManagerInstalled(api)) {
+            if (!isQModManagerEnabled(api.getState())) {
                 api.dismissNotification?.('qmodmanager-stable');
 
                 api.sendNotification?.({
@@ -60,7 +62,7 @@ export const validateQModManager = async (api: IExtensionApi) => {
         default:
             api.dismissNotification?.('qmodmanager-missing');
 
-            if (isQModManagerInstalled(api)) {
+            if (isQModManagerEnabled(api.getState())) {
                 api.sendNotification?.({
                     id: 'qmodmanager-stable',
                     type: 'error',

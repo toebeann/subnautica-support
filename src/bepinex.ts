@@ -7,6 +7,7 @@ import { fs, types, util } from 'vortex-api';
 import statAsync = fs.statAsync;
 import IDiscoveryResult = types.IDiscoveryResult;
 import IExtensionApi = types.IExtensionApi;
+import IState = types.IState;
 import opn = util.opn;
 
 /**
@@ -39,12 +40,12 @@ export const BEPINEX_PATCHERS_DIR = 'patchers';
 export const BEPINEX_MOD_PATH = join(BEPINEX_DIR, BEPINEX_PLUGINS_DIR);
 
 /**
- * Utility function to determine whether BepInEx is installed via the Vortex API.
- * @param api 
- * @returns True if BepInEx is installed, false otherwise. Always returns false if BepInEx was not installed via Vortex.
+ * Utility function to determine whether BepInEx is enabled via the Vortex API.
+ * @param state 
+ * @returns True if BepInEx is enabled, false otherwise.
  */
-export const isBepInExModTypeInstalled = (api: IExtensionApi) =>
-    getMods(api, true).some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
+export const isBepInExEnabled = (state: IState) =>
+    getMods(state, 'enabled').some(mod => [BEPINEX_5_MOD_TYPE, BEPINEX_6_MOD_TYPE].includes(mod.type));
 
 /**
  * Utility function to determine whether BepInEx core files are installed to disk.
@@ -73,7 +74,7 @@ export const isBepInExCoreFileInstalled = async (api: IExtensionApi, discovery: 
  * @param api 
  */
 export const validateBepInEx = async (api: IExtensionApi) => {
-    if (!isBepInExModTypeInstalled(api) && !(await isBepInExCoreFileInstalled(api))) {
+    if (!isBepInExEnabled(api.getState()) && !(await isBepInExCoreFileInstalled(api))) {
         api.sendNotification?.({
             id: 'bepinex-missing',
             type: 'warning',

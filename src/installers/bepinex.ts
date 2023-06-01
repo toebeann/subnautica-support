@@ -1,7 +1,7 @@
 import { basename, dirname, join, sep } from 'path';
-import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExCoreFileInstalled, isBepInExModTypeInstalled } from '../bepinex';
+import { BEPINEX_CONFIG_DIR, BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, isBepInExCoreFileInstalled, isBepInExEnabled } from '../bepinex';
 import { TRANSLATION_OPTIONS } from '../constants';
-import { QMM_DIR, isQModManagerInstalled } from '../qmodmanager';
+import { QMM_DIR, isQModManagerEnabled } from '../qmodmanager';
 import { BEPINEX_5_CORE_DLL } from '../mod-types/bepinex-5';
 import { BEPINEX_6_CORE_DLL } from '../mod-types/bepinex-6';
 import { QMM_CORE_DLL } from '../mod-types/qmodmanager-4';
@@ -56,8 +56,8 @@ export const install = async (api: IExtensionApi, files: string[]) => {
     const branch = await getBranch(api);
 
     if (branch === 'legacy') {
-        if (isQModManagerInstalled(api)
-            && !isBepInExModTypeInstalled(api)
+        if (isQModManagerEnabled(api.getState())
+            && !isBepInExEnabled(api.getState())
             && (await isBepInExCoreFileInstalled(api))) {
 
             api.sendNotification?.({
