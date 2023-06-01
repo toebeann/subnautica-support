@@ -183,7 +183,7 @@ Mods which meet all of the following criteria are eligible to be installed as ei
 
 When a user installs an eligible mod, if the user is on the legacy branch, it will be installed as a QMod. Otherwise, it will be installed as a BepInEx plugin.
 
-### CustomCraft2 plugin packs
+#### CustomCraft2 plugin packs
 
 Any of the following structures are valid. Note that although these examples only include a single asset and/or working file each, the extension will happily install packs containing multiple of each.
 
