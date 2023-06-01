@@ -14,7 +14,7 @@
 - Offer to enable the BepInEx pack when it is detected as disabled ([`e76d4d2`](https://github.com/toebeann/subnautica-support/commit/e76d4d2))
 - Offer to enable QModManager on the legacy branch when it is detected as disabled and the user has at least one QMod enabled ([`4e65feb`](https://github.com/toebeann/subnautica-support/commit/4e65feb))
 - Offer to disable QModManager when not on the legacy branch ([`4e65feb`](https://github.com/toebeann/subnautica-support/commit/4e65feb))
-- Add a changelog GUI to automatically let users know about updates
+- Add a changelog GUI to automatically let users know about updates ([`e65919e`](https://github.com/toebeann/subnautica-support/commit/e65919e))
 
 ### Removed
 
