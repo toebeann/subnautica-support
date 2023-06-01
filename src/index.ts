@@ -2,6 +2,7 @@ import '@total-typescript/ts-reset';
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
+import { migrateVersion, parseChangelog, validateChangelog } from './changelog';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_PATH, validateQModManager } from './qmodmanager';
 import { getDiscovery, getModPath, getMods, isFile, reinstallMod } from './utils';
@@ -50,6 +51,8 @@ export default function main(context: IExtensionContext): boolean {
     if (store.isFake()) {
         debugSetup(context);
     }
+
+    context.registerMigration(migrateVersion);
 
     // register Subnautica with Vortex
     context.registerGame({
@@ -154,6 +157,7 @@ const debugSetup = (context: IExtensionContext) => {
                     types,
                     util,
                 },
+                parseChangelog,
             }
         }
     })
@@ -208,9 +212,10 @@ const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult
         api.events.once('gamemode-activated', () => controller.abort());
     }
 
-    await showSubnautica2InfoDialog(api);
     await validateBranch(api, discovery);
     await Promise.all([validateBepInEx(api), validateQModManager(api)]);
+    await validateChangelog(api);
+    await showSubnautica2InfoDialog(api);
 }
 
 const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
