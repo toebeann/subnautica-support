@@ -19,11 +19,11 @@
 ### Removed
 
 - Drop support for Vortex versions older than 1.8.0
-- Stop notifying users to reinstall BepInEx pack when changing to/from the legacy branch if reinstalling it would not update the `BepInEx.cfg` file ([`88684dd`](https://github.com/toebeann/subnautica-support/commit/88684dd))
 
 ### Fixed
 
 - Correct handling of `BepInEx.cfg` on legacy branch for BepInEx packs without an included `BepInEx.legacy.cfg` ([`738f485`](https://github.com/toebeann/subnautica-support/commit/738f485))
+- Stop notifying users to reinstall BepInEx pack when changing to/from the legacy branch if reinstalling it would not update the `BepInEx.cfg` file ([`88684dd`](https://github.com/toebeann/subnautica-support/commit/88684dd))
 
 ## [3.2.8] - 2023-02-12
 
