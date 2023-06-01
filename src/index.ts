@@ -43,9 +43,13 @@ import GameStoreHelper = util.GameStoreHelper;
 import opn = util.opn;
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
-store.isFake(['alpha', 'beta', 'dev'].includes(prerelease(version)?.[0].toString() ?? ''));
+store.isFake(prerelease(version, true)?.[0].toString() === 'dev');
 
 export default function main(context: IExtensionContext): boolean {
+    if (store.isFake()) {
+        debugSetup(context);
+    }
+
     // register Subnautica with Vortex
     context.registerGame({
         id: NEXUS_GAME_ID,
@@ -133,6 +137,25 @@ export default function main(context: IExtensionContext): boolean {
     registerInstallerCustomCraft2Plugin(context);
 
     return true;
+}
+
+const debugSetup = (context: IExtensionContext) => {
+    Object.assign(globalThis, {
+        toebean: {
+            sn1: {
+                context,
+                getState: () => context.api.getState(),
+                getDiscovery: () => getDiscovery(context.api),
+                getMods: () => getMods(context.api.getState()),
+                'vortex-api': {
+                    actions,
+                    selectors,
+                    types,
+                    util,
+                },
+            }
+        }
+    })
 }
 
 /**
