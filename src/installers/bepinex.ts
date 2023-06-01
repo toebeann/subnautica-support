@@ -63,7 +63,7 @@ export const install = async (api: IExtensionApi, files: string[]) => {
             api.sendNotification?.({
                 id: 'reinstall-qmm',
                 type: 'error',
-                title: api.translate('Incompatible {{qmodmanager}} installation detected.', TRANSLATION_OPTIONS),
+                title: api.translate('Incompatible {{qmodmanager}} installation detected', TRANSLATION_OPTIONS),
                 message: api.translate('Please reinstall {{qmodmanager}} before installing {{bepinex}}.', TRANSLATION_OPTIONS),
             });
 

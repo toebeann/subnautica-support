@@ -242,7 +242,7 @@ const validateBranch = async (api: IExtensionApi, discovery: IDiscoveryResult | 
             api.sendNotification?.({
                 id: 'reinstall-bepinex',
                 type: 'error',
-                title: api.translate('Previous {{bepinex}} installation detected.', TRANSLATION_OPTIONS),
+                title: api.translate('Previous {{bepinex}} installation detected', TRANSLATION_OPTIONS),
                 message: api.translate(`Please reinstall {{bepinex}} after changing branches.`, TRANSLATION_OPTIONS),
             });
         } else {
