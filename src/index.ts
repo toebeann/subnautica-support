@@ -294,8 +294,8 @@ const showSubnautica2InfoDialog = async (api: IExtensionApi) => {
             ]
         }, [
             { label: api.translate('Get {{bepinex}}', TRANSLATION_OPTIONS), action: () => opn(BEPINEX_URL) },
-            { label: api.translate('More', TRANSLATION_OPTIONS), action: () => opn('https://www.nexusmods.com/news/14813') },
-            { label: api.translate('Close', TRANSLATION_OPTIONS) }
+            { label: api.translate('More'), action: () => opn('https://www.nexusmods.com/news/14813') },
+            { label: api.translate('Close') }
         ], 'subnautica-2.0-info-dialog');
 
         if (result) {
