@@ -74,15 +74,11 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
         destination: join(dirname(source).split(sep).slice(index + 1).join(sep), basename(source)),
     }));
 
-    // only explicitly set the mod type if the mod contains a QModManager manifest but we're installing it as a BepInEx plugin
-    if (hasQmmManifest(filtered) && modType !== QMM_MOD_MOD_TYPE) {
-        instructions.push({
-            type: 'setmodtype',
-            value: modType
-        });
-    }
-
-    return <IInstallResult>{ instructions };
+    return <IInstallResult>{
+        instructions: hasQmmManifest(filtered) && modType !== QMM_MOD_MOD_TYPE
+            ? instructions.filter(instruction => basename(instruction.destination ?? '').toLowerCase() !== QMM_MOD_MANIFEST)
+            : instructions
+    };
 }
 
 /**
