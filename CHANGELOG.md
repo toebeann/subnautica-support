@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.3.1] - 2023-06-08
+
+_Users affected by an issue where QModManager and some QMods were not being installed correctly should reinstall QModManager and the affected QMods._
+
+### Fixed
+
+- Fix QModManager not installing correctly ([`2fd2cdf`](https://github.com/toebeann/subnautica-support/commit/2fd2cdf))
+- Resolve issue where QMod archives which include a "QMods" folder result in nested "QMods" folders when installed ([`07808e0`](https://github.com/toebeann/subnautica-support/commit/07808e0))
+
 ## [3.3.0] - 2023-06-01
 
 ### Changed
@@ -171,6 +180,7 @@ _Changelogs for this release were not recorded by the prior maintainers._
 
 _Changelogs for this release were not recorded by the prior maintainers._
 
+[3.3.1]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.1
 [3.3.0]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.0
 [3.2.8]: https://github.com/toebeann/subnautica-support/releases/tag/v3.2.8
 [3.2.7]: https://github.com/toebeann/subnautica-support/releases/tag/v3.2.7
