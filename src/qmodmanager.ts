@@ -37,7 +37,7 @@ export const QMM_DIR = 'QModManager';
 /**
  * Path to the QModManager mods directory relative to the game directory.
  */
-export const QMM_MOD_PATH = 'QMods';
+export const QMM_MOD_DIR = 'QMods';
 
 /**
  * Utility function to determine whether QModManager is enabled via the Vortex API.

@@ -16,7 +16,7 @@
  * this program; if not, see <https://www.gnu.org/licenses>.
  */
 import { basename, dirname, extname, join, sep } from 'path';
-import { QMM_MOD_PATH } from '../qmodmanager';
+import { QMM_MOD_DIR } from '../qmodmanager';
 import { getDiscovery } from '../utils';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { types } from 'vortex-api';
@@ -48,7 +48,7 @@ export const isSupported = (gameId: string): boolean => gameId === NEXUS_GAME_ID
  * @param game 
  * @returns 
  */
-export const getPath = (state: IState, game: IGame): string => join(getDiscovery(state, game.id)?.path ?? '', QMM_MOD_PATH);
+export const getPath = (state: IState, game: IGame): string => join(getDiscovery(state, game.id)?.path ?? '', QMM_MOD_DIR);
 
 /**
  * Determines whether a given mod is of this mod type.

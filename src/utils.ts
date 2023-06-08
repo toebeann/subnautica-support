@@ -18,7 +18,7 @@
 import { join } from 'path';
 import { store } from '.';
 import { BEPINEX_MOD_PATH } from './bepinex';
-import { QMM_MOD_PATH } from './qmodmanager';
+import { QMM_MOD_DIR } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { remark } from 'remark';
 import rehypeFormat from 'rehype-format';
@@ -51,7 +51,7 @@ export const getDiscovery = (state: IState, gameId: string = NEXUS_GAME_ID): IDi
  * @param gamePath The path to the Subnautica game directory.
  * @returns The path to the mods directory. If the current beta branch is unknown, the path to the BepInEx plugins directory is returned.
  */
-export const getModPath = (gamePath: string = ''): string => join(gamePath, store('branch') === 'legacy' ? QMM_MOD_PATH : BEPINEX_MOD_PATH);
+export const getModPath = (gamePath: string = ''): string => join(gamePath, store('branch') === 'legacy' ? QMM_MOD_DIR : BEPINEX_MOD_PATH);
 
 /**
  * Utility function to retrieve a list of mods for the specified game from the Vortex API.
