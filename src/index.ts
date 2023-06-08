@@ -218,10 +218,7 @@ const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult
         const controller = new AbortController();
         const signal = controller.signal;
 
-        watch(manifest, {
-            persistent: false,
-            signal
-        }, async () => {
+        watch(manifest, { persistent: false, signal }, async () => {
             await validateBranch(api);
             await Promise.all([validateBepInEx(api), validateQModManager(api)]);
         });
