@@ -181,7 +181,7 @@ Mods which meet all of the following criteria are eligible to be installed as ei
     - MyMod.dll
   ```
 
-When a user installs an eligible mod, if the user is on the legacy branch, it will be installed as a QMod. Otherwise, it will be installed as a BepInEx plugin.
+When a user installs an eligible mod, if the user is on the legacy branch it will be installed as a QMod. Otherwise, it will be installed as a BepInEx plugin.
 
 #### CustomCraft2 plugin packs
 
