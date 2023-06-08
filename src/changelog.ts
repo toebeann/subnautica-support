@@ -134,7 +134,7 @@ export const parseChangelog = async (changelog = changelogMd) => {
 
             const version = valid(parse(await stripMarkdown(`${release.value.split(' - ')[0]?.trim().slice(3) ?? ''}\n\n${mappedReferences.map(({ value }) => value).join('\n')}`)));
             const date = Date.parse(release.value.split(' - ')[1]?.trim() ?? '');
-            const seen = version && gte(lastSeen.version, version) || (lastSeen.date && lastSeen.date >= date);
+            const seen = (version && gte(lastSeen.version, version)) || (lastSeen.date && lastSeen.date >= date);
             const important =
                 (version && lastSeen.version && major(version) > major(lastSeen.version)) ||
                 notice.length > 0 ||
