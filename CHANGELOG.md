@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.3.2] - 2023-06-08
+
+### Changed
+
+- Filter out the QModManager manifest file (`mod.json`) when installing a hybrid QMod\BepInEx plugin as a BepInEx plugin ([`5e0b08c`](https://github.com/toebeann/subnautica-support/commit/5e0b08c))
+
 ## [3.3.1] - 2023-06-08
 
 _Users affected by an issue where QModManager and some QMods were not being installed correctly should reinstall QModManager and the affected QMods._
@@ -180,6 +186,7 @@ _Changelogs for this release were not recorded by the prior maintainers._
 
 _Changelogs for this release were not recorded by the prior maintainers._
 
+[3.3.2]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.2
 [3.3.1]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.1
 [3.3.0]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.0
 [3.2.8]: https://github.com/toebeann/subnautica-support/releases/tag/v3.2.8
