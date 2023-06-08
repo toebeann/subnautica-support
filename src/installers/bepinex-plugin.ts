@@ -19,9 +19,10 @@ import { execFile } from 'child_process';
 import { basename, dirname, extname, join, sep } from 'path';
 import { BEPINEX_INJECTOR_CORE_FILES } from './bepinex';
 import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
+import { QMM_MOD_DIR } from '../qmodmanager';
 import { getDiscovery } from '../utils';
 import { BEPINEX_PLUGIN_MOD_TYPE } from '../mod-types/bepinex-plugin';
-import { QMM_MOD_MANIFEST } from '../mod-types/qmodmanager-mod';
+import { QMM_MOD_MANIFEST, QMM_MOD_MOD_TYPE } from '../mod-types/qmodmanager-mod';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
 import { types } from 'vortex-api';
@@ -64,7 +65,8 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
     const assemblyDir = basename(dirname(assembly));
     const assemblyDirIndex = assembly.split(sep).indexOf(assemblyDir);
     const filtered = sansDirectories.filter(file => file.split(sep).indexOf(assemblyDir) === assemblyDirIndex);
-    const index = assembly.split(sep).indexOf(BEPINEX_PLUGINS_DIR);
+    const modType = await getModType(api, filtered, workingPath);
+    const index = assembly.split(sep).indexOf(modType === "qmodmanager-mod" ? QMM_MOD_DIR : BEPINEX_PLUGINS_DIR);
 
     const instructions = filtered.map((source): IInstruction => ({
         type: 'copy',
@@ -72,20 +74,38 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
         destination: join(dirname(source).split(sep).slice(index + 1).join(sep), basename(source)),
     }));
 
-    // if the mod contains a QModManager manifest but we're not on the legacy branch,
-    // determine whether the mod contains BepInEx plugins and set the mod type accordingly
-    // to handle the case where a mod can be installed either as a QModManager mod or a BepInEx plugin
-    if (sansDirectories.some(f => basename(f).toLowerCase() === QMM_MOD_MANIFEST)
-        && await getBranch(api.getState()) !== 'legacy'
-        && await hasBepInExPlugins(api, files, workingPath)) {
+    // only explicitly set the mod type if the mod contains a QModManager manifest but we're installing it as a BepInEx plugin
+    if (hasQmmManifest(filtered) && modType !== QMM_MOD_MOD_TYPE) {
         instructions.push({
             type: 'setmodtype',
-            value: BEPINEX_PLUGIN_MOD_TYPE
+            value: modType
         });
     }
 
     return <IInstallResult>{ instructions };
 }
+
+/**
+ * A helper utility to determine the mod type of the given mod files.
+ * @param api 
+ * @param files 
+ * @param workingPath 
+ * @returns 
+ */
+const getModType = async (api: IExtensionApi, files: string[], workingPath: string) =>
+    // if the mod contains a QModManager manifest but we're not on the legacy branch,
+    // determine whether the mod contains BepInEx plugins and set the mod type accordingly
+    // to handle the case where a mod can be installed either as a QModManager mod or a BepInEx plugin
+    !hasQmmManifest(files) || (await getBranch(api.getState()) !== 'legacy' && await hasBepInExPlugins(api, files, workingPath))
+        ? BEPINEX_PLUGIN_MOD_TYPE
+        : QMM_MOD_MOD_TYPE;
+
+/**
+ * A helper utility to determine whether the given mod files contain a QModManager manifest.
+ * @param files 
+ * @returns
+ */
+const hasQmmManifest = (files: string[]) => files.some(f => basename(f).toLowerCase() === QMM_MOD_MANIFEST);
 
 /**
  * A helper utility to determine whether the given mod files contain BepInEx plugins via the BepInEx.AssemblyInspection.Console.exe command-line utility.
