@@ -66,7 +66,7 @@ export const install = async (api: IExtensionApi, files: string[], workingPath: 
     const assemblyDirIndex = assembly.split(sep).indexOf(assemblyDir);
     const filtered = sansDirectories.filter(file => file.split(sep).indexOf(assemblyDir) === assemblyDirIndex);
     const modType = await getModType(api, filtered, workingPath);
-    const index = assembly.split(sep).indexOf(modType === "qmodmanager-mod" ? QMM_MOD_DIR : BEPINEX_PLUGINS_DIR);
+    const index = assembly.split(sep).indexOf(modType === QMM_MOD_MOD_TYPE ? QMM_MOD_DIR : BEPINEX_PLUGINS_DIR);
 
     const instructions = filtered.map((source): IInstruction => ({
         type: 'copy',
