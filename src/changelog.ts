@@ -186,7 +186,7 @@ export const parseChangelog = async (changelog = changelogMd) => {
     };
 }
 
-const showChangelog = async (api: IExtensionApi, html: string, releases: Awaited<ReturnType<typeof parseChangelog>>['releases']) =>
+export const showChangelog = async (api: IExtensionApi, html: string, releases: Awaited<ReturnType<typeof parseChangelog>>['releases']) =>
     api.showDialog?.('info', 'Subnautica Support extension updated',
         {
             htmlText: `<div class="changelog-wrapper"><style>

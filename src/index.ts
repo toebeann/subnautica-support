@@ -19,7 +19,7 @@ import '@total-typescript/ts-reset';
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
-import { migrateVersion, parseChangelog, store as changelogStore, validateChangelog } from './changelog';
+import { migrateVersion, parseChangelog, store as changelogStore, showChangelog, validateChangelog } from './changelog';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_DIR, validateQModManager } from './qmodmanager';
 import { getDiscovery, getModPath, getMods, isFile, reinstallMod } from './utils';
@@ -170,6 +170,18 @@ const initDevConsole = (context: IExtensionContext) => {
                         changelog: changelogStore,
                     },
                     parseChangelog,
+                    showChangelog: async (changelog?: string | Awaited<ReturnType<typeof parseChangelog>>) => {
+                        switch (typeof changelog) {
+                            case 'string':
+                                changelog = await parseChangelog(changelog);
+                                break;
+                            case 'undefined':
+                                changelog = await parseChangelog();
+                                break;
+                        }
+
+                        return await showChangelog(context.api, changelog.html, changelog.releases);
+                    }
                 }
             });
         } else if ('subnauticaSupport' in globalThis &&
