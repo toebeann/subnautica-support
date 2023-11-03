@@ -119,14 +119,6 @@ export default function main(context: IExtensionContext): boolean {
 
     context.once(async () => {
         initDevConsole(context);
-        
-        context.api.events.on('gamemode-activated', async (gameMode: string) => {
-            if (gameMode !== NEXUS_GAME_ID) {
-                return;
-            }
-
-            await gamemodeActivated(context.api);
-        });
 
         context.api.onAsync('did-deploy', async (profileId: string) => {
             if (profileById(context.api.getState(), profileId)?.gameId !== NEXUS_GAME_ID) {
@@ -199,8 +191,26 @@ const initDevConsole = (context: IExtensionContext) => {
 const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     if (discovery?.path) {
         await Promise.all([QMM_MOD_DIR, BEPINEX_MOD_PATH].map(path => ensureDirWritableAsync(join(discovery.path!, path))));
-        await validateBranch(api, discovery);
     }
+
+    const manifest = getManifestPath(api.getState(), discovery);
+
+    if (manifest) {
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        watch(manifest, { persistent: false, signal }, async () => {
+            await validateBranch(api);
+            await Promise.all([validateBepInEx(api), validateQModManager(api)]);
+        });
+
+        api.events.once('gamemode-activated', () => controller.abort());
+    }
+
+    await validateChangelog(api);
+    await showSubnautica2InfoDialog(api);
+    await validateBranch(api, discovery);
+    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
 const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) => {
@@ -220,27 +230,6 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
                 }
             };
     }
-}
-
-const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
-    const manifest = getManifestPath(api.getState(), discovery);
-
-    if (manifest) {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        watch(manifest, { persistent: false, signal }, async () => {
-            await validateBranch(api);
-            await Promise.all([validateBepInEx(api), validateQModManager(api)]);
-        });
-
-        api.events.once('gamemode-activated', () => controller.abort());
-    }
-
-    await validateBranch(api, discovery);
-    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
-    await validateChangelog(api);
-    await showSubnautica2InfoDialog(api);
 }
 
 const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
