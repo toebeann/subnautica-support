@@ -31,6 +31,10 @@ import opn = util.opn;
  */
 export const QMM_URL = 'https://www.nexusmods.com/subnautica/mods/201/';
 /**
+ * Nexus Mods ID for QModManager.
+ */
+export const QMM_NEXUS_ID = 201;
+/**
  * QModManager directory name.
  */
 export const QMM_DIR = 'QModManager';
