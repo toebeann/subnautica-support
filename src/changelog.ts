@@ -16,17 +16,15 @@
  * this program; if not, see <https://www.gnu.org/licenses>.
  */
 import changelogMd from '!!raw-loader!../CHANGELOG.md';
-import { version } from '../package.json';
 import { EXTENSION_ID } from './constants';
 import { markdownToHtml, stripMarkdown } from './utils';
-import { gte, lt, major, parse, prerelease, valid } from 'semver';
+import { gte, lt, major, parse, valid } from 'semver';
 import store2 from 'store2';
 import { types } from 'vortex-api';
 import { z } from 'zod';
 import IExtensionApi = types.IExtensionApi;
 
 export const store = store2.namespace(EXTENSION_ID).namespace('common-changelog').namespace('draft');
-store.isFake(prerelease(version, true)?.[0].toString() === 'dev');
 
 export const versionParser = z.object({
     version: z.string(),
