@@ -117,7 +117,7 @@ export default function main(context: IExtensionContext): boolean {
         }
     });
 
-    context.once(async () => {
+    context.once(() => {
         initDevConsole(context);
 
         context.api.onAsync('did-deploy', async (profileId: string) => {
