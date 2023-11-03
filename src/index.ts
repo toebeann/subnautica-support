@@ -22,7 +22,7 @@ import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validat
 import { migrateVersion, parseChangelog, store as changelogStore, showChangelog, validateChangelog } from './changelog';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_DIR, validateQModManager } from './qmodmanager';
-import { getDiscovery, getModPath, getMods, isFile, reinstallMod } from './utils';
+import { getDiscovery, getModPath, getMods, inspectAssembly, isFile, reinstallMod } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
@@ -181,7 +181,8 @@ const initDevConsole = (context: IExtensionContext) => {
                         }
 
                         return await showChangelog(context.api, changelog.html, changelog.releases);
-                    }
+                    },
+                    inspectAssembly: (path: string, additionalSearchPaths: string[] = []) => inspectAssembly(context.api, path, undefined, additionalSearchPaths),
                 }
             });
         } else if ('subnauticaSupport' in globalThis &&

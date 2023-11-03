@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <https://www.gnu.org/licenses>.
  */
+import { execFile } from 'child_process';
 import { join } from 'path';
 import { store } from '.';
-import { BEPINEX_MOD_PATH } from './bepinex';
+import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH } from './bepinex';
 import { QMM_MOD_DIR } from './qmodmanager';
 import { NEXUS_GAME_ID } from './platforms/nexus';
 import { remark } from 'remark';
@@ -36,6 +37,7 @@ import IExtensionApi = types.IExtensionApi;
 import IMod = types.IMod;
 import IState = types.IState;
 import toPromise = util.toPromise;
+import { z } from 'zod';
 
 /**
  * Utility function to retrieve a game discovery result from the Vortex API.
@@ -151,3 +153,171 @@ export const markdownToHtml = async (markdown: string, references?: string[]) =>
         .process(`${markdown}\n\n${references?.join('\n') || ''}`))
     .trim();
 
+const assemblyInspectionParser = z.object({
+    HasPlugins: z.boolean(),
+    HasPatchers: z.boolean(),
+    Plugins: z.array(z.string()),
+    Patchers: z.array(z.string()),
+});
+
+/**
+ * A helper utility to determine whether a given assembly contains BepInEx plugins or patchers
+ * via the BepInEx.AssemblyInspection.Console.exe command-line utility.
+ * @param api 
+ * @param path The file path of the assembly to inspect.
+ * @param discovery 
+ * @param additionalSearchPaths Additional paths to search when attempting to resolve dependencies.
+ * The Subnautica Managed assemblies and BepInEx core assemblies are always searched.
+ * @returns The parsed output of the BepInEx.AssemblyInspection.Console.exe utility.
+ */
+export const inspectAssembly = (api: IExtensionApi, path: string, discovery = getDiscovery(api.getState()), additionalSearchPaths: string[] = []) =>
+    new Promise<z.infer<typeof assemblyInspectionParser>>((resolve, reject) => {
+        try {
+            execFile(join(api.extension!.path, 'BepInEx.AssemblyInspection.Console.exe'),
+                [
+                    '-f', JSON.stringify(path),
+                    '-s', ...[
+                        ...(discovery?.path
+                            ? [
+                                join(discovery.path, 'Subnautica_Data', 'Managed'),
+                                join(discovery.path, BEPINEX_DIR, BEPINEX_CORE_DIR),
+                            ]
+                            : []),
+                        ...additionalSearchPaths,
+                    ].map(path => JSON.stringify(path)),
+                ], { windowsHide: true },
+                (error, stdout) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        try {
+                            resolve(assemblyInspectionParser.parse(JSON.parse(stdout.trim())));
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }
+                });
+        } catch (error) {
+            reject(error);
+        }
+    });
+
+/**
+ * A helper utility to determine whether a given assembly contains BepInEx plugins
+ * via the BepInEx.AssemblyInspection.Console.exe command-line utility.
+ * @param api 
+ * @param path The file path of the assembly to inspect.
+ * @param discovery 
+ * @param additionalSearchPaths Additional paths to search when attempting to resolve dependencies.
+ * The Subnautica Managed assemblies and BepInEx core assemblies are always searched.
+ * @returns True if the assembly contains BepInEx plugins, false otherwise.
+ */
+export const assemblyHasBepInExPlugins = async (api: IExtensionApi, path: string, discovery = getDiscovery(api.getState()), additionalSearchPaths: string[] = []) => {
+    try {
+        return (await inspectAssembly(api, path, discovery, additionalSearchPaths)).HasPlugins;
+    } catch { }
+    return false;
+}
+
+/**
+ * A helper utility to determine whether the given assembly contains BepInEx patchers
+ * via the BepInEx.AssemblyInspection.Console.exe command-line utility.
+ * @param api 
+ * @param path The file path of the assembly to inspect.
+ * @param discovery 
+ * @param additionalSearchPaths Additional paths to search when attempting to resolve dependencies.
+ * The Subnautica Managed assemblies and BepInEx core assemblies are always searched.
+ * @returns 
+ */
+export const assemblyHasBepInExPatchers = async (api: IExtensionApi, path: string, discovery = getDiscovery(api.getState()), additionalSearchPaths: string[] = []) => {
+    try {
+        return (await inspectAssembly(api, path, discovery, additionalSearchPaths)).HasPatchers;
+    } catch { }
+    return false;
+}
+
+/**
+ * An async implementation of the Array.some() method which executes the predicates in series.
+ * Short-circuits on the first predicate that resolves true, or when a predicate rejects if swallowRejects is false.
+ * @param array 
+ * @param predicate 
+ * @param swallowRejections Whether rejected promises should be swallowed or rejected.
+ * Swallowed rejections are treated as false predicate results.
+ * Defaults to true.
+ * @returns Whether any value in the array passes the predicate.
+ */
+export const someSeries = async <T>(array: T[], predicate: (value: T) => Promise<boolean>, swallowRejections = true) => {
+    for (const value of array) {
+        try {
+            if (await predicate(value)) return true;
+        } catch (error) {
+            if (!swallowRejections) throw new Error(`The value of ${value} was rejected with the following error: ${error}`);
+        }
+    }
+    return false;
+}
+
+/**
+ * An async implementation of the Array.some() method which executes the predicates in parallel.
+ * Short-circuits on the first predicate that resolves true, or when a predicate rejects if swallowRejects is false.
+ * @param array 
+ * @param predicate 
+ * @param swallowRejections Whether rejected promises should be swallowed or rejected.
+ * Swallowed rejections are treated as false predicate results.
+ * Defaults to true.
+ * @returns Whether any value in the array passes the predicate.
+ */
+export const some = <T>(array: T[], predicate: (value: T) => Promise<boolean>, swallowRejections = true) =>
+    new Promise<boolean>((resolve, reject) => {
+        Promise.allSettled(
+            array.map(value =>
+                predicate(value)
+                    .then(result => { if (result) resolve(true) })
+                    .catch((error) => { if (!swallowRejections) reject(new Error(`The value of ${value} was rejected with the following error: ${error}`)) })))
+            .then(() => resolve(false));
+    });
+
+/**
+ * An async implementation of the Array.every() method which executes the predicates in series.
+ * Short-circuits on the first predicate that resolves false, or when a predicate rejects.
+ * @param array 
+ * @param predicate 
+ * @param swallowRejections Whether rejected promises should be swallowed or rejected.
+ * Swallowed rejections are treated as false predicate results.
+ * Defaults to true.
+ * @returns Whether all values in the array pass the predicate.
+ */
+export const everySeries = async <T>(array: T[], predicate: (value: T) => Promise<boolean>, swallowRejections = true) => {
+    for (const value of array) {
+        try {
+            if (!await predicate(value)) return false;
+        } catch (error) {
+            if (!swallowRejections) throw new Error(`The value of ${value} was rejected with the following error: ${error}`);
+            else return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * An async implementation of the Array.every() method which executes the predicates in parallel.
+ * Short-circuits on the first predicate that resolves false, or when a predicate rejects.
+ * @param array 
+ * @param predicate 
+ * @param swallowRejections Whether rejected promises should be swallowed or rejected.
+ * Swallowed rejections are treated as false predicate results.
+ * Defaults to true.
+ * @returns Whether all values in the array pass the predicate.
+ */
+export const every = <T>(array: T[], predicate: (value: T) => Promise<boolean>, swallowRejections = true) =>
+    new Promise<boolean>((resolve, reject) => {
+        Promise.allSettled(
+            array.map(value =>
+                predicate(value)
+                    .then(result => { if (!result) resolve(false) })
+                    .catch((error) => {
+                        if (!swallowRejections) reject(new Error(`The value of ${value} was rejected with the following error: ${error}`));
+                        else resolve(false);
+                    })))
+            .then(() => resolve(true));
+    });

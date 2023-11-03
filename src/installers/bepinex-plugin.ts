@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <https://www.gnu.org/licenses>.
  */
-import { execFile } from 'child_process';
 import { basename, dirname, extname, join, sep } from 'path';
 import { BEPINEX_INJECTOR_CORE_FILES } from './bepinex';
 import { BEPINEX_CORE_DIR, BEPINEX_DIR, BEPINEX_PLUGINS_DIR } from '../bepinex';
 import { QMM_MOD_DIR } from '../qmodmanager';
-import { getDiscovery } from '../utils';
+import { assemblyHasBepInExPlugins, some, getDiscovery } from '../utils';
 import { BEPINEX_PLUGIN_MOD_TYPE } from '../mod-types/bepinex-plugin';
 import { QMM_MOD_MANIFEST, QMM_MOD_MOD_TYPE } from '../mod-types/qmodmanager-mod';
 import { NEXUS_GAME_ID } from '../platforms/nexus';
 import { getBranch } from '../platforms/steam';
 import { types } from 'vortex-api';
-import { z } from 'zod';
-import IDiscoveryResult = types.IDiscoveryResult;
 import IExtensionApi = types.IExtensionApi;
 import IExtensionContext = types.IExtensionContext;
 import IInstallResult = types.IInstallResult;
@@ -111,39 +108,11 @@ const hasQmmManifest = (files: string[]) => files.some(f => basename(f).toLowerC
  * @param discovery 
  * @returns 
  */
-const hasBepInExPlugins = async (api: IExtensionApi, files: string[], workingPath: string, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
-    if (!discovery?.path) return false;
-
+const hasBepInExPlugins = (api: IExtensionApi, files: string[], workingPath: string, discovery = getDiscovery(api.getState())) => {
     const sansDirectories = files.filter(file => !file.endsWith(sep));
     const assemblies = sansDirectories.filter(file => extname(file).toLowerCase() === '.dll'.toLowerCase());
-    const managedPath = join(discovery.path, 'Subnautica_Data', 'Managed');
 
-    try {
-        const booleanParser = z.boolean();
-
-        for (const assembly of assemblies) {
-            if (await new Promise<boolean>((resolve, reject) => {
-                execFile(join(api.extension!.path, 'BepInEx.AssemblyInspection.Console.exe'),
-                    [
-                        '-t', 'Plugins',
-                        '-f', JSON.stringify(join(workingPath, assembly)),
-                        '-s', JSON.stringify(managedPath), JSON.stringify(join(discovery.path!, BEPINEX_DIR, BEPINEX_CORE_DIR)),
-                    ], { windowsHide: true },
-                    (error, stdout) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            try {
-                                resolve(booleanParser.parse(JSON.parse(stdout.trim())));
-                            } catch {
-                                resolve(false);
-                            }
-                        }
-                    });
-            })) return true;
-        }
-    } catch { }
-    return false;
+    return some(assemblies, assembly => assemblyHasBepInExPlugins(api, join(workingPath, assembly), discovery));
 }
 
 /**
