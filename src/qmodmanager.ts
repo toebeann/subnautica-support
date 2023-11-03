@@ -99,7 +99,6 @@ export const validateQModManager = async (api: IExtensionApi) => {
                 // user has QModManager enabled but is not on the legacy branch
 
                 const potentials = getMods(api.getState(), 'enabled').filter(mod => mod.type === QMM_4_MOD_TYPE);
-                console.log(potentials);
                 const enabledQmm = potentials.length === 1 ? potentials[0] : undefined;
 
                 api.sendNotification?.({
