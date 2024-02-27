@@ -48,7 +48,7 @@
     "rehype-format": "^4.0.1",
     "rehype-stringify": "^9.0.3",
     "relaxed-json": "^1.0.3",
-    "remark": "^14.0.3",
+    "remark": "^15.0.1",
     "remark-rehype": "^11.1.0",
     "rimraf": "^5.0.5",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
