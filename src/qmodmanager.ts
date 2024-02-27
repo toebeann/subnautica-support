@@ -20,16 +20,22 @@ import { TRANSLATION_OPTIONS } from './constants';
 import { enableMods, getMods } from './utils';
 import { QMM_4_MOD_TYPE } from './mod-types/qmodmanager-4';
 import { QMM_MOD_MOD_TYPE } from './mod-types/qmodmanager-mod';
+import { NEXUS_GAME_ID } from './platforms/nexus';
 import { SteamBetaBranch } from './platforms/steam';
 import { types, util } from 'vortex-api';
 import IExtensionApi = types.IExtensionApi;
 import IState = types.IState;
+import getModType = util.getModType;
 import opn = util.opn;
 
 /**
  * URL to the QModManager page on Nexus Mods.
  */
 export const QMM_URL = 'https://www.nexusmods.com/subnautica/mods/201/';
+/**
+ * Nexus Mods ID for QModManager.
+ */
+export const QMM_NEXUS_ID = 201;
 /**
  * QModManager directory name.
  */
@@ -46,9 +52,10 @@ export const QMM_MOD_DIR = 'QMods';
  */
 export const isQModManagerEnabled = (state: IState) =>
     getMods(state, 'enabled').some(mod =>
-        mod.attributes?.homepage === QMM_URL ||
-        (mod.attributes?.modId === 201 && mod.attributes?.downloadGame === 'subnautica') ||
-        mod.type === QMM_4_MOD_TYPE);
+        mod.type === QMM_4_MOD_TYPE ||
+        (mod.attributes?.homepage === QMM_URL ||
+            (mod.attributes?.modId === QMM_NEXUS_ID && mod.attributes?.downloadGame === NEXUS_GAME_ID)) &&
+        (mod.type === 'dinput' || getModType(mod.type) === undefined));
 
 /**
  * Utility function to determing whether any QMods are enabled via the Vortex API.
@@ -95,7 +102,6 @@ export const validateQModManager = async (api: IExtensionApi) => {
                 // user has QModManager enabled but is not on the legacy branch
 
                 const potentials = getMods(api.getState(), 'enabled').filter(mod => mod.type === QMM_4_MOD_TYPE);
-                console.log(potentials);
                 const enabledQmm = potentials.length === 1 ? potentials[0] : undefined;
 
                 api.sendNotification?.({

@@ -19,10 +19,10 @@ import '@total-typescript/ts-reset';
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
-import { migrateVersion, parseChangelog, validateChangelog } from './changelog';
+import { migrateVersion, parseChangelog, store as changelogStore, showChangelog, validateChangelog } from './changelog';
 import { EXTENSION_ID, GAME_EXE, GAME_NAME, TRANSLATION_OPTIONS, UNITY_PLAYER } from './constants';
 import { QMM_MOD_DIR, validateQModManager } from './qmodmanager';
-import { getDiscovery, getModPath, getMods, isFile, reinstallMod } from './utils';
+import { getDiscovery, getModPath, getMods, inspectAssembly, isFile, reinstallMod } from './utils';
 import registerInstallerBepInEx from './installers/bepinex';
 import registerInstallerBepInExMixed from './installers/bepinex-mixed';
 import registerInstallerBepInExPatcher from './installers/bepinex-patcher';
@@ -44,7 +44,7 @@ import { NEXUS_GAME_ID } from './platforms/nexus';
 import { STEAM_GAME_ID, SteamBetaBranch, getBranch, getManifestPath } from './platforms/steam';
 import { XBOX_GAME_ID, getAppExecName } from './platforms/xbox';
 import { getFileVersion, getProductVersion } from 'exe-version';
-import { major, prerelease } from 'semver';
+import { major } from 'semver';
 import store2 from 'store2';
 import { actions, fs, selectors, types, util } from 'vortex-api';
 import { z } from 'zod';
@@ -60,15 +60,11 @@ import IExtensionContext = types.IExtensionContext;
 import IGame = types.IGame;
 import GameStoreHelper = util.GameStoreHelper;
 import opn = util.opn;
+import getSafe = util.getSafe;
 
 export const store = store2.namespace(EXTENSION_ID).namespace(`v${major(version, true)}`);
-store.isFake(prerelease(version, true)?.[0].toString() === 'dev');
 
 export default function main(context: IExtensionContext): boolean {
-    if (store.isFake()) {
-        debugSetup(context);
-    }
-
     context.registerMigration(migrateVersion);
 
     // register Subnautica with Vortex
@@ -121,14 +117,8 @@ export default function main(context: IExtensionContext): boolean {
         }
     });
 
-    context.once(async () => {
-        context.api.events.on('gamemode-activated', async (gameMode: string) => {
-            if (gameMode !== NEXUS_GAME_ID) {
-                return;
-            }
-
-            await gamemodeActivated(context.api);
-        });
+    context.once(() => {
+        initDevConsole(context);
 
         context.api.onAsync('did-deploy', async (profileId: string) => {
             if (profileById(context.api.getState(), profileId)?.gameId !== NEXUS_GAME_ID) {
@@ -160,24 +150,50 @@ export default function main(context: IExtensionContext): boolean {
     return true;
 }
 
-const debugSetup = (context: IExtensionContext) => {
-    Object.assign(globalThis, {
-        toebean: {
-            sn1: {
-                context,
-                getState: () => context.api.getState(),
-                getDiscovery: () => getDiscovery(context.api.getState()),
-                getMods: () => getMods(context.api.getState()),
-                'vortex-api': {
-                    actions,
-                    selectors,
-                    types,
-                    util,
-                },
-                parseChangelog,
-            }
+const initDevConsole = (context: IExtensionContext) => {
+    const setDevConsole = (oldValue: unknown, newValue: unknown) => {
+        if (newValue && typeof newValue === 'object' && 'userId' in newValue && newValue.userId === 83851883) {
+            Object.assign(globalThis, {
+                subnauticaSupport: {
+                    context,
+                    getState: () => context.api.getState(),
+                    getDiscovery: (state = context.api.getState()) => getDiscovery(state),
+                    getMods: (state = context.api.getState()) => getMods(state),
+                    vortex: {
+                        actions,
+                        selectors,
+                        types,
+                        util,
+                    },
+                    stores: {
+                        main: store,
+                        changelog: changelogStore,
+                    },
+                    parseChangelog,
+                    showChangelog: async (changelog?: string | Awaited<ReturnType<typeof parseChangelog>>) => {
+                        switch (typeof changelog) {
+                            case 'string':
+                                changelog = await parseChangelog(changelog);
+                                break;
+                            case 'undefined':
+                                changelog = await parseChangelog();
+                                break;
+                        }
+
+                        return await showChangelog(context.api, changelog.html, changelog.releases);
+                    },
+                    inspectAssembly: (path: string, additionalSearchPaths: string[] = []) => inspectAssembly(context.api, path, undefined, additionalSearchPaths),
+                }
+            });
+        } else if ('subnauticaSupport' in globalThis &&
+            oldValue && typeof oldValue === 'object' && 'userId' in oldValue && oldValue.userId === 83851883) {
+            // @ts-expect-error
+            delete globalThis.subnauticaSupport;
         }
-    })
+    };
+
+    setDevConsole(undefined, getSafe(context.api.getState(), ['persistent', 'nexus', 'userInfo'], undefined));
+    context.api.onStateChange?.(['persistent', 'nexus', 'userInfo'], setDevConsole);
 }
 
 /**
@@ -188,8 +204,26 @@ const debugSetup = (context: IExtensionContext) => {
 const setup = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
     if (discovery?.path) {
         await Promise.all([QMM_MOD_DIR, BEPINEX_MOD_PATH].map(path => ensureDirWritableAsync(join(discovery.path!, path))));
-        await validateBranch(api, discovery);
     }
+
+    const manifest = getManifestPath(api.getState(), discovery);
+
+    if (manifest) {
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        watch(manifest, { persistent: false, signal }, async () => {
+            await validateBranch(api);
+            await Promise.all([validateBepInEx(api), validateQModManager(api)]);
+        });
+
+        api.events.once('gamemode-activated', () => controller.abort());
+    }
+
+    await validateChangelog(api);
+    await showSubnautica2InfoDialog(api);
+    await validateBranch(api, discovery);
+    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
 }
 
 const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) => {
@@ -209,27 +243,6 @@ const requiresLauncher: Required<IGame>['requiresLauncher'] = async (_, store) =
                 }
             };
     }
-}
-
-const gamemodeActivated = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
-    const manifest = getManifestPath(api.getState(), discovery);
-
-    if (manifest) {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        watch(manifest, { persistent: false, signal }, async () => {
-            await validateBranch(api);
-            await Promise.all([validateBepInEx(api), validateQModManager(api)]);
-        });
-
-        api.events.once('gamemode-activated', () => controller.abort());
-    }
-
-    await validateBranch(api, discovery);
-    await Promise.all([validateBepInEx(api), validateQModManager(api)]);
-    await validateChangelog(api);
-    await showSubnautica2InfoDialog(api);
 }
 
 const didDeploy = async (api: IExtensionApi, discovery: IDiscoveryResult | undefined = getDiscovery(api.getState())) => {
