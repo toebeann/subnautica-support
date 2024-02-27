@@ -37,7 +37,7 @@
     "release": "pnpm build --mode production --devtool none && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*"
   },
   "devDependencies": {
-    "@total-typescript/ts-reset": "^0.4.2",
+    "@total-typescript/ts-reset": "^0.5.1",
     "@tsconfig/recommended": "^1.0.2",
     "@types/i18next": "^8.4.6",
     "@types/node": "^20.2.5",

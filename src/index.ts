@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <https://www.gnu.org/licenses>.
  */
-import '@total-typescript/ts-reset';
 import { join } from 'path';
 import { version } from '../package.json';
 import { BEPINEX_CONFIG_DIR, BEPINEX_DIR, BEPINEX_MOD_PATH, BEPINEX_URL, validateBepInEx } from './bepinex';
