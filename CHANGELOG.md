@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.3.3] - 2024-02-27
+
+### Changed
+
+- Updated `BepInEx.AssemblyInspection.Console.exe` binary to reduce disk footprint ([`2fca1d9`](https://github.com/toebeann/subnautica-support/commit/2fca1d9))
+
 ## [3.3.2] - 2023-06-08
 
 ### Changed
@@ -186,6 +192,7 @@ _Changelogs for this release were not recorded by the prior maintainers._
 
 _Changelogs for this release were not recorded by the prior maintainers._
 
+[3.3.3]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.3
 [3.3.2]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.2
 [3.3.1]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.1
 [3.3.0]: https://github.com/toebeann/subnautica-support/releases/tag/v3.3.0
