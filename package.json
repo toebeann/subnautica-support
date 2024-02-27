@@ -50,7 +50,7 @@
     "relaxed-json": "^1.0.3",
     "remark": "^14.0.3",
     "remark-rehype": "^10.1.0",
-    "rimraf": "^4.4.1",
+    "rimraf": "^5.0.5",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
     "store2": "^2.14.3",
     "strip-markdown": "^6.0.0",
