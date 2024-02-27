@@ -19,7 +19,7 @@ If you are developing a different kind of mod and would like it to be supported 
 
 ## How to install
 
-This extension requires [Vortex] ^1.8.0. To install, click the Vortex button at the top of [the Nexus Mods page](https://www.nexusmods.com/site/mods/202) to open this extension within Vortex, and then click `Install`. Alternatively, within Vortex, go to the `Extensions` tab, click "`Find More`" at the bottom of the tab, search for "Subnautica Support" and then click `Install`.
+This extension requires [Vortex] ^1.9.0. To install, click the Vortex button at the top of [the Nexus Mods page](https://www.nexusmods.com/site/mods/202) to open this extension within Vortex, and then click `Install`. Alternatively, within Vortex, go to the `Extensions` tab, click "`Find More`" at the bottom of the tab, search for "Subnautica Support" and then click `Install`.
 
 You can also manually install it by downloading the main file and dragging it into the "drop zone" labelled "`Drop File(s)`" in the `Extensions` tab at the bottom right.
 
