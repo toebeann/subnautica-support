@@ -18,8 +18,8 @@ devDependencies:
     specifier: ^20.2.5
     version: 20.2.5
   '@types/relaxed-json':
-    specifier: ^1.0.1
-    version: 1.0.1
+    specifier: ^1.0.4
+    version: 1.0.4
   '@types/semver':
     specifier: ^7.5.0
     version: 7.5.0
@@ -164,8 +164,8 @@ packages:
     resolution: {integrity: sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==}
     dev: true
 
-  /@types/relaxed-json@1.0.1:
-    resolution: {integrity: sha512-UnBKvLCa16RNrNeq8K2NoiAN6Whrw/fPjh6iWl1uYt4T+/AqykJKfQv1OL/ktkLprmwQPnBlmT3fu9xTc3o9AA==}
+  /@types/relaxed-json@1.0.4:
+    resolution: {integrity: sha512-MulPaZU5Hh81T8ROYhsWlC7tJuuapwUT1/wX1qS8/koMI8Ypf3tyEunFZKzewoLsjutDpuf4kXVhxkF82ZtXzg==}
     dev: true
 
   /@types/semver@7.5.0:
