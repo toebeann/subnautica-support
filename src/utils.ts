@@ -27,6 +27,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import strip from 'strip-markdown';
 import { actions, fs, selectors, types, util } from 'vortex-api';
+import { z } from 'zod';
 import setModsEnabled = actions.setModsEnabled;
 import statAsync = fs.statAsync;
 import activeProfile = selectors.activeProfile;
@@ -37,7 +38,6 @@ import IExtensionApi = types.IExtensionApi;
 import IMod = types.IMod;
 import IState = types.IState;
 import toPromise = util.toPromise;
-import { z } from 'zod';
 
 /**
  * Utility function to retrieve a game discovery result from the Vortex API.
