@@ -51,8 +51,8 @@ devDependencies:
     specifier: github:mattb-prg/steam-acf-parser
     version: github.com/mattb-prg/steam-acf-parser/18de58e9ff5cb4c468949063ba176de857da8dd0
   store2:
-    specifier: ^2.14.2
-    version: 2.14.2
+    specifier: ^2.14.3
+    version: 2.14.3
   strip-markdown:
     specifier: ^6.0.0
     version: 6.0.0
@@ -3713,8 +3713,8 @@ packages:
       object-copy: 0.1.0
     dev: true
 
-  /store2@2.14.2:
-    resolution: {integrity: sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==}
+  /store2@2.14.3:
+    resolution: {integrity: sha512-4QcZ+yx7nzEFiV4BMLnr/pRa5HYzNITX2ri0Zh6sT9EyQHbBHacC6YigllUPU9X3D0f/22QCgfokpKs52YRrUg==}
     dev: true
 
   /stream-browserify@2.0.2:

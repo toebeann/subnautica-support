@@ -52,7 +52,7 @@
     "remark-rehype": "^10.1.0",
     "rimraf": "^4.4.1",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
-    "store2": "^2.14.2",
+    "store2": "^2.14.3",
     "strip-markdown": "^6.0.0",
     "ts-loader": "^8.4.0",
     "typescript": "^4.9.5",
