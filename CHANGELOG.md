@@ -4,7 +4,11 @@
 
 ### Changed
 
-- Updated `BepInEx.AssemblyInspection.Console.exe` binary to reduce disk footprint ([`2fca1d9`](https://github.com/toebeann/subnautica-support/commit/2fca1d9))
+- Reduce disk footprint of `BepInEx.AssemblyInspection.Console.exe` binary ([`2fca1d9`](https://github.com/toebeann/subnautica-support/commit/2fca1d9))
+
+### Fixed
+
+- Improve detection of whether QModManager is currently enabled with Vortex ([`3a112a7`](https://github.com/toebeann/subnautica-support/commit/3a112a7))
 
 ## [3.3.2] - 2023-06-08
 
