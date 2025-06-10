@@ -169,6 +169,8 @@ Any of the following structures are valid:
 
 **Any** .zip, .rar or .7z archive intending to install **any** file types to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or subfolders thereof) are valid:
 
+**Note:** Neither Epic Structure Loader nor Terrain Patcher are explicitly supported by this extension, they are just used as examples to demonstrate that even though explicit support for these mod types has not been added to this Vortex extension, they can nevertheless be installed correctly when packaged appropriately, and the same goes for other mod types for which explicit support has not been added.
+
 ```
 - EpicStructureLoader
   - Structures
