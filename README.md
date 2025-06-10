@@ -203,9 +203,9 @@ Any of the following structures are valid:
   - TerrainPatcher
     - patches
       - My Really Cool Terrain Patch.optoctreepatch
-  - patchers
-    - Whatever file you want.txt
-    - Literally any file extension is allowed in any of these folders.exe
+- patchers
+  - Whatever file you want.txt
+  - Literally any file extension is allowed in any of these folders.exe
 ```
 
 ```
@@ -220,9 +220,9 @@ Any of the following structures are valid:
     - TerrainPatcher
       - patches
         - My Really Cool Terrain Patch.optoctreepatch
-    - patchers
-      - Whatever file you want.txt
-      - Literally any file extension is allowed in any of these folders.exe
+  - patchers
+    - Whatever file you want.txt
+    - Literally any file extension is allowed in any of these folders.exe
 ```
 
 **Note:** The above examples are non-exhausitive, as long as you are trying to install at least _one_ file of _any_ file extension or type to at least _one_ of the `BepInEx/config`, `BepInEx/plugins`, or `BepInEx/patchers` folders (or subfolders thereof), you should be in the clear - the extension will try to figure it out based on the folder structure. If there's nothing obvious to suggest which BepInEx subfolder to unpack the archive into, it will target the `BepInEx/plugins` folder by default (or `QMods` on the legacy branch).
