@@ -167,7 +167,7 @@ Any of the following structures are valid:
 
 #### Miscellaneous BepInEx mods
 
-**Any** .zip, .rar or .7z archives intending to install **any** file types to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or a subfolder thereof) are valid:
+**Any** .zip, .rar or .7z archive intending to install **any** file types to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or a subfolder thereof) are valid:
 
 ```
 - EpicStructureLoader
