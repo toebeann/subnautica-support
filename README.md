@@ -14,7 +14,7 @@ At this time, the following mod types are supported:
 - CustomCraft2 plugin packs
 - CustomHullPlates addon packs
 - CustomPosters addon packs
-- Any .zip, .rar or .7z archive designed to have its contents installed directly into the `BepInEx/plugins` folder
+- Any .zip, .rar or .7z archive designed to have its contents installed directly into the `BepInEx/plugins` folder (or the `QMods` folder on legacy)
 
 If you are developing a different kind of mod and would like it to be supported by this extension, please [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed, so that I can have Vortex automate the process. PRs welcome!
 
@@ -40,7 +40,7 @@ First things first, make sure to set your latest main file as your main Vortex f
 
 Supported mod types should follow the packaging examples listed below.
 
-Mod types which are not explictly supported or detected by this extension are simply unpacked into the `BepInEx/plugins` folder, so you can take advantage of this for any new mod types that require you to install files within `BepInEx/plugins` (or a subfoider thereof) by structuring your archive as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually.
+Mod types which are not explictly supported or detected by this extension are simply unpacked into the `BepInEx/plugins` folder (or the `QMods` folder when the user is on the Steam legacy branch), so you can take advantage of this for any new mod types that require you to install files within `BepInEx/plugins` (or a subfoider thereof) by structuring your archive as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually.
 
 If your mod is not of a supported type listed below or cannot be installed by simply unpacking its contents into the the `BepInEx/plugins` folder, you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
 
