@@ -14,7 +14,7 @@ At this time, the following mod types are supported:
 - CustomCraft2 plugin packs
 - CustomHullPlates addon packs
 - CustomPosters addon packs
-- Miscellaneous BepInEx mods e.g. hybrid BepInEx plugin/patcher combos, BepInEx config files, or any files designed to be installed to one or more of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders, e.g. TerrainPatcher patches, EpicStructureLoader structures, etc.
+- Miscellaneous BepInEx mods e.g. hybrid BepInEx plugin/patcher combos, BepInEx config files, or any files designed to be installed to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders, e.g. TerrainPatcher patches, EpicStructureLoader structures, etc.
 - Any .zip, .rar or .7z archive designed to be unpacked directly into the `BepInEx/plugins` folder (or the `QMods` folder on legacy)
 
 If you are developing a different kind of mod and would like it to be supported by this extension, please [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed, so that I can have Vortex automate the process. PRs welcome!
