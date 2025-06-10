@@ -35,7 +35,7 @@ Afterwards, restart Vortex and you can begin installing supported Subnautica mod
 
 ## How to make my mod compatible with this extension?
 
-First things first, make sure to set your latest main file as your main Vortex file, and also ensure that the "`Remove the 'Download with Manager' button`" option is unticked.
+First things first, make sure to set your latest main file as your main Vortex file, and also ensure that the "`Remove the 'Download with Manager' button`" option is unticked. Be sure to double check this whenever you release an update!
 
 Assuming your mod is of a supported type, simply follow the packaging examples for that mod type below.
 
