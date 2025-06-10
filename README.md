@@ -14,7 +14,8 @@ At this time, the following mod types are supported:
 - CustomCraft2 plugin packs
 - CustomHullPlates addon packs
 - CustomPosters addon packs
-- Any .zip, .rar or .7z archive designed to have its contents installed directly into the `BepInEx/plugins` folder (or the `QMods` folder on legacy)
+- Miscellaneous BepInEx mods e.g. hybrid BepInEx plugin/patcher combos, BepInEx config files, or any files designed to be installed to one or more of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders, e.g. TerrainPatcher patches, EpicStructureLoader structures, etc.
+- Any .zip, .rar or .7z archive designed to be unpacked directly into the `BepInEx/plugins` folder (or the `QMods` folder on legacy)
 
 If you are developing a different kind of mod and would like it to be supported by this extension, please [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed, so that I can have Vortex automate the process. PRs welcome!
 
@@ -40,7 +41,7 @@ First things first, make sure to set your latest main file as your main Vortex f
 
 Supported mod types should follow the packaging examples listed below.
 
-Mod types which are not explictly supported or detected by this extension are simply unpacked into the `BepInEx/plugins` folder (or the `QMods` folder when the user is on the Steam legacy branch), so you can take advantage of this for any new mod types that require you to install files within `BepInEx/plugins` (or a subfoider thereof) by structuring your archive as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually.
+Mod types which are not explictly supported or detected by this extension are by default simply unpacked into the `BepInEx/plugins` folder (or the `QMods` folder when the user is on the Steam legacy branch), so you can take advantage of this for any new mod types that require you to install files within `BepInEx/plugins` (or a subfoider thereof) by structuring your archive as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually. Also see the [Miscellaneous BepInEx Mods](#miscellaneous-bepinex-mods) section below.
 
 If your mod is not of a supported type listed below or cannot be installed by simply unpacking its contents into the the `BepInEx/plugins` folder, you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
 
@@ -148,6 +149,81 @@ Any of the following structures are valid:
     - My Mod Name
       - MyBepInExPlugin.dll
 ```
+
+#### BepInEx config files
+
+Any of the following structures are valid:
+
+```
+- config
+  - MyConfigFile.cfg
+```
+
+```
+- BepInEx
+  - config
+    - MyConfigFile.cfg
+```
+
+#### Miscellaneous BepInEx mods
+
+**Any** .zip, .rar or .7z archives intending to install **any** file types to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or a subfolder thereof) are valid:
+
+```
+- EpicStructureLoader
+  - Structures
+    - My Really Cool Structure.structure
+```
+
+```
+- TerrainPatcher
+  - patches
+    - My Really Cool Terrain Patch.optoctreepatch
+```
+
+```
+- EpicStructureLoader
+  - Structures
+    - My Really Cool Structure.structure
+- TerrainPatcher
+  - patches
+    - My Really Cool Terrain Patch.optoctreepatch
+```
+
+```
+- config
+  - A config file for some reason.cfg
+  - Some other config file type for some reason.json
+- plugins
+  - EpicStructureLoader
+    - Structures
+      - My Really Cool Structure.structure
+  - TerrainPatcher
+    - patches
+      - My Really Cool Terrain Patch.optoctreepatch
+  - patchers
+    - Whatever file you want.txt
+    - Literally any file extension is allowed in any of these folders.exe
+```
+
+```
+- BepInEx
+  - config
+    - A config file for some reason.cfg
+    - Some other config file type for some reason.json
+  - plugins
+    - EpicStructureLoader
+      - Structures
+        - My Really Cool Structure.structure
+    - TerrainPatcher
+      - patches
+        - My Really Cool Terrain Patch.optoctreepatch
+    - patchers
+      - Whatever file you want.txt
+      - Literally any file extension is allowed in any of these folders.exe
+```
+
+**Note:** The above examples are non-exhausitive, as long as you are trying to install at least _one_ file of _any_ file extension or type to at least _one_ of the `BepInEx/plugins`, `BepInEx/patchers` or `BepInEx/config` folders (or subfolders thereof), you should be in the clear - the extension will try to figure it out based on the folder structure. If there's nothing obvious to suggest which BepInEx subfolder to unpack the archive into, it will target the `BepInEx/plugins` folder by default.
 
 #### QMods
 
