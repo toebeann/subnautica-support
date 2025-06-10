@@ -39,7 +39,9 @@ Assuming your mod is of a supported type, simply follow the packaging examples f
 
 Don't forget to set your latest main file as your main Vortex file, and make sure that the "`Remove the 'Download with Manager' button`" option is unticked!
 
-If your mod is not of a supported type, you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
+Mod types which are not explictly supported or detected by this extension are simply unzipped into the `BepInEx/plugins` folder, so you can take advantage of this for any new mod types that require you to install files to a subdirectory of `BepInEx/plugins` by structuring your .zip as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually.
+
+If your mod is not of a supported type or cannot be installed by simply unzipping its contents into the the `BepInEx/plugins` folder, you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
 
 ### Packaging examples
 
