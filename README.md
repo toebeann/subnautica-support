@@ -35,9 +35,9 @@ Afterwards, restart Vortex and you can begin installing supported Subnautica mod
 
 ## How to make my mod compatible with this extension?
 
-Assuming your mod is of a supported type, simply follow the packaging examples for that mod type below.
+First things first, make sure to set your latest main file as your main Vortex file, and also ensure that the "`Remove the 'Download with Manager' button`" option is unticked.
 
-Don't forget to set your latest main file as your main Vortex file, and make sure that the "`Remove the 'Download with Manager' button`" option is unticked!
+Assuming your mod is of a supported type, simply follow the packaging examples for that mod type below.
 
 Mod types which are not explictly supported or detected by this extension are simply unzipped into the `BepInEx/plugins` folder, so you can take advantage of this for any new mod types that require you to install files to a subdirectory of `BepInEx/plugins` by structuring your .zip as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually.
 
