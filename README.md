@@ -53,7 +53,6 @@ Any of the following structures are valid:
 
 ```
 📄 MyBepInExPlugin.dll
-
 ```
 
 ```
