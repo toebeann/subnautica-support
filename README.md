@@ -208,6 +208,9 @@ Any of the following structures are valid:
 📂 EpicStructureLoader
    📂 Structures
       📄 My Really Cool Structure.structure
+```
+
+```
 📂 TerrainPatcher
    📂 patches
       📄 My Really Cool Terrain Patch.optoctreepatch
@@ -217,9 +220,6 @@ Any of the following structures are valid:
 📂 EpicStructureLoader
    📂 Structures
       📄 My Really Cool Structure.structure
-```
-
-```
 📂 TerrainPatcher
    📂 patches
       📄 My Really Cool Terrain Patch.optoctreepatch
