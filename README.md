@@ -57,31 +57,31 @@ Any of the following structures are valid:
 
 ```
 📂 My BepInEx Plugin
-  📄 MyBepInExPlugin.dll
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
 📂 plugins
-  📄 MyBepInExPlugin.dll
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
 📂 plugins
-  📂 My BepInEx Plugin
-    📄 MyBepInExPlugin.dll
-```
-
-```
-📂 BepInEx
-  📂 plugins
-    📄 MyBepInExPlugin.dll
-```
-
-```
-📂 BepInEx
-  📂 plugins
-    📂 My BepInEx Plugin
+   📂 My BepInEx Plugin
       📄 MyBepInExPlugin.dll
+```
+
+```
+📂 BepInEx
+   📂 plugins
+      📄 MyBepInExPlugin.dll
+```
+
+```
+📂 BepInEx
+   📂 plugins
+      📂 My BepInEx Plugin
+         📄 MyBepInExPlugin.dll
 ```
 
 #### BepInEx patchers
@@ -90,26 +90,26 @@ Any of the following structures are valid:
 
 ```
 📂 patchers
-  📄 MyBepInExPatcher.dll
+   📄 MyBepInExPatcher.dll
 ```
 
 ```
 📂 patchers
-  📂 My BepInEx Patcher
-    📄 MyBepInExPatcher.dll
-```
-
-```
-📂 BepInEx
-  📂 patchers
-    📄 MyBepInExPatcher.dll
-```
-
-```
-📂 BepInEx
-  📂 patchers
-    📂 My BepInEx Patcher
+   📂 My BepInEx Patcher
       📄 MyBepInExPatcher.dll
+```
+
+```
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
+```
+
+```
+📂 BepInEx
+   📂 patchers
+      📂 My BepInEx Patcher
+         📄 MyBepInExPatcher.dll
 ```
 
 #### BepInEx plugin/patcher combos
@@ -118,36 +118,36 @@ Any of the following structures are valid:
 
 ```
 📂 patchers
-  📄 MyBepInExPatcher.dll
+   📄 MyBepInExPatcher.dll
 📂 plugins
-  📄 MyBepInExPlugin.dll
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
 📂 patchers
-  📂 My Mod Name
-    📄 MyBepInExPatcher.dll
-📂 plugins
-  📂 My Mod Name
-    📄 MyBepInExPlugin.dll
-```
-
-```
-📂 BepInEx
-  📂 patchers
-    📄 MyBepInExPatcher.dll
-  📂 plugins
-    📄 MyBepInExPlugin.dll
-```
-
-```
-📂 BepInEx
-  📂 patchers
-    📂 My Mod Name
+   📂 My Mod Name
       📄 MyBepInExPatcher.dll
-  📂 plugins
-    📂 My Mod Name
+📂 plugins
+   📂 My Mod Name
       📄 MyBepInExPlugin.dll
+```
+
+```
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
+   📂 plugins
+      📄 MyBepInExPlugin.dll
+```
+
+```
+📂 BepInEx
+   📂 patchers
+      📂 My Mod Name
+         📄 MyBepInExPatcher.dll
+   📂 plugins
+      📂 My Mod Name
+         📄 MyBepInExPlugin.dll
 ```
 
 #### BepInEx config files
@@ -156,13 +156,13 @@ Any of the following structures are valid:
 
 ```
 📂 config
-  📄 MyConfigFile.cfg
+   📄 MyConfigFile.cfg
 ```
 
 ```
 📂 BepInEx
-  📂 config
-    📄 MyConfigFile.cfg
+   📂 config
+      📄 MyConfigFile.cfg
 ```
 
 #### Miscellaneous BepInEx mods
@@ -173,56 +173,56 @@ Any of the following structures are valid:
 
 ```
 📂 EpicStructureLoader
-  📂 Structures
-    📄 My Really Cool Structure.structure
+   📂 Structures
+      📄 My Really Cool Structure.structure
 ```
 
 ```
 📂 TerrainPatcher
-  📂 patches
-    📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
 ```
 
 ```
 📂 EpicStructureLoader
-  📂 Structures
-    📄 My Really Cool Structure.structure
+   📂 Structures
+      📄 My Really Cool Structure.structure
 📂 TerrainPatcher
-  📂 patches
-    📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
 ```
 
 ```
 📂 config
-  📄 A config file for some reason.cfg
-  📄 Some other config file type for some reason.json
+   📄 A config file for some reason.cfg
+   📄 Some other config file type for some reason.json
 📂 plugins
-  📂 EpicStructureLoader
-    📂 Structures
-      📄 My Really Cool Structure.structure
-  📂 TerrainPatcher
-    📂 patches
-      📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 EpicStructureLoader
+      📂 Structures
+         📄 My Really Cool Structure.structure
+   📂 TerrainPatcher
+      📂 patches
+         📄 My Really Cool Terrain Patch.optoctreepatch
 📂 patchers
-  📄 Whatever file you want.txt
-  📄 Literally any file extension is allowed in any of these folders.exe
+   📄 Whatever file you want.txt
+   📄 Literally any file extension is allowed in any of these folders.exe
 ```
 
 ```
 📂 BepInEx
-  📂 config
-    📄 A config file for some reason.cfg
-    📄 Some other config file type for some reason.json
-  📂 plugins
-    📂 EpicStructureLoader
-      📂 Structures
-        📄 My Really Cool Structure.structure
-    📂 TerrainPatcher
-      📂 patches
-        📄 My Really Cool Terrain Patch.optoctreepatch
-  📂 patchers
-    📄 Whatever file you want.txt
-    📄 Literally any file extension is allowed in any of these folders.exe
+   📂 config
+      📄 A config file for some reason.cfg
+      📄 Some other config file type for some reason.json
+   📂 plugins
+      📂 EpicStructureLoader
+         📂 Structures
+            📄 My Really Cool Structure.structure
+      📂 TerrainPatcher
+         📂 patches
+            📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 patchers
+      📄 Whatever file you want.txt
+      📄 Literally any file extension is allowed in any of these folders.exe
 ```
 
 **Note:** The above examples are non-exhausitive, as long as you are trying to install at least _one_ file of _any_ file extension or type to at least _one_ of the `BepInEx/config`, `BepInEx/plugins`, or `BepInEx/patchers` folders (or subfolders thereof), you should be in the clear - the extension will try to figure it out based on the folder structure. If there's nothing obvious to suggest which BepInEx subfolder to unpack the archive into, it will target the `BepInEx/plugins` folder by default (or `QMods` on the legacy branch).
@@ -233,15 +233,15 @@ Any of the following structures are valid:
 
 ```
 📂 My QMod
-  📄 mod.json
-  📄 MyQMod.dll
+   📄 mod.json
+   📄 MyQMod.dll
 ```
 
 ```
 📂 QMods
-  📂 My QMod
-    📄 mod.json
-    📄 MyQMod.dll
+   📂 My QMod
+      📄 mod.json
+      📄 MyQMod.dll
 ```
 
 **Note:** We **strongly** recommend using one of the above structures. While the example below will work, it results in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
@@ -260,8 +260,8 @@ Mods which meet all of the following criteria are eligible to be installed as ei
 - has the following structure:
   ```
   📂 My Mod
-    📄 mod.json
-    📄 MyMod.dll
+     📄 mod.json
+     📄 MyMod.dll
   ```
 
 When a user installs an eligible mod, if the user is on the legacy branch it will be installed as a QMod. Otherwise, it will be installed as a BepInEx plugin.
@@ -272,16 +272,16 @@ Any of the following structures are valid. Note that although these examples onl
 
 ```
 📂 CustomCraft2SML
-  📂 Assets
-    📄 MyCC2Asset.png
-  📂 WorkingFiles
-    📄 MyCC2Mod.txt
+   📂 Assets
+      📄 MyCC2Asset.png
+   📂 WorkingFiles
+      📄 MyCC2Mod.txt
 ```
 
 ```
 📂 CustomCraft2SML
-  📂 WorkingFiles
-    📄 MyCC2Mod.txt
+   📂 WorkingFiles
+      📄 MyCC2Mod.txt
 ```
 
 #### CustomHullPlates addon packs
@@ -290,26 +290,26 @@ Any of the following structures are valid. Note that although these examples onl
 
 ```
 📂 CustomHullPlates
-  📂 HullPlates
-    📂 MyHullPlate
+   📂 HullPlates
+      📂 MyHullPlate
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
+```
+
+```
+📂 HullPlates
+   📂 MyHullPlate
       📄 icon.png
       📄 info.json
       📄 texture.png
 ```
 
 ```
-📂 HullPlates
-  📂 MyHullPlate
-    📄 icon.png
-    📄 info.json
-    📄 texture.png
-```
-
-```
 📂 MyHullPlate
-  📄 icon.png
-  📄 info.json
-  📄 texture.png
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 #### CustomPosters addon packs
@@ -318,26 +318,26 @@ Any of the following structures are valid. Note that although these examples onl
 
 ```
 📂 CustomPosters
-  📂 Posters
-    📂 MyPoster
+   📂 Posters
+      📂 MyPoster
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
+```
+
+```
+📂 Posters
+   📂 MyPoster
       📄 icon.png
       📄 info.json
       📄 texture.png
 ```
 
 ```
-📂 Posters
-  📂 MyPoster
-    📄 icon.png
-    📄 info.json
-    📄 texture.png
-```
-
-```
 📂 MyPoster
-  📄 icon.png
-  📄 info.json
-  📄 texture.png
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 ### Mixed CustomHullPlates/CustomPosters addon packs
@@ -346,43 +346,43 @@ Any of the following structures are valid. Note that although these examples onl
 
 ```
 📂 CustomHullPlates
-  📂 HullPlates
-    📂 MyHullPlate
-      📄 icon.png
-      📄 info.json
-      📄 texture.png
+   📂 HullPlates
+      📂 MyHullPlate
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
 📂 CustomPosters
-  📂 Posters
-    📂 MyPoster
-      📄 icon.png
-      📄 info.json
-      📄 texture.png
+   📂 Posters
+      📂 MyPoster
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
 ```
 
 **Note:** We **strongly** recommend using the above structure. While the examples below will work, they result in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
 
 ```
 📂 HullPlates
-  📂 MyHullPlate
-    📄 icon.png
-    📄 info.json
-    📄 texture.png
+   📂 MyHullPlate
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
 📂 Posters
-  📂 MyPoster
-    📄 icon.png
-    📄 info.json
-    📄 texture.png
+   📂 MyPoster
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
 ```
 
 ```
 📂 MyHullPlate
-  📄 icon.png
-  📄 info.json
-  📄 texture.png
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 📂 MyPoster
-  📄 icon.png
-  📄 info.json
-  📄 texture.png
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 #### My mod is being installed strangely!
