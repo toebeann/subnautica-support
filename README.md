@@ -52,17 +52,16 @@ If your mod is not of a supported type listed below or cannot be installed by si
 Any of the following structures are valid:
 
 ```
-📄 MyBepInExPlugin.dll
+📂 BepInEx
+   📂 plugins
+      📂 My BepInEx Plugin
+         📄 MyBepInExPlugin.dll
 ```
 
 ```
-📂 My BepInEx Plugin
-   📄 MyBepInExPlugin.dll
-```
-
-```
-📂 plugins
-   📄 MyBepInExPlugin.dll
+📂 BepInEx
+   📂 plugins
+      📄 MyBepInExPlugin.dll
 ```
 
 ```
@@ -72,16 +71,17 @@ Any of the following structures are valid:
 ```
 
 ```
-📂 BepInEx
-   📂 plugins
-      📄 MyBepInExPlugin.dll
+📂 plugins
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
-📂 BepInEx
-   📂 plugins
-      📂 My BepInEx Plugin
-         📄 MyBepInExPlugin.dll
+📂 My BepInEx Plugin
+   📄 MyBepInExPlugin.dll
+```
+
+```
+📄 MyBepInExPlugin.dll
 ```
 
 #### BepInEx patchers
@@ -89,8 +89,16 @@ Any of the following structures are valid:
 Any of the following structures are valid:
 
 ```
-📂 patchers
-   📄 MyBepInExPatcher.dll
+📂 BepInEx
+   📂 patchers
+      📂 My BepInEx Patcher
+         📄 MyBepInExPatcher.dll
+```
+
+```
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
 ```
 
 ```
@@ -100,45 +108,13 @@ Any of the following structures are valid:
 ```
 
 ```
-📂 BepInEx
-   📂 patchers
-      📄 MyBepInExPatcher.dll
-```
-
-```
-📂 BepInEx
-   📂 patchers
-      📂 My BepInEx Patcher
-         📄 MyBepInExPatcher.dll
+📂 patchers
+   📄 MyBepInExPatcher.dll
 ```
 
 #### BepInEx plugin/patcher combos
 
 Any of the following structures are valid:
-
-```
-📂 patchers
-   📄 MyBepInExPatcher.dll
-📂 plugins
-   📄 MyBepInExPlugin.dll
-```
-
-```
-📂 patchers
-   📂 My Mod Name
-      📄 MyBepInExPatcher.dll
-📂 plugins
-   📂 My Mod Name
-      📄 MyBepInExPlugin.dll
-```
-
-```
-📂 BepInEx
-   📂 patchers
-      📄 MyBepInExPatcher.dll
-   📂 plugins
-      📄 MyBepInExPlugin.dll
-```
 
 ```
 📂 BepInEx
@@ -150,19 +126,43 @@ Any of the following structures are valid:
          📄 MyBepInExPlugin.dll
 ```
 
+```
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
+   📂 plugins
+      📄 MyBepInExPlugin.dll
+```
+
+```
+📂 patchers
+   📂 My Mod Name
+      📄 MyBepInExPatcher.dll
+📂 plugins
+   📂 My Mod Name
+      📄 MyBepInExPlugin.dll
+```
+
+```
+📂 patchers
+   📄 MyBepInExPatcher.dll
+📂 plugins
+   📄 MyBepInExPlugin.dll
+```
+
 #### BepInEx config files
 
 Any of the following structures are valid:
 
 ```
-📂 config
-   📄 MyConfigFile.cfg
-```
-
-```
 📂 BepInEx
    📂 config
       📄 MyConfigFile.cfg
+```
+
+```
+📂 config
+   📄 MyConfigFile.cfg
 ```
 
 #### Miscellaneous BepInEx mods
@@ -172,24 +172,20 @@ Any of the following structures are valid:
 **Note:** Neither Epic Structure Loader nor Terrain Patcher are explicitly supported by this extension, they are just used as examples to demonstrate that even though explicit support for these mod types has not been added to this Vortex extension, they can nevertheless be installed correctly when packaged appropriately, and the same goes for other mod types for which explicit support has not been added.
 
 ```
-📂 EpicStructureLoader
-   📂 Structures
-      📄 My Really Cool Structure.structure
-```
-
-```
-📂 TerrainPatcher
-   📂 patches
-      📄 My Really Cool Terrain Patch.optoctreepatch
-```
-
-```
-📂 EpicStructureLoader
-   📂 Structures
-      📄 My Really Cool Structure.structure
-📂 TerrainPatcher
-   📂 patches
-      📄 My Really Cool Terrain Patch.optoctreepatch
+📂 BepInEx
+   📂 config
+      📄 A config file for some reason.cfg
+      📄 Some other config file type for some reason.json
+   📂 plugins
+      📂 EpicStructureLoader
+         📂 Structures
+            📄 My Really Cool Structure.structure
+      📂 TerrainPatcher
+         📂 patches
+            📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 patchers
+      📄 Whatever file you want.txt
+      📄 Literally any file extension is allowed in any of these folders.exe
 ```
 
 ```
@@ -209,20 +205,24 @@ Any of the following structures are valid:
 ```
 
 ```
-📂 BepInEx
-   📂 config
-      📄 A config file for some reason.cfg
-      📄 Some other config file type for some reason.json
-   📂 plugins
-      📂 EpicStructureLoader
-         📂 Structures
-            📄 My Really Cool Structure.structure
-      📂 TerrainPatcher
-         📂 patches
-            📄 My Really Cool Terrain Patch.optoctreepatch
-   📂 patchers
-      📄 Whatever file you want.txt
-      📄 Literally any file extension is allowed in any of these folders.exe
+📂 EpicStructureLoader
+   📂 Structures
+      📄 My Really Cool Structure.structure
+📂 TerrainPatcher
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
+```
+
+```
+📂 EpicStructureLoader
+   📂 Structures
+      📄 My Really Cool Structure.structure
+```
+
+```
+📂 TerrainPatcher
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
 ```
 
 **Note:** The above examples are non-exhausitive, as long as you are trying to install at least _one_ file of _any_ file extension or type to at least _one_ of the `BepInEx/config`, `BepInEx/plugins`, or `BepInEx/patchers` folders (or subfolders thereof), you should be in the clear - the extension will try to figure it out based on the folder structure. If there's nothing obvious to suggest which BepInEx subfolder to unpack the archive into, it will target the `BepInEx/plugins` folder by default (or `QMods` on the legacy branch).
@@ -232,16 +232,16 @@ Any of the following structures are valid:
 Any of the following structures are valid:
 
 ```
-📂 My QMod
-   📄 mod.json
-   📄 MyQMod.dll
-```
-
-```
 📂 QMods
    📂 My QMod
       📄 mod.json
       📄 MyQMod.dll
+```
+
+```
+📂 My QMod
+   📄 mod.json
+   📄 MyQMod.dll
 ```
 
 **Note:** We **strongly** recommend using one of the above structures. While the example below will work, it results in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
