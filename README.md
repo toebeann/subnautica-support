@@ -359,7 +359,7 @@ Any of the following structures are valid. Note that although these examples onl
       📄 texture.png
 ```
 
-**Note:** We strongly recommend using the above structure. While the examples below will work, they result in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
+**Note:** We **strongly** recommend using the above structure. While the examples below will work, they result in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
 
 ```
 📂 HullPlates
