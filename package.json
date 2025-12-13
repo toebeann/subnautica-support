@@ -32,7 +32,7 @@
   },
   "scripts": {
     "webpack": "webpack --config webpack.config.js --display-error-details --progress --profile --color",
-    "build": "rimraf dist && mkdir dist && extractInfo && pnpm webpack",
+    "build": "rmdir -r ./dist && mkdir dist && extractInfo && pnpm webpack",
     "bundle": "pnpm build && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*",
     "release": "pnpm build --mode production --devtool none && rimraf subnautica-support.7z && 7z a -t7z subnautica-support.7z ./assets/* && 7z a -t7z subnautica-support.7z ./dist/*"
   },
@@ -50,7 +50,6 @@
     "relaxed-json": "^1.0.3",
     "remark": "^14.0.3",
     "remark-rehype": "^10.1.0",
-    "rimraf": "^5.0.10",
     "steam-acf-parser": "github:mattb-prg/steam-acf-parser",
     "store2": "^2.14.3",
     "strip-markdown": "^6.0.0",
