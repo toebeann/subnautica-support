@@ -14,6 +14,8 @@ At this time, the following mod types are supported:
 - CustomCraft2 plugin packs
 - CustomHullPlates addon packs
 - CustomPosters addon packs
+- Miscellaneous BepInEx mods e.g. hybrid BepInEx plugin/patcher combos, BepInEx config files, or any files designed to be installed to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders, e.g. TerrainPatcher patches, EpicStructureLoader structures, etc.
+- Any .zip, .rar or .7z archive designed to be unpacked directly into the `BepInEx/plugins` folder (or the `QMods` folder on legacy)
 
 If you are developing a different kind of mod and would like it to be supported by this extension, please [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed, so that I can have Vortex automate the process. PRs welcome!
 
@@ -35,11 +37,13 @@ Afterwards, restart Vortex and you can begin installing supported Subnautica mod
 
 ## How to make my mod compatible with this extension?
 
-Assuming your mod is of a supported type, simply follow the packaging examples for that mod type below.
+First things first, make sure to set your latest main file as your main Vortex file, and also ensure that the "`Remove the 'Download with Manager' button`" option is unticked. Be sure to double check this whenever you release an update!
 
-Don't forget to set your latest main file as your main Vortex file, and make sure that the "`Remove the 'Download with Manager' button`" option is unticked!
+Supported mod types should follow the packaging examples listed below.
 
-If your mod is not of a supported type, you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
+Mod types which are not explictly supported or detected by this extension are by default simply unpacked into the `BepInEx/plugins` folder (or the `QMods` folder when the user is on the Steam legacy branch), so you can take advantage of this for any new mod types that require you to install files within `BepInEx/plugins` (or subfoiders thereof) by structuring your archive as if you expect its contents to be placed into the `BepInEx/plugins` folder when installed manually. Also see the [Miscellaneous BepInEx mods](#miscellaneous-bepinex-mods) section below for mods that require miscellaneous files to be placed in at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or subfolders thereof).
+
+If your mod is not of a supported type listed below or cannot be installed by simply unpacking its contents into the the `BepInEx/plugins` folder (or the `QMods` folder on legacy), you will need to [raise an issue or pull request on the GitHub repository](https://github.com/toebeann/subnautica-support/issues) with a link to your mod page so that I can take a look at how you are packaging it. Please make sure to include instructions for how you would expect it to be installed.
 
 ### Packaging examples
 
@@ -48,36 +52,36 @@ If your mod is not of a supported type, you will need to [raise an issue or pull
 Any of the following structures are valid:
 
 ```
-- MyBepInExPlugin.dll
+📂 BepInEx
+   📂 plugins
+      📂 My BepInEx Plugin
+         📄 MyBepInExPlugin.dll
 ```
 
 ```
-- My BepInEx Plugin
-  - MyBepInExPlugin.dll
+📂 BepInEx
+   📂 plugins
+      📄 MyBepInExPlugin.dll
 ```
 
 ```
-- plugins
-  - MyBepInExPlugin.dll
+📂 plugins
+   📂 My BepInEx Plugin
+      📄 MyBepInExPlugin.dll
 ```
 
 ```
-- plugins
-  - My BepInEx Plugin
-    - MyBepInExPlugin.dll
+📂 plugins
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
-- BepInEx
-  - plugins
-      - MyBepInExPlugin.dll
+📂 My BepInEx Plugin
+   📄 MyBepInExPlugin.dll
 ```
 
 ```
-- BepInEx
-  - plugins
-    - My BepInEx Plugin
-      - MyBepInExPlugin.dll
+📄 MyBepInExPlugin.dll
 ```
 
 #### BepInEx patchers
@@ -85,27 +89,27 @@ Any of the following structures are valid:
 Any of the following structures are valid:
 
 ```
-- patchers
-  - MyBepInExPatcher.dll
+📂 BepInEx
+   📂 patchers
+      📂 My BepInEx Patcher
+         📄 MyBepInExPatcher.dll
 ```
 
 ```
-- patchers
-  - My BepInEx Patcher
-    - MyBepInExPlugin.dll
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
 ```
 
 ```
-- BepInEx
-  - patchers
-      - MyBepInExPatcher.dll
+📂 patchers
+   📂 My BepInEx Patcher
+      📄 MyBepInExPatcher.dll
 ```
 
 ```
-- BepInEx
-  - patchers
-    - My BepInEx Patcher
-      - MyBepInExPatcher.dll
+📂 patchers
+   📄 MyBepInExPatcher.dll
 ```
 
 #### BepInEx plugin/patcher combos
@@ -113,59 +117,138 @@ Any of the following structures are valid:
 Any of the following structures are valid:
 
 ```
-- patchers
-  - MyBepInExPatcher.dll
-- plugins
-  - MyBepInExPlugin.dll
+📂 BepInEx
+   📂 patchers
+      📂 My Mod Name
+         📄 MyBepInExPatcher.dll
+   📂 plugins
+      📂 My Mod Name
+         📄 MyBepInExPlugin.dll
 ```
 
 ```
-- patchers
-  - My Mod Name
-    - MyBepInExPatcher.dll
-- plugins
-  - My Mod Name
-    - MyBepInExPlugin.dll
+📂 BepInEx
+   📂 patchers
+      📄 MyBepInExPatcher.dll
+   📂 plugins
+      📄 MyBepInExPlugin.dll
 ```
 
 ```
-- BepInEx
-  - patchers
-    - MyBepInExPatcher.dll
-  - plugins
-    - MyBepInExPlugin.dll
+📂 patchers
+   📂 My Mod Name
+      📄 MyBepInExPatcher.dll
+📂 plugins
+   📂 My Mod Name
+      📄 MyBepInExPlugin.dll
 ```
 
 ```
-- BepInEx
-  - patchers
-    - My Mod Name
-      - MyBepInExPatcher.dll
-  - plugins
-    - My Mod Name
-      - MyBepInExPlugin.dll
+📂 patchers
+   📄 MyBepInExPatcher.dll
+📂 plugins
+   📄 MyBepInExPlugin.dll
 ```
+
+#### BepInEx config files
+
+Any of the following structures are valid:
+
+```
+📂 BepInEx
+   📂 config
+      📄 MyConfigFile.cfg
+```
+
+```
+📂 config
+   📄 MyConfigFile.cfg
+```
+
+#### Miscellaneous BepInEx mods
+
+**Any** .zip, .rar or .7z archive intending to install **any** file types to at least one of the `BepInEx/config`, `BepInEx/plugins` or `BepInEx/patchers` folders (or subfolders thereof) are valid:
+
+**Note:** Neither Epic Structure Loader nor Terrain Patcher are explicitly supported by this extension, they are just used as examples to demonstrate that even though explicit support for these mod types has not been added to this Vortex extension, they can nevertheless be installed correctly when packaged appropriately, and the same goes for other mod types for which explicit support has not been added.
+
+```
+📂 BepInEx
+   📂 config
+      📄 A config file for some reason.cfg
+      📄 Some other config file type for some reason.json
+   📂 plugins
+      📂 EpicStructureLoader
+         📂 Structures
+            📄 My Really Cool Structure.structure
+      📂 TerrainPatcher
+         📂 patches
+            📄 My Really Cool Terrain Patch.optoctreepatch
+   📂 patchers
+      📄 Whatever file you want.txt
+      📄 Literally any file extension is allowed in any of these folders.exe
+```
+
+```
+📂 config
+   📄 A config file for some reason.cfg
+   📄 Some other config file type for some reason.json
+📂 plugins
+   📂 EpicStructureLoader
+      📂 Structures
+         📄 My Really Cool Structure.structure
+   📂 TerrainPatcher
+      📂 patches
+         📄 My Really Cool Terrain Patch.optoctreepatch
+📂 patchers
+   📄 Whatever file you want.txt
+   📄 Literally any file extension is allowed in any of these folders.exe
+```
+
+```
+📂 EpicStructureLoader
+   📂 Structures
+      📄 My Really Cool Structure.structure
+```
+
+```
+📂 TerrainPatcher
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
+```
+
+```
+📂 EpicStructureLoader
+   📂 Structures
+      📄 My Really Cool Structure.structure
+📂 TerrainPatcher
+   📂 patches
+      📄 My Really Cool Terrain Patch.optoctreepatch
+```
+
+**Note:** The above examples are non-exhausitive, as long as you are trying to install at least _one_ file of _any_ file extension or type to at least _one_ of the `BepInEx/config`, `BepInEx/plugins`, or `BepInEx/patchers` folders (or subfolders thereof), you should be in the clear - the extension will try to figure it out based on the folder structure. If there's nothing obvious to suggest which BepInEx subfolder to unpack the archive into, it will target the `BepInEx/plugins` folder by default (or `QMods` on the legacy branch).
 
 #### QMods
 
 Any of the following structures are valid:
 
 ```
-- My QMod
-  - mod.json
-  - MyQMod.dll
+📂 QMods
+   📂 My QMod
+      📄 mod.json
+      📄 MyQMod.dll
 ```
 
 ```
-- QMods
-  - My QMod
-    - mod.json
-    - MyQMod.dll
+📂 My QMod
+   📄 mod.json
+   📄 MyQMod.dll
 ```
 
+**Note:** We **strongly** recommend using one of the above structures. While the example below will work, it results in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
+
 ```
-- mod.json
-- MyQMod.dll
+📄 mod.json
+📄 MyQMod.dll
 ```
 
 #### Mods which can be installed as either a QMod or a BepInEx plugin
@@ -176,9 +259,9 @@ Mods which meet all of the following criteria are eligible to be installed as ei
 - has an assembly containing a `BaseUnityPlugin` class with a `BepInPlugin` attribute applied to it
 - has the following structure:
   ```
-  - My Mod
-    - mod.json
-    - MyMod.dll
+  📂 My Mod
+     📄 mod.json
+     📄 MyMod.dll
   ```
 
 When a user installs an eligible mod, if the user is on the legacy branch it will be installed as a QMod. Otherwise, it will be installed as a BepInEx plugin.
@@ -188,17 +271,17 @@ When a user installs an eligible mod, if the user is on the legacy branch it wil
 Any of the following structures are valid. Note that although these examples only include a single asset and/or working file each, the extension will happily install packs containing multiple of each.
 
 ```
-- CustomCraft2SML
-  - Assets
-    - MyCC2Asset.png
-  - WorkingFiles
-    - MyCC2Mod.txt
+📂 CustomCraft2SML
+   📂 Assets
+      📄 MyCC2Asset.png
+   📂 WorkingFiles
+      📄 MyCC2Mod.txt
 ```
 
 ```
-- CustomCraft2SML
-  - WorkingFiles
-    - MyCC2Mod.txt
+📂 CustomCraft2SML
+   📂 WorkingFiles
+      📄 MyCC2Mod.txt
 ```
 
 #### CustomHullPlates addon packs
@@ -206,27 +289,27 @@ Any of the following structures are valid. Note that although these examples onl
 Any of the following structures are valid. Note that although these examples only include a single hull plate, the extension will happily install packs containing multiple hull plates.
 
 ```
-- CustomHullPlates
-  - HullPlates
-    - MyHullPlate
-      - icon.png
-      - info.json
-      - texture.png
+📂 CustomHullPlates
+   📂 HullPlates
+      📂 MyHullPlate
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
 ```
 
 ```
-- HullPlates
-  - MyHullPlate
-    - icon.png
-    - info.json
-    - texture.png
+📂 HullPlates
+   📂 MyHullPlate
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
 ```
 
 ```
-- MyHullPlate
-  - icon.png
-  - info.json
-  - texture.png
+📂 MyHullPlate
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 #### CustomPosters addon packs
@@ -234,27 +317,27 @@ Any of the following structures are valid. Note that although these examples onl
 Any of the following structures are valid. Note that although these examples only include a single poster, the extension will happily install packs containing multiple posters.
 
 ```
-- CustomPosters
-  - Posters
-    - MyPoster
-      - icon.png
-      - info.json
-      - texture.png
+📂 CustomPosters
+   📂 Posters
+      📂 MyPoster
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
 ```
 
 ```
-- Posters
-  - MyPoster
-    - icon.png
-    - info.json
-    - texture.png
+📂 Posters
+   📂 MyPoster
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
 ```
 
 ```
-- MyPoster
-  - icon.png
-  - info.json
-  - texture.png
+📂 MyPoster
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 ### Mixed CustomHullPlates/CustomPosters addon packs
@@ -262,42 +345,44 @@ Any of the following structures are valid. Note that although these examples onl
 Any of the following structures are valid. Note that although these examples only include a single hull plate and poster each, the extension will happily install packs containing multiple of each.
 
 ```
-- CustomHullPlates
-  - HullPlates
-    - MyHullPlate
-      - icon.png
-      - info.json
-      - texture.png
-- CustomPosters
-  - Posters
-    - MyPoster
-      - icon.png
-      - info.json
-      - texture.png
+📂 CustomHullPlates
+   📂 HullPlates
+      📂 MyHullPlate
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
+📂 CustomPosters
+   📂 Posters
+      📂 MyPoster
+         📄 icon.png
+         📄 info.json
+         📄 texture.png
+```
+
+**Note:** We **strongly** recommend using the above structure. While the examples below will work, they result in a confusing and tedious manual installation process. Users installing via Vortex with this extension will not be affected however.
+
+```
+📂 HullPlates
+   📂 MyHullPlate
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
+📂 Posters
+   📂 MyPoster
+      📄 icon.png
+      📄 info.json
+      📄 texture.png
 ```
 
 ```
-- HullPlates
-  - MyHullPlate
-    - icon.png
-    - info.json
-    - texture.png
-- Posters
-  - MyPoster
-    - icon.png
-    - info.json
-    - texture.png
-```
-
-```
-- MyHullPlate
-  - icon.png
-  - info.json
-  - texture.png
-- MyPoster
-  - icon.png
-  - info.json
-  - texture.png
+📂 MyHullPlate
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
+📂 MyPoster
+   📄 icon.png
+   📄 info.json
+   📄 texture.png
 ```
 
 #### My mod is being installed strangely!
